@@ -1,0 +1,6 @@
+Logs/*.log
+*.user
+*.suo
+.vs/
+.idea/
+*.local.json

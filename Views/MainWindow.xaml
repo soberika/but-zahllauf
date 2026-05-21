@@ -1,0 +1,498 @@
+<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="viafintech Zahllauf Dashboard"
+    Height="840" Width="1320"
+    WindowStartupLocation="CenterScreen"
+    Background="#1E1E2E"
+    FontFamily="Segoe UI"
+    FontSize="13"
+    Foreground="#E0E0E0">
+
+    <Window.Resources>
+        <!-- ===================== FARBEN ===================== -->
+        <SolidColorBrush x:Key="BgPrimary"     Color="#1E1E2E"/>
+        <SolidColorBrush x:Key="BgSecondary"   Color="#27293D"/>
+        <SolidColorBrush x:Key="BgTertiary"    Color="#2E314A"/>
+        <SolidColorBrush x:Key="BgCard"        Color="#252839"/>
+        <SolidColorBrush x:Key="Accent"        Color="#7C3AED"/>
+        <SolidColorBrush x:Key="AccentLight"   Color="#A78BFA"/>
+        <SolidColorBrush x:Key="TextPrimary"   Color="#E0E0E0"/>
+        <SolidColorBrush x:Key="TextMuted"     Color="#9CA3AF"/>
+        <SolidColorBrush x:Key="Success"       Color="#10B981"/>
+        <SolidColorBrush x:Key="Warning"       Color="#F59E0B"/>
+        <SolidColorBrush x:Key="Danger"        Color="#EF4444"/>
+        <SolidColorBrush x:Key="Border"        Color="#3A3D5C"/>
+
+        <!-- ===================== TYPOGRAPHY ===================== -->
+        <Style x:Key="H1" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+        <Style x:Key="H2" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+        <Style x:Key="Muted" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <!-- ===================== BUTTONS ===================== -->
+        <Style x:Key="BtnBase" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="Background" Value="{StaticResource BgTertiary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#3A3D5C"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#4A4D7C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BtnPrimary" TargetType="Button" BasedOn="{StaticResource BtnBase}">
+            <Setter Property="Background" Value="{StaticResource Accent}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#8B5CF6"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#6D28D9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BtnSuccess" TargetType="Button" BasedOn="{StaticResource BtnBase}">
+            <Setter Property="Background" Value="{StaticResource Success}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- ===================== SIDEBAR-BUTTON ===================== -->
+        <Style x:Key="SideBtn" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="18,14"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="10,3"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#2E314A"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SideBtnActive" TargetType="Button" BasedOn="{StaticResource SideBtn}">
+            <Setter Property="Background" Value="{StaticResource Accent}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ===================== CARD ===================== -->
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource BgCard}"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <!-- ===================== TEXTBOX / CHECKBOX ===================== -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource BgTertiary}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="CaretBrush" Value="White"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="Margin" Value="0,4"/>
+        </Style>
+        <Style TargetType="DatePicker">
+            <Setter Property="Background" Value="{StaticResource BgTertiary}"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+    </Window.Resources>
+
+    <!-- ===================== HAUPT-LAYOUT ===================== -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>      <!-- Top-Bar -->
+            <RowDefinition Height="*"/>       <!-- Body     -->
+            <RowDefinition Height="220"/>     <!-- Log      -->
+        </Grid.RowDefinitions>
+
+        <!-- ============ TOP-BAR ============ -->
+        <Border Grid.Row="0" Background="{StaticResource BgSecondary}"
+                BorderBrush="{StaticResource Border}" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal"
+                            VerticalAlignment="Center" Margin="20,0,0,0">
+                    <Border Width="38" Height="38" CornerRadius="8"
+                            Background="{StaticResource Accent}">
+                        <TextBlock Text="V" FontSize="22" FontWeight="Bold"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="viafintech Zahllauf"
+                                   FontSize="16" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Text="Dashboard v1.0"
+                                   Style="{StaticResource Muted}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
+                        <StackPanel>
+                            <TextBlock Text="Kalenderwoche" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="TxtKW" Text="--"
+                                       FontSize="18" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
+                        <StackPanel>
+                            <TextBlock Text="Heute" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="TxtDate" Text="--"
+                                       FontSize="18" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
+                        <StackPanel>
+                            <TextBlock Text="Letzter Sonntag" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="TxtSunday" Text="--"
+                                       FontSize="18" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <Button x:Name="BtnRefresh" Grid.Column="2"
+                        Style="{StaticResource BtnPrimary}"
+                        Content="Werte neu berechnen"
+                        Margin="0,0,20,0" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- ============ BODY (Sidebar + Content + Right) ============ -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="260"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- =========== Sidebar =========== -->
+            <Border Grid.Column="0" Background="{StaticResource BgSecondary}"
+                    BorderBrush="{StaticResource Border}" BorderThickness="0,0,1,0">
+                <StackPanel>
+                    <TextBlock Text="ABLAUF"
+                               Foreground="{StaticResource TextMuted}"
+                               FontSize="11" FontWeight="Bold"
+                               Margin="22,22,0,10"/>
+                    <Button x:Name="BtnStep1" Style="{StaticResource SideBtnActive}"
+                            Content="1.  Mail"/>
+                    <Button x:Name="BtnStep2" Style="{StaticResource SideBtn}"
+                            Content="2.  Rechnungen"/>
+                    <Button x:Name="BtnStep3" Style="{StaticResource SideBtn}"
+                            Content="3.  Pruflauf"/>
+                    <Button x:Name="BtnStep4" Style="{StaticResource SideBtn}"
+                            Content="4.  Auszahlungslauf"/>
+                    <Button x:Name="BtnStep5" Style="{StaticResource SideBtn}"
+                            Content="5.  Abschluss"/>
+                </StackPanel>
+            </Border>
+
+            <!-- =========== Main Content =========== -->
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
+                          Padding="30,24,30,24">
+                <Grid>
+                    <!-- ============ SCHRITT 1 - MAIL ============ -->
+                    <StackPanel x:Name="PageStep1" Visibility="Visible">
+                        <TextBlock Text="Schritt 1 - Mail" Style="{StaticResource H1}"/>
+                        <TextBlock Text="Wochenmail von viafintech pruefen und .msg-Dateien in den _Temp-Ordner ablegen."
+                                   Style="{StaticResource Muted}" Margin="0,0,0,18"/>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Anleitung" Style="{StaticResource H2}"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                                    1. Outlook oeffnen und die Wochenmail mit den Rechnungen suchen.
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                                    2. Alle relevanten .msg-Dateien in den _Temp-Ordner ziehen.
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,16">
+                                    3. Unten "Pfad oeffnen" klicken, um den Ordner zu pruefen.
+                                </TextBlock>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="Btn1OpenPath"  Style="{StaticResource BtnBase}"
+                                            Content="Pfad oeffnen" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn1Done"      Style="{StaticResource BtnSuccess}"
+                                            Content="Schritt als erledigt markieren"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ============ SCHRITT 2 - RECHNUNGEN ============ -->
+                    <StackPanel x:Name="PageStep2" Visibility="Collapsed">
+                        <TextBlock Text="Schritt 2 - Rechnungen extrahieren" Style="{StaticResource H1}"/>
+                        <TextBlock Text="alleRechnungen.ps1 verarbeitet .msg-Dateien und erstellt alleRechnungen.xlsx."
+                                   Style="{StaticResource Muted}" Margin="0,0,0,18"/>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Optionen" Style="{StaticResource H2}"/>
+                                <CheckBox x:Name="Chk2NurExcel"        Content="-NurExcel"/>
+                                <CheckBox x:Name="Chk2NurExcelCsv"     Content="NurExcel + eigener CsvOrdner"/>
+
+                                <TextBlock Text="Vorschau Excel-Bezeichnung" Style="{StaticResource H2}" Margin="0,16,0,4"/>
+                                <TextBox x:Name="Txt2Preview" IsReadOnly="True" Text="--"/>
+
+                                <TextBlock Text="Letzter Lauf" Style="{StaticResource H2}" Margin="0,16,0,4"/>
+                                <TextBlock x:Name="Txt2LastRun" Style="{StaticResource Muted}" Text="noch nicht ausgefuehrt"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                    <Button x:Name="Btn2Run"      Style="{StaticResource BtnPrimary}"
+                                            Content="alleRechnungen.ps1 ausfuehren" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn2OpenPath" Style="{StaticResource BtnBase}"
+                                            Content="Ergebnis-Ordner oeffnen"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ============ SCHRITT 3 - PRUFLAUF ============ -->
+                    <StackPanel x:Name="PageStep3" Visibility="Collapsed">
+                        <TextBlock Text="Schritt 3 - Pruflauf in Prosos" Style="{StaticResource H1}"/>
+                        <TextBlock Text="Bezeichnung und Faelligkeit fuer den Pruflauf festlegen."
+                                   Style="{StaticResource Muted}" Margin="0,0,0,18"/>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Bezeichnung" Style="{StaticResource H2}"/>
+                                <TextBox x:Name="Txt3Bezeichnung" Text="--"/>
+
+                                <TextBlock Text="Faelligkeit (letzter Sonntag)" Style="{StaticResource H2}" Margin="0,14,0,4"/>
+                                <DatePicker x:Name="Dp3Faelligkeit" Width="200" HorizontalAlignment="Left"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                    <Button x:Name="Btn3Copy"   Style="{StaticResource BtnPrimary}"
+                                            Content="Bezeichnung in Zwischenablage" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn3Prosos" Style="{StaticResource BtnBase}"
+                                            Content="Prosos oeffnen"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Checkliste" Style="{StaticResource H2}"/>
+                                <CheckBox Content="Pruflauf in Prosos angelegt"/>
+                                <CheckBox Content="Bezeichnung gesetzt"/>
+                                <CheckBox Content="Faelligkeit auf letzten Sonntag gestellt"/>
+                                <CheckBox Content="Pruflauf erfolgreich abgeschlossen"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ============ SCHRITT 4 - AUSZAHLUNG ============ -->
+                    <StackPanel x:Name="PageStep4" Visibility="Collapsed">
+                        <TextBlock Text="Schritt 4 - Auszahlungslauf" Style="{StaticResource H1}"/>
+                        <TextBlock Text="viafintech_Task_Skript.ps1 baut den Task-Ordner und verschiebt die Dateien."
+                                   Style="{StaticResource Muted}" Margin="0,0,0,18"/>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Vorschau Ordnername" Style="{StaticResource H2}"/>
+                                <TextBox x:Name="Txt4Ordner" IsReadOnly="True" Text="--"/>
+
+                                <TextBlock Text="Task-Ordner Status" Style="{StaticResource H2}" Margin="0,14,0,4"/>
+                                <TextBlock x:Name="Txt4Status" Style="{StaticResource Muted}" Text="nicht geprueft"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                    <Button x:Name="Btn4Run"        Style="{StaticResource BtnPrimary}"
+                                            Content="viafintech_Task_Skript.ps1 starten" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn4Check"      Style="{StaticResource BtnBase}"
+                                            Content="Letzte Korrektur pruefen" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn4OpenTask"   Style="{StaticResource BtnBase}"
+                                            Content="Task-Ordner oeffnen"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ============ SCHRITT 5 - ABSCHLUSS ============ -->
+                    <StackPanel x:Name="PageStep5" Visibility="Collapsed">
+                        <TextBlock Text="Schritt 5 - Abschluss" Style="{StaticResource H1}"/>
+                        <TextBlock Text="Mail an Buchhaltung versenden und Lauf abschliessen."
+                                   Style="{StaticResource Muted}" Margin="0,0,0,18"/>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Letzte Schritte" Style="{StaticResource H2}"/>
+                                <CheckBox Content="Zahlungsdatei in Zahllauf-Ordner kopiert"/>
+                                <CheckBox Content="Bestaetigung von Buchhaltung erhalten"/>
+                                <CheckBox Content="Backup gesichert"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                    <Button x:Name="Btn5MailTemplate" Style="{StaticResource BtnBase}"
+                                            Content="Mail-Vorlage oeffnen" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn5Finish"       Style="{StaticResource BtnSuccess}"
+                                            Content="Alles abschliessen"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <!-- =========== Right Panel =========== -->
+            <Border Grid.Column="2" Background="{StaticResource BgSecondary}"
+                    BorderBrush="{StaticResource Border}" BorderThickness="1,0,0,0">
+                <StackPanel Margin="18,22,18,18">
+                    <TextBlock Text="GLOBALE PARAMETER"
+                               Foreground="{StaticResource TextMuted}"
+                               FontSize="11" FontWeight="Bold" Margin="0,0,0,14"/>
+
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,10" Padding="14">
+                        <StackPanel>
+                            <TextBlock Text="KW" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="TxtKWRight" Text="--" FontSize="16" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,10" Padding="14">
+                        <StackPanel>
+                            <TextBlock Text="Jahr" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="TxtYearRight" Text="--" FontSize="16" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,10" Padding="14">
+                        <StackPanel>
+                            <TextBlock Text="Bezeichnung-Vorschau" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="TxtBezRight" Text="--"
+                                       FontSize="13" FontWeight="SemiBold"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,10" Padding="14">
+                        <StackPanel>
+                            <TextBlock Text="Ordnername-Vorschau" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="TxtOrdRight" Text="--"
+                                       FontSize="13" FontWeight="SemiBold"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ============ LOG-AREA ============ -->
+        <Border Grid.Row="2" Background="{StaticResource BgSecondary}"
+                BorderBrush="{StaticResource Border}" BorderThickness="0,1,0,0">
+            <Grid Margin="20,12,20,12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,0,0,8">
+                    <TextBlock Text="LOG" Foreground="{StaticResource TextMuted}"
+                               FontSize="11" FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <Button x:Name="BtnClearLog" Content="Log loeschen"
+                            HorizontalAlignment="Right"
+                            Style="{StaticResource BtnBase}"
+                            Padding="10,4" FontSize="11"/>
+                </Grid>
+                <Border Grid.Row="1" Background="#13131F"
+                        BorderBrush="{StaticResource Border}" BorderThickness="1"
+                        CornerRadius="6">
+                    <RichTextBox x:Name="LogBox"
+                                 Background="Transparent"
+                                 Foreground="#E0E0E0"
+                                 BorderThickness="0"
+                                 IsReadOnly="True"
+                                 VerticalScrollBarVisibility="Auto"
+                                 FontFamily="Cascadia Mono, Consolas"
+                                 FontSize="12"
+                                 Padding="10"/>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
