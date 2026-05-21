@@ -38,6 +38,7 @@ Add-Type -AssemblyName System.Windows.Forms   # nur fuer Set-Clipboard-Fallback
 . (Join-Path $Script:AppRoot 'Functions\DateHelpers.ps1')
 . (Join-Path $Script:AppRoot 'Functions\Logging.ps1')
 . (Join-Path $Script:AppRoot 'Functions\ConfigLoader.ps1')
+. (Join-Path $Script:AppRoot 'Functions\RunspaceHelpers.ps1')
 
 # -- Module laden --------------------------------------------------------------
 Get-ChildItem -Path (Join-Path $Script:AppRoot 'Modules') -Filter '*.psm1' |
@@ -213,8 +214,13 @@ $ui.Btn1Done.Add_Click({ Invoke-Step1MarkDone })
 
 # Step 2
 $ui.Btn2Run.Add_Click({
-    Invoke-Step2Run -NurExcel:$ui.Chk2NurExcel.IsChecked -NurExcelCsv:$ui.Chk2NurExcelCsv.IsChecked
-    $ui.Txt2LastRun.Text = "Letzter Aufruf: $((Get-Date).ToString('dd.MM.yyyy HH:mm'))"
+    $ui.Txt2LastRun.Text = "Letzter Aufruf: $((Get-Date).ToString('dd.MM.yyyy HH:mm')) - laeuft..."
+    Invoke-Step2Run `
+        -NurExcel:$ui.Chk2NurExcel.IsChecked `
+        -NurExcelCsv:$ui.Chk2NurExcelCsv.IsChecked `
+        -StatusTextBlock $ui.Txt2LastRun `
+        -BrushSuccess $Script:Window.Resources['Success'] `
+        -BrushDanger  $Script:Window.Resources['Danger']
 })
 $ui.Btn2OpenPath.Add_Click({ Invoke-Step2OpenPath -Path $Script:Config.Paths.TempRoot })
 
@@ -223,7 +229,12 @@ $ui.Btn3Copy.Add_Click({ Invoke-Step3Copy -Text $ui.Txt3Bezeichnung.Text })
 $ui.Btn3Prosos.Add_Click({ Invoke-Step3OpenProsos })
 
 # Step 4
-$ui.Btn4Run.Add_Click({ Invoke-Step4Run })
+$ui.Btn4Run.Add_Click({
+    Invoke-Step4Run `
+        -StatusTextBlock $ui.Txt4Status `
+        -BrushSuccess $Script:Window.Resources['Success'] `
+        -BrushDanger  $Script:Window.Resources['Danger']
+})
 $ui.Btn4Check.Add_Click({ Invoke-Step4CheckCorrection })
 $ui.Btn4OpenTask.Add_Click({ Invoke-Step4OpenTask -Path $Script:Config.Paths.TaskFolder })
 
