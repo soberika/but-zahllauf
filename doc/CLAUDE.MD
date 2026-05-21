@@ -36,3 +36,45 @@ Du antwortest **immer** in folgender Reihenfolge:
      ```powershell
      # === NEU: Funktion Invoke-ExtractRechnungen ===
      function Invoke-ExtractRechnungen { ... }
+     ```
+
+---
+
+## Aktueller Stand
+
+- **Phase 1 (Skeleton):** fertig — WPF-GUI mit Sidebar-Navigation, Dark Theme, Logging (`Functions/Logging.ps1`), Auto-KW-Berechnung (`Functions/DateHelpers.ps1`), 5 Schritte als Pages.
+- **Phase 2 (Skript-Integration):** fertig — die beiden Originalskripte werden aus der GUI im Runspace gestartet:
+  - Schritt 2: `Scripts/RechnungenausMailinExcel.ps1` via `Invoke-ExtractRechnungen` (Optionen `-NurExcel`, `-CsvOrdner`).
+  - Schritt 4: `Scripts/viafintech_Task_Skript.ps1` via `Invoke-StartTaskScript` (nicht-interaktiv, prueft Zielordner unter `Zahllauf\`).
+
+## Architektur-Notizen
+
+- **Runspaces:** Alle langlaufenden Skripte laufen ueber `Start-RunspaceJob` (`Functions/RunspaceHelpers.ps1`).
+  - Shared State: `[hashtable]::Synchronized(@{ LogBox; Dispatcher; LogFile; Done; Error; Result })`.
+  - Im Runspace existieren Proxies fuer `Write-Log`, `Write-Host` (Farbe -> Level), `Read-Host` (liefert `''`, damit Originalskripte nicht-interaktiv durchlaufen).
+  - Abschluss-Erkennung via `DispatcherTimer` (250 ms), danach `OnComplete`-Callback im GUI-Thread.
+- **Originalskripte in `Scripts/` werden nie veraendert** — nur aufgerufen.
+- **Skript-Pfade** kommen aus `Config/default.json` (`Paths.ScriptRechnungen`, `Paths.ScriptTask`).
+- **UI-Status** (`Txt2LastRun`, `Txt4Status`) wird im `OnComplete` gruen (Brush `Success`) oder rot (Brush `Danger`) gefaerbt.
+
+## Datei-Layout
+
+```
+Main.ps1                          # Einstieg, XAML laden, Event-Handler
+Config/default.json               # Pfade, Skriptnamen, UI-Defaults
+Functions/
+  DateHelpers.ps1                 # ISO-KW, Bezeichnung, Ordnername
+  Logging.ps1                     # Write-Log (RichTextBox + Datei)
+  ConfigLoader.ps1                # Import-AppConfig
+  RunspaceHelpers.ps1             # Start-RunspaceJob
+Modules/
+  Step1_Mail.psm1
+  Step2_Rechnungen.psm1           # Invoke-ExtractRechnungen, Invoke-Step2Run
+  Step3_Pruflauf.psm1
+  Step4_Auszahlung.psm1           # Invoke-StartTaskScript, Invoke-Step4Run
+  Step5_Abschluss.psm1
+Scripts/                          # Originale - NICHT veraendern
+  RechnungenausMailinExcel.ps1
+  viafintech_Task_Skript.ps1
+Views/MainWindow.xaml
+```
