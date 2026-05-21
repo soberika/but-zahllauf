@@ -1,6 +1,7 @@
 # =============================================================================
 #  Logging.ps1
-#  Schreibt farbige Eintraege in die globale Log-RichTextBox (global:LogBox).
+#  Pure-.NET-Implementierung, robust gegen kaputten PS-Cmdlet-Lookup
+#  (z.B. nach Runspace-Disposal in WPF-Event-Handlern).
 # =============================================================================
 
 function global:Write-Log {
@@ -13,11 +14,16 @@ function global:Write-Log {
         [string]$Level = 'Info'
     )
 
-    $timestamp = (Get-Date).ToString('HH:mm:ss')
+    $timestamp = [DateTime]::Now.ToString('HH:mm:ss')
     $line      = "[$timestamp] [$Level] $Message"
 
     if ($global:LogFile) {
-        try { Add-Content -Path $global:LogFile -Value $line -Encoding UTF8 } catch { }
+        try {
+            [System.IO.File]::AppendAllText(
+                $global:LogFile,
+                ($line + "`r`n"),
+                [System.Text.Encoding]::UTF8)
+        } catch { }
     }
 
     if (-not $global:LogBox) { return }
@@ -32,11 +38,11 @@ function global:Write-Log {
 
     $action = {
         param($box, $text, $hex)
-        $brush = New-Object System.Windows.Media.SolidColorBrush(
+        $brush = [System.Windows.Media.SolidColorBrush]::new(
                     [System.Windows.Media.ColorConverter]::ConvertFromString($hex))
-        $para  = New-Object System.Windows.Documents.Paragraph
+        $para  = [System.Windows.Documents.Paragraph]::new()
         $para.Margin = '0'
-        $run   = New-Object System.Windows.Documents.Run($text)
+        $run   = [System.Windows.Documents.Run]::new($text)
         $run.Foreground = $brush
         $para.Inlines.Add($run)
         $box.Document.Blocks.Add($para)

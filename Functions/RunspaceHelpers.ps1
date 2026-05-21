@@ -123,14 +123,18 @@ function global:Start-RunspaceJob {
         if (-not $handle.IsCompleted) { return }
         $timer.Stop()
         try { [void]$ps.EndInvoke($handle) } catch { }
-        $ps.Dispose()
-        $rs.Close()
-        $rs.Dispose()
+
+        # WICHTIG: OnComplete VOR Dispose ausfuehren - sonst verliert der
+        # Main-Thread in PS5.1 den Cmdlet-Lookup fuer den Rest der Session.
         if ($OnComplete) {
             try { & $OnComplete $sync } catch {
-                Write-Log ("OnComplete-Fehler: " + $_.Exception.Message) -Level Error
+                try { Write-Log ("OnComplete-Fehler: " + $_.Exception.Message) -Level Error } catch { }
             }
         }
+
+        try { $ps.Dispose() } catch { }
+        try { $rs.Close() } catch { }
+        try { $rs.Dispose() } catch { }
     }.GetNewClosure())
     $timer.Start()
 

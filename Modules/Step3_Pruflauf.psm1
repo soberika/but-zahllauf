@@ -20,11 +20,10 @@ function Invoke-Step3Copy {
 }
 
 function Invoke-Step3OpenProsos {
-    $exe  = 'C:\Program Files (x86)\PROSOZ Herten\OPEN PROSOZ\Anwendungen\OpenStarter.exe'
-    $args = '/app OpenClient.exe'
+    $exe = 'C:\Program Files (x86)\PROSOZ Herten\OPEN PROSOZ\Anwendungen\OpenStarter.exe'
 
-    if (Test-Path -LiteralPath $exe) {
-        Start-Process -FilePath $exe -ArgumentList $args
+    if ([System.IO.File]::Exists($exe)) {
+        [System.Diagnostics.Process]::Start($exe, '/app OpenClient.exe') | Out-Null
         Write-Log "Prosos gestartet." -Level Info
     } else {
         Write-Log "Prosos-Exe nicht gefunden: $exe" -Level Warning

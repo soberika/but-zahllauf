@@ -106,8 +106,8 @@ function Invoke-Step2Run {
 function Invoke-Step2OpenPath {
     param([string]$Path)
 
-    if (Test-Path -LiteralPath $Path) {
-        Start-Process explorer.exe -ArgumentList $Path
+    if ([System.IO.Directory]::Exists($Path)) {
+        [System.Diagnostics.Process]::Start('explorer.exe', $Path) | Out-Null
         Write-Log "Ergebnis-Ordner geoeffnet: $Path" -Level Info
     } else {
         Write-Log "Pfad nicht erreichbar: $Path" -Level Warning

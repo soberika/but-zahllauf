@@ -7,8 +7,8 @@ function Invoke-Step1OpenPath {
     param([string]$Path)
 
     Write-Log "Schritt 1: Oeffne Pfad '$Path'" -Level Info
-    if (Test-Path -LiteralPath $Path) {
-        Start-Process explorer.exe -ArgumentList $Path
+    if ([System.IO.Directory]::Exists($Path)) {
+        [System.Diagnostics.Process]::Start('explorer.exe', $Path) | Out-Null
     } else {
         Write-Log "Pfad nicht erreichbar: $Path" -Level Warning
     }

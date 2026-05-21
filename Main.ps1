@@ -226,7 +226,7 @@ $ui.BtnStep5.Add_Click({ Show-Step 5 })
 # Top-Bar
 $ui.BtnRefresh.Add_Click({ Update-Context })
 $ui.BtnClearLog.Add_Click({ Clear-Log; Write-Log "Log geleert." -Level Debug })
-$ui.BtnOpenLog.Add_Click({ Start-Process notepad.exe -ArgumentList $Script:LogFile })
+$ui.BtnOpenLog.Add_Click({ [System.Diagnostics.Process]::Start('notepad.exe', $Script:LogFile) | Out-Null })
 
 # Step 1
 $ui.Btn1OpenPath.Add_Click({ Invoke-Step1OpenPath -Path $Script:Config.Paths.TempRoot })
@@ -297,8 +297,8 @@ $ui.BtnSetSave.Add_Click({
 [AppDomain]::CurrentDomain.add_UnhandledException({
     param($sender, $e)
     $ex  = $e.ExceptionObject
-    $msg = "$(Get-Date -Format 'HH:mm:ss') [FATAL] $($ex.GetType().Name): $($ex.Message)`r`n$($ex.StackTrace)"
-    try { Add-Content -Path $global:LogFile -Value $msg -Encoding UTF8 } catch { }
+    $msg = "$([DateTime]::Now.ToString('HH:mm:ss')) [FATAL] $($ex.GetType().Name): $($ex.Message)`r`n$($ex.StackTrace)`r`n"
+    try { [System.IO.File]::AppendAllText($global:LogFile, $msg, [System.Text.Encoding]::UTF8) } catch { }
 })
 
 # =============================================================================
@@ -324,10 +324,11 @@ $Script:Window.Add_Loaded({
 
 # Ungefangene PS-Fehler aus der Session nachtraeglich sichern
 if ($Error.Count -gt 0) {
-    $header = "`r`n$(Get-Date -Format 'HH:mm:ss') [SESSION-ERRORS] $($Error.Count) ungefangene Fehler:"
-    Add-Content -Path $Script:LogFile -Value $header -Encoding UTF8
-    $Error | ForEach-Object {
-        $entry = "  [$($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber)] $($_.Exception.Message)"
-        Add-Content -Path $Script:LogFile -Value $entry -Encoding UTF8
+    $sb = [System.Text.StringBuilder]::new()
+    [void]$sb.AppendLine()
+    [void]$sb.AppendLine("$([DateTime]::Now.ToString('HH:mm:ss')) [SESSION-ERRORS] $($Error.Count) ungefangene Fehler:")
+    foreach ($e in $Error) {
+        [void]$sb.AppendLine("  [$($e.InvocationInfo.ScriptName):$($e.InvocationInfo.ScriptLineNumber)] $($e.Exception.Message)")
     }
+    try { [System.IO.File]::AppendAllText($Script:LogFile, $sb.ToString(), [System.Text.Encoding]::UTF8) } catch { }
 }

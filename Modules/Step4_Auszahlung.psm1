@@ -100,8 +100,8 @@ function Invoke-Step4Run {
 function Invoke-Step4OpenTask {
     param([string]$Path)
 
-    if (Test-Path -LiteralPath $Path) {
-        Start-Process explorer.exe -ArgumentList $Path
+    if ([System.IO.Directory]::Exists($Path)) {
+        [System.Diagnostics.Process]::Start('explorer.exe', $Path) | Out-Null
         Write-Log "Task-Ordner geoeffnet: $Path" -Level Info
     } else {
         Write-Log "Task-Ordner nicht erreichbar: $Path" -Level Warning
