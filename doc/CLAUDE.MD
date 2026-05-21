@@ -40,40 +40,53 @@ Du antwortest **immer** in folgender Reihenfolge:
 
 ---
 
-## Aktueller Stand
+## Aktueller Stand (Stand 2026-05-21, Commit `43176c9`)
 
-- **Phase 1 (Skeleton):** fertig — WPF-GUI mit Sidebar-Navigation, Dark Theme, Logging (`Functions/Logging.ps1`), Auto-KW-Berechnung (`Functions/DateHelpers.ps1`), 5 Schritte als Pages.
-- **Phase 2 (Skript-Integration):** fertig — die beiden Originalskripte werden aus der GUI im Runspace gestartet:
-  - Schritt 2: `Scripts/RechnungenausMailinExcel.ps1` via `Invoke-ExtractRechnungen` (Optionen `-NurExcel`, `-CsvOrdner`).
-  - Schritt 4: `Scripts/viafintech_Task_Skript.ps1` via `Invoke-StartTaskScript` (nicht-interaktiv, prueft Zielordner unter `Zahllauf\`).
+- **Phase 1 (Skeleton):** fertig — WPF-GUI, Sidebar, Dark Theme, RichTextBox-Log, ISO-KW, 5 Schritte als Pages.
+- **Phase 2 (Skript-Integration):** fertig — Originalskripte laufen via `Start-RunspaceJob`:
+  - Schritt 2: `Scripts/RechnungenausMailinExcel.ps1` via `Invoke-ExtractRechnungen` (`-NurExcel`, `-CsvOrdner`, `-MsgFolder`, `-TaskFolder`).
+  - Schritt 4: `Scripts/viafintech_Task_Skript.ps1` via `Invoke-StartTaskScript` (nicht-interaktiv, `-TaskFolder`, `-ZahllaufFolder`, prueft Zielordner unter `Zahllauf\`).
+- **Phase 3 (Config-GUI):** fertig — `MsgFolder`, `TaskFolder`, `ZahllaufFolder` werden in der GUI per FolderBrowserDialog gepflegt, in `Config/default.json` gespeichert und ueber Wrapper an die Skripte uebergeben.
+- **Stabilisierung:** fertig — Modul-Scope (`global:`), Cmdlet-Lookup-Verlust nach Runspace-Disposal, Dispatcher.Invoke-Overload, Scriptblock-SessionState-Affinitaet behoben.
+- **Getestet OK:** Schritt 1 (Pfad oeffnen / markieren), Schritt 3 (Clipboard, Prosos), Einstellungen speichern/laden, Fehler-Log + Notepad-Button.
+- **Offen:** Schritt 2 und Schritt 4 End-to-End nach Pull `43176c9`, Schritt 5, Persistenz ueber App-Neustart.
+
+Detail-Log: siehe `Changes/AktuellerStand.md`.
 
 ## Architektur-Notizen
 
-- **Runspaces:** Alle langlaufenden Skripte laufen ueber `Start-RunspaceJob` (`Functions/RunspaceHelpers.ps1`).
-  - Shared State: `[hashtable]::Synchronized(@{ LogBox; Dispatcher; LogFile; Done; Error; Result })`.
-  - Im Runspace existieren Proxies fuer `Write-Log`, `Write-Host` (Farbe -> Level), `Read-Host` (liefert `''`, damit Originalskripte nicht-interaktiv durchlaufen).
-  - Abschluss-Erkennung via `DispatcherTimer` (250 ms), danach `OnComplete`-Callback im GUI-Thread.
-- **Originalskripte in `Scripts/` werden nie veraendert** — nur aufgerufen.
-- **Skript-Pfade** kommen aus `Config/default.json` (`Paths.ScriptRechnungen`, `Paths.ScriptTask`).
-- **UI-Status** (`Txt2LastRun`, `Txt4Status`) wird im `OnComplete` gruen (Brush `Success`) oder rot (Brush `Danger`) gefaerbt.
+- **Globaler Scope statt Script-Scope:** Da Module (`.psm1`) den `$Script:`-Scope von `Main.ps1` nicht sehen, sind kritische Funktionen als `function global:...` deklariert (`Write-Log`, `Clear-Log`, `Get-IsoCalendarWeek`, `Start-RunspaceJob`) und Variablen werden gespiegelt (`$global:AppRoot`, `$global:Config`, `$global:LogBox`, `$global:LogFile`, `$global:Window`). Der `$Script:`-Prefix bleibt in `Main.ps1` Primaerquelle.
+- **Runspaces:** STA-Runspace via `Start-RunspaceJob` (`Functions/RunspaceHelpers.ps1`).
+  - Shared State: `[hashtable]::Synchronized(@{ LogBox; Dispatcher; LogFile; AppRoot; Done; Error; Result })`.
+  - Inner Proxies: `Write-Log` (RichTextBox + Datei via .NET `AppendAllText`), `Write-Host` (Farbe -> Level), `Read-Host` (liefert `''`).
+  - User-Scriptblock wird im Runspace via `[scriptblock]::Create($UserScriptText)` neu erzeugt, sonst behaelt er seinen Ursprungs-SessionState und sieht die Proxies nicht.
+  - Abschluss-Erkennung via `DispatcherTimer` (250 ms). `OnComplete` laeuft **vor** `Dispose()`, um den PS5.1-Cmdlet-Lookup-Bug zu vermeiden.
+- **Dispatcher.Invoke:** Immer `GetNewClosure()` + `[void]$dispatcher.Invoke([Action]$closure)` ohne Args-Array, sonst kollidiert PS5.1 mit der `DispatcherPriority`-Overload.
+- **.NET statt Cmdlet:** In kritischen Pfaden (Logging, Process-Start, File-Existenz, Clipboard) reines .NET (`[System.IO.File]::AppendAllText`, `[System.Diagnostics.Process]::Start`, `[System.IO.Directory]::Exists`, `[System.Windows.Clipboard]::SetText`, `[DateTime]::Now`).
+- **Originalskripte in `Scripts/`** bekommen nur einen Param-Block — Body bleibt unveraendert.
+- **Skript-Pfade** kommen aus `Config/default.json` (`Paths.ScriptRechnungen`, `Paths.ScriptTask`); Arbeits-Pfade (`MsgFolder`, `TaskFolder`, `ZahllaufFolder`) ebenfalls dort und ueber GUI editierbar.
+- **UI-Status** (`Txt2LastRun`, `Txt4Status`, `TxtSettingsStatus`) wird in `OnComplete` gruen (Brush `Success`) oder rot (Brush `Danger`) gefaerbt.
 
 ## Datei-Layout
 
 ```
-Main.ps1                          # Einstieg, XAML laden, Event-Handler
-Config/default.json               # Pfade, Skriptnamen, UI-Defaults
+Main.ps1                          # Einstieg, XAML, Event-Handler, Settings, $global:-Mirror
+Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder, Skriptnamen, UI-Defaults
+Changes/AktuellerStand.md         # Detailliertes Stand- und Bug-Log
+doc/CLAUDE.MD                     # diese Datei
+doc/prompt.md
 Functions/
-  DateHelpers.ps1                 # ISO-KW, Bezeichnung, Ordnername
-  Logging.ps1                     # Write-Log (RichTextBox + Datei)
-  ConfigLoader.ps1                # Import-AppConfig
-  RunspaceHelpers.ps1             # Start-RunspaceJob
+  ConfigLoader.ps1                # Import-AppConfig, Save-AppConfig
+  DateHelpers.ps1                 # global:Get-IsoCalendarWeek
+  Logging.ps1                     # global:Write-Log, global:Clear-Log
+  RunspaceHelpers.ps1             # global:Start-RunspaceJob
 Modules/
   Step1_Mail.psm1
   Step2_Rechnungen.psm1           # Invoke-ExtractRechnungen, Invoke-Step2Run
-  Step3_Pruflauf.psm1
+  Step3_Pruflauf.psm1             # Invoke-Step3Copy, Invoke-Step3OpenProsos
   Step4_Auszahlung.psm1           # Invoke-StartTaskScript, Invoke-Step4Run
   Step5_Abschluss.psm1
-Scripts/                          # Originale - NICHT veraendern
+Scripts/                          # Originale - nur Param-Block ergaenzt
   RechnungenausMailinExcel.ps1
   viafintech_Task_Skript.ps1
 Views/MainWindow.xaml
