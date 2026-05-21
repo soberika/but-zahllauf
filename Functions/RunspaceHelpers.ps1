@@ -32,8 +32,8 @@ function global:Start-RunspaceJob {
     $rs.ApartmentState = 'STA'
     $rs.ThreadOptions  = 'ReuseThread'
     $rs.Open()
-    $rs.SessionStateProxy.SetVariable('Sync',       $sync)
-    $rs.SessionStateProxy.SetVariable('UserScript', $ScriptBlock)
+    $rs.SessionStateProxy.SetVariable('Sync',           $sync)
+    $rs.SessionStateProxy.SetVariable('UserScriptText', $ScriptBlock.ToString())
     foreach ($k in $Parameters.Keys) {
         $rs.SessionStateProxy.SetVariable($k, $Parameters[$k])
     }
@@ -49,9 +49,14 @@ function global:Start-RunspaceJob {
                 [ValidateSet('Info','Success','Warning','Error','Debug')]
                 [string]$Level = 'Info'
             )
-            $stamp = (Get-Date).ToString('HH:mm:ss')
+            $stamp = [DateTime]::Now.ToString('HH:mm:ss')
             $line  = "[$stamp] [$Level] $Message"
-            try { Add-Content -Path $Sync.LogFile -Value $line -Encoding UTF8 } catch { }
+            try {
+                [System.IO.File]::AppendAllText(
+                    $Sync.LogFile,
+                    ($line + "`r`n"),
+                    [System.Text.Encoding]::UTF8)
+            } catch { }
 
             $hex = switch ($Level) {
                 'Info'    { '#E0E0E0' }
@@ -62,19 +67,20 @@ function global:Start-RunspaceJob {
                 default   { '#E0E0E0' }
             }
 
-            $action = {
-                param($box, $text, $color)
-                $brush = New-Object System.Windows.Media.SolidColorBrush(
-                            [System.Windows.Media.ColorConverter]::ConvertFromString($color))
-                $para  = New-Object System.Windows.Documents.Paragraph
+            $box = $Sync.LogBox
+            $append = {
+                $brush = [System.Windows.Media.SolidColorBrush]::new(
+                            [System.Windows.Media.ColorConverter]::ConvertFromString($hex))
+                $para  = [System.Windows.Documents.Paragraph]::new()
                 $para.Margin = '0'
-                $run   = New-Object System.Windows.Documents.Run($text)
+                $run   = [System.Windows.Documents.Run]::new($line)
                 $run.Foreground = $brush
                 $para.Inlines.Add($run)
                 $box.Document.Blocks.Add($para)
                 $box.ScrollToEnd()
-            }
-            $Sync.Dispatcher.Invoke($action, @($Sync.LogBox, $line, $hex))
+            }.GetNewClosure()
+
+            [void]$Sync.Dispatcher.Invoke([Action]$append)
         }
 
         function Write-Host {
@@ -106,10 +112,13 @@ function global:Start-RunspaceJob {
         }
 
         try {
-            $Sync.Result = & $UserScript
+            # Script-Block im Runspace neu erzeugen, damit er die inneren
+            # Write-Log/Write-Host/Read-Host-Funktionen aufloest.
+            $userSb = [scriptblock]::Create($UserScriptText)
+            $Sync.Result = & $userSb
         } catch {
             $Sync.Error = $_
-            Write-Log ("Fehler im Runspace: " + $_.Exception.Message) -Level Error
+            try { Write-Log ("Fehler im Runspace: " + $_.Exception.Message) -Level Error } catch { }
         } finally {
             $Sync.Done = $true
         }
@@ -124,8 +133,7 @@ function global:Start-RunspaceJob {
         $timer.Stop()
         try { [void]$ps.EndInvoke($handle) } catch { }
 
-        # WICHTIG: OnComplete VOR Dispose ausfuehren - sonst verliert der
-        # Main-Thread in PS5.1 den Cmdlet-Lookup fuer den Rest der Session.
+        # WICHTIG: OnComplete VOR Dispose ausfuehren.
         if ($OnComplete) {
             try { & $OnComplete $sync } catch {
                 try { Write-Log ("OnComplete-Fehler: " + $_.Exception.Message) -Level Error } catch { }

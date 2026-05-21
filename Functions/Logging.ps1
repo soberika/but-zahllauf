@@ -1,7 +1,5 @@
 # =============================================================================
 #  Logging.ps1
-#  Pure-.NET-Implementierung, robust gegen kaputten PS-Cmdlet-Lookup
-#  (z.B. nach Runspace-Disposal in WPF-Event-Handlern).
 # =============================================================================
 
 function global:Write-Log {
@@ -26,9 +24,10 @@ function global:Write-Log {
         } catch { }
     }
 
-    if (-not $global:LogBox) { return }
+    $box = $global:LogBox
+    if (-not $box) { return }
 
-    $color = switch ($Level) {
+    $hex = switch ($Level) {
         'Info'    { '#E0E0E0' }
         'Success' { '#4CAF50' }
         'Warning' { '#FFC107' }
@@ -36,23 +35,22 @@ function global:Write-Log {
         'Debug'   { '#9E9E9E' }
     }
 
-    $action = {
-        param($box, $text, $hex)
+    $append = {
         $brush = [System.Windows.Media.SolidColorBrush]::new(
                     [System.Windows.Media.ColorConverter]::ConvertFromString($hex))
         $para  = [System.Windows.Documents.Paragraph]::new()
         $para.Margin = '0'
-        $run   = [System.Windows.Documents.Run]::new($text)
+        $run   = [System.Windows.Documents.Run]::new($line)
         $run.Foreground = $brush
         $para.Inlines.Add($run)
         $box.Document.Blocks.Add($para)
         $box.ScrollToEnd()
-    }
+    }.GetNewClosure()
 
-    if ($global:LogBox.Dispatcher.CheckAccess()) {
-        & $action $global:LogBox $line $color
+    if ($box.Dispatcher.CheckAccess()) {
+        & $append
     } else {
-        $global:LogBox.Dispatcher.Invoke($action, @($global:LogBox, $line, $color))
+        [void]$box.Dispatcher.Invoke([Action]$append)
     }
 }
 
