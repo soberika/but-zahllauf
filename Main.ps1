@@ -122,6 +122,18 @@ $ui = @{
     # Log
     LogBox           = Find-Element 'LogBox'
     BtnClearLog      = Find-Element 'BtnClearLog'
+
+    # Settings
+    BtnSettings          = Find-Element 'BtnSettings'
+    PageSettings         = Find-Element 'PageSettings'
+    TxtSetMsg            = Find-Element 'TxtSetMsg'
+    TxtSetTask           = Find-Element 'TxtSetTask'
+    TxtSetZahllauf       = Find-Element 'TxtSetZahllauf'
+    BtnSetMsgBrowse      = Find-Element 'BtnSetMsgBrowse'
+    BtnSetTaskBrowse     = Find-Element 'BtnSetTaskBrowse'
+    BtnSetZahllaufBrowse = Find-Element 'BtnSetZahllaufBrowse'
+    BtnSetSave           = Find-Element 'BtnSetSave'
+    TxtSetStatus         = Find-Element 'TxtSetStatus'
 }
 
 # Log-Box global verfuegbar machen, bevor irgendwer Write-Log aufruft
@@ -136,6 +148,7 @@ $Script:Pages = @{
     3 = $ui.PageStep3
     4 = $ui.PageStep4
     5 = $ui.PageStep5
+    6 = $ui.PageSettings
 }
 $Script:SideButtons = @{
     1 = $ui.BtnStep1
@@ -143,6 +156,7 @@ $Script:SideButtons = @{
     3 = $ui.BtnStep3
     4 = $ui.BtnStep4
     5 = $ui.BtnStep5
+    6 = $ui.BtnSettings
 }
 $Script:CurrentStep = 1
 
@@ -242,6 +256,35 @@ $ui.Btn4OpenTask.Add_Click({ Invoke-Step4OpenTask -Path $Script:Config.Paths.Tas
 $ui.Btn5MailTemplate.Add_Click({ Invoke-Step5MailTemplate })
 $ui.Btn5Finish.Add_Click({ Invoke-Step5Finish })
 
+# Settings
+$ui.BtnSettings.Add_Click({ Show-Step 6 })
+
+function Select-FolderInto {
+    param($TextBox, [string]$Description)
+    $dlg = New-Object System.Windows.Forms.FolderBrowserDialog
+    $dlg.Description = $Description
+    if (-not [string]::IsNullOrWhiteSpace($TextBox.Text) -and (Test-Path $TextBox.Text)) {
+        $dlg.SelectedPath = $TextBox.Text
+    }
+    if ($dlg.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
+        $TextBox.Text = $dlg.SelectedPath
+    }
+}
+
+$ui.BtnSetMsgBrowse.Add_Click({      Select-FolderInto -TextBox $ui.TxtSetMsg      -Description 'Msg-Ordner waehlen' })
+$ui.BtnSetTaskBrowse.Add_Click({     Select-FolderInto -TextBox $ui.TxtSetTask     -Description 'Task-Ordner waehlen' })
+$ui.BtnSetZahllaufBrowse.Add_Click({ Select-FolderInto -TextBox $ui.TxtSetZahllauf -Description 'Zahllauf-Ordner waehlen' })
+
+$ui.BtnSetSave.Add_Click({
+    $Script:Config.Paths.MsgFolder      = $ui.TxtSetMsg.Text
+    $Script:Config.Paths.TaskFolder     = $ui.TxtSetTask.Text
+    $Script:Config.Paths.ZahllaufFolder = $ui.TxtSetZahllauf.Text
+    Save-AppConfig
+    $ui.TxtSetStatus.Text = "Einstellungen gespeichert ($((Get-Date).ToString('HH:mm:ss')))."
+    $ui.TxtSetStatus.Foreground = $Script:Window.Resources['Success']
+    Write-Log "Pfade gespeichert: Msg='$($Script:Config.Paths.MsgFolder)' Task='$($Script:Config.Paths.TaskFolder)' Zahllauf='$($Script:Config.Paths.ZahllaufFolder)'" -Level Info
+})
+
 # =============================================================================
 #  Initialer Lauf
 # =============================================================================
@@ -249,6 +292,9 @@ $Script:Window.Add_Loaded({
     Write-Log "viafintech Zahllauf Dashboard gestartet (Phase 1 - Grundgeruest)." -Level Success
     Write-Log "Logdatei: $Script:LogFile" -Level Debug
     Update-Context
+    $ui.TxtSetMsg.Text      = [string]$Script:Config.Paths.MsgFolder
+    $ui.TxtSetTask.Text     = [string]$Script:Config.Paths.TaskFolder
+    $ui.TxtSetZahllauf.Text = [string]$Script:Config.Paths.ZahllaufFolder
     Show-Step 1
 })
 

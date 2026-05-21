@@ -3,6 +3,11 @@
 # Speichern als: UTF-8 mit BOM
 # ============================================================
 
+param(
+    [string]$SourcePath = "\\VJC\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\_Temp\Task",
+    [string]$TargetBase = "\\VJC\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\Zahllauf"
+)
+
 # Systemdatum
 $date   = Get-Date
 $yy     = $date.ToString("yy")
@@ -25,8 +30,8 @@ $kwMinus1Formatted = $kwMinus1.ToString("D2")
 # ============================================================
 # Pfade
 # ============================================================
-$sourcePath = "\\VJC\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\_Temp\Task"
-$targetBase = "\\VJC\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\Zahllauf"
+$sourcePath = $SourcePath
+$targetBase = $TargetBase
 
 $folderName    = "${yy}_${mm}_${dd} Fuer ${kwMinus1Formatted}.KW"
 $newFolderPath = Join-Path $sourcePath $folderName

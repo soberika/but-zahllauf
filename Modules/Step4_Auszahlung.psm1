@@ -6,7 +6,8 @@
 function Invoke-StartTaskScript {
     [CmdletBinding()]
     param(
-        # UI-Status-TextBlock (optional).
+        [string]$TaskFolder     = '',
+        [string]$ZahllaufFolder = '',
         $StatusTextBlock,
         $BrushSuccess,
         $BrushDanger
@@ -24,7 +25,6 @@ function Invoke-StartTaskScript {
         return
     }
 
-    # Der Task-Ordnername basiert im Original-Skript auf (KW - 1) am heutigen Tag.
     $today          = Get-Date
     $kw             = Get-IsoCalendarWeek -Date $today
     $kwMinus1       = [Math]::Max(1, $kw - 1)
@@ -32,17 +32,15 @@ function Invoke-StartTaskScript {
 
     Write-Log "Erwarteter Task-Ordner: $expectedFolder" -Level Info
     Write-Log "Starte Task-Skript: $scriptPath" -Level Info
+    Write-Log "TaskFolder='$TaskFolder' ZahllaufFolder='$ZahllaufFolder'" -Level Debug
 
-    if ($StatusTextBlock) {
-        $StatusTextBlock.Text = "Laeuft..."
-    }
-
-    $zahllaufRoot = $Script:Config.Paths.ZahllaufRoot
+    if ($StatusTextBlock) { $StatusTextBlock.Text = "Laeuft..." }
 
     $params = @{
         ScriptPath     = $scriptPath
         ExpectedFolder = $expectedFolder
-        ZahllaufRoot   = $zahllaufRoot
+        TaskFolder     = $TaskFolder
+        ZahllaufFolder = $ZahllaufFolder
     }
 
     $onComplete = {
@@ -56,7 +54,7 @@ function Invoke-StartTaskScript {
             return
         }
 
-        $finalPath = Join-Path $zahllaufRoot $expectedFolder
+        $finalPath = Join-Path $ZahllaufFolder $expectedFolder
         if (Test-Path -LiteralPath $finalPath) {
             Write-Log "Schritt 4 fertig. Zahllauf-Ordner: $finalPath" -Level Success
             if ($StatusTextBlock) {
@@ -74,7 +72,12 @@ function Invoke-StartTaskScript {
 
     Start-RunspaceJob -Parameters $params -OnComplete $onComplete -ScriptBlock {
         Write-Log "Erzeuge Ordner / benenne Dateien um / konvertiere TXT->XLSX..." -Level Info
-        & $ScriptPath
+
+        $invokeArgs = @{}
+        if (-not [string]::IsNullOrWhiteSpace($TaskFolder))     { $invokeArgs.SourcePath = $TaskFolder }
+        if (-not [string]::IsNullOrWhiteSpace($ZahllaufFolder)) { $invokeArgs.TargetBase = $ZahllaufFolder }
+
+        & $ScriptPath @invokeArgs
         Write-Log "Task-Skript durchgelaufen." -Level Info
     } | Out-Null
 }
@@ -87,6 +90,8 @@ function Invoke-Step4Run {
         $BrushDanger
     )
     Invoke-StartTaskScript `
+        -TaskFolder      $Script:Config.Paths.TaskFolder `
+        -ZahllaufFolder  $Script:Config.Paths.ZahllaufFolder `
         -StatusTextBlock $StatusTextBlock `
         -BrushSuccess $BrushSuccess `
         -BrushDanger $BrushDanger

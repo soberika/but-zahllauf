@@ -274,6 +274,11 @@
                             Content="4.  Auszahlungslauf"/>
                     <Button x:Name="BtnStep5" Style="{StaticResource SideBtn}"
                             Content="5.  Abschluss"/>
+
+                    <Border Height="1" Background="{StaticResource Border}"
+                            Margin="20,18,20,10"/>
+                    <Button x:Name="BtnSettings" Style="{StaticResource SideBtn}"
+                            Content="Einstellungen"/>
                 </StackPanel>
             </Border>
 
@@ -415,6 +420,61 @@
                                             Content="Mail-Vorlage oeffnen" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn5Finish"       Style="{StaticResource BtnSuccess}"
                                             Content="Alles abschliessen"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ============ SETTINGS ============ -->
+                    <StackPanel x:Name="PageSettings" Visibility="Collapsed">
+                        <TextBlock Text="Einstellungen - Pfade" Style="{StaticResource H1}"/>
+                        <TextBlock Text="Zentrale Ordner fuer Msg-Eingang, Task-Bearbeitung und Zahllauf-Ziel."
+                                   Style="{StaticResource Muted}" Margin="0,0,0,18"/>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Msg-Ordner (.msg-Dateien)" Style="{StaticResource H2}"/>
+                                <Grid Margin="0,0,0,14">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="TxtSetMsg" Grid.Column="0"/>
+                                    <Button x:Name="BtnSetMsgBrowse" Grid.Column="1"
+                                            Style="{StaticResource BtnBase}"
+                                            Content="Ordner auswaehlen" Margin="10,0,0,0"/>
+                                </Grid>
+
+                                <TextBlock Text="Task-Ordner (alleRechnungen.xlsx + Task-Skript-Arbeitsbereich)"
+                                           Style="{StaticResource H2}"/>
+                                <Grid Margin="0,0,0,14">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="TxtSetTask" Grid.Column="0"/>
+                                    <Button x:Name="BtnSetTaskBrowse" Grid.Column="1"
+                                            Style="{StaticResource BtnBase}"
+                                            Content="Ordner auswaehlen" Margin="10,0,0,0"/>
+                                </Grid>
+
+                                <TextBlock Text="Zahllauf-Ordner (Zielordner)" Style="{StaticResource H2}"/>
+                                <Grid Margin="0,0,0,14">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="TxtSetZahllauf" Grid.Column="0"/>
+                                    <Button x:Name="BtnSetZahllaufBrowse" Grid.Column="1"
+                                            Style="{StaticResource BtnBase}"
+                                            Content="Ordner auswaehlen" Margin="10,0,0,0"/>
+                                </Grid>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <Button x:Name="BtnSetSave" Style="{StaticResource BtnPrimary}"
+                                            Content="Einstellungen speichern" Margin="0,0,12,0"/>
+                                    <TextBlock x:Name="TxtSetStatus" VerticalAlignment="Center"
+                                               Style="{StaticResource Muted}" Text=""/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>

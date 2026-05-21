@@ -25,7 +25,9 @@
 
 param(
     [switch]$NurExcel,
-    [string]$CsvOrdner = ""
+    [string]$CsvOrdner    = "",
+    [string]$MsgFolder    = "\\vjc\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\_Temp",
+    [string]$TargetFolder = "\\vjc\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\_Temp"
 )
 
 # $PSScriptRoot = Ordner in dem das Skript selbst liegt.
@@ -90,7 +92,7 @@ if (-not $NurExcel) {
     Ensure-Module "ReadMsgFile"
 
     # Quellordner mit den .msg-E-Mails
-    $msgFolder = "\\vjc\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\_Temp"
+    $msgFolder = $MsgFolder
 
     # Ausgabeordner liegt neben dem Skript (nicht im Arbeitsverzeichnis)
     New-Item -ItemType Directory -Path $CsvOrdner -Force | Out-Null
@@ -255,7 +257,7 @@ Write-Host ""
 # TEIL 3: Fertige Excel-Datei ins Netzwerk verschieben (optional)
 # ────────────────────────────────────────────────────────────────
 
-$defaultTargetFolder = "\\vjc\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\_Temp"
+$defaultTargetFolder = $TargetFolder
 
 Write-Host "Moechtest du die Datei ins Netzwerk verschieben?"
 Write-Host "Standard-Zielordner: $defaultTargetFolder"
