@@ -126,6 +126,7 @@ $ui = @{
     # Log
     LogBox           = Find-Element 'LogBox'
     BtnClearLog      = Find-Element 'BtnClearLog'
+    BtnOpenLog       = Find-Element 'BtnOpenLog'
 
     # Settings
     BtnSettings          = Find-Element 'BtnSettings'
@@ -225,6 +226,7 @@ $ui.BtnStep5.Add_Click({ Show-Step 5 })
 # Top-Bar
 $ui.BtnRefresh.Add_Click({ Update-Context })
 $ui.BtnClearLog.Add_Click({ Clear-Log; Write-Log "Log geleert." -Level Debug })
+$ui.BtnOpenLog.Add_Click({ Start-Process notepad.exe -ArgumentList $Script:LogFile })
 
 # Step 1
 $ui.Btn1OpenPath.Add_Click({ Invoke-Step1OpenPath -Path $Script:Config.Paths.TempRoot })
@@ -290,11 +292,24 @@ $ui.BtnSetSave.Add_Click({
 })
 
 # =============================================================================
+#  Ungefangene Fehler -> Logdatei
+# =============================================================================
+[AppDomain]::CurrentDomain.add_UnhandledException({
+    param($sender, $e)
+    $ex  = $e.ExceptionObject
+    $msg = "$(Get-Date -Format 'HH:mm:ss') [FATAL] $($ex.GetType().Name): $($ex.Message)`r`n$($ex.StackTrace)"
+    try { Add-Content -Path $global:LogFile -Value $msg -Encoding UTF8 } catch { }
+})
+
+# =============================================================================
 #  Initialer Lauf
 # =============================================================================
 $Script:Window.Add_Loaded({
-    Write-Log "viafintech Zahllauf Dashboard gestartet (Phase 1 - Grundgeruest)." -Level Success
-    Write-Log "Logdatei: $Script:LogFile" -Level Debug
+    Write-Log "viafintech Zahllauf Dashboard gestartet." -Level Success
+    Write-Log ("PS {0}  |  OS {1}  |  Log: {2}" -f `
+        $PSVersionTable.PSVersion, `
+        [System.Environment]::OSVersion.VersionString, `
+        $Script:LogFile) -Level Debug
     Update-Context
     $ui.TxtSetMsg.Text      = [string]$Script:Config.Paths.MsgFolder
     $ui.TxtSetTask.Text     = [string]$Script:Config.Paths.TaskFolder
@@ -306,3 +321,13 @@ $Script:Window.Add_Loaded({
 #  Show Window
 # =============================================================================
 [void]$Script:Window.ShowDialog()
+
+# Ungefangene PS-Fehler aus der Session nachtraeglich sichern
+if ($Error.Count -gt 0) {
+    $header = "`r`n$(Get-Date -Format 'HH:mm:ss') [SESSION-ERRORS] $($Error.Count) ungefangene Fehler:"
+    Add-Content -Path $Script:LogFile -Value $header -Encoding UTF8
+    $Error | ForEach-Object {
+        $entry = "  [$($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber)] $($_.Exception.Message)"
+        Add-Content -Path $Script:LogFile -Value $entry -Encoding UTF8
+    }
+}
