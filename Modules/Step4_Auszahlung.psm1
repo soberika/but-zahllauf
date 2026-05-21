@@ -13,8 +13,8 @@ function Invoke-StartTaskScript {
         $BrushDanger
     )
 
-    $scriptName = $Script:Config.Paths.ScriptTask
-    $scriptPath = Join-Path $Script:AppRoot ("Scripts\" + $scriptName)
+    $scriptName = $global:Config.Paths.ScriptTask
+    $scriptPath = Join-Path $global:AppRoot ("Scripts\" + $scriptName)
 
     if (-not (Test-Path -LiteralPath $scriptPath)) {
         Write-Log "Task-Skript nicht gefunden: $scriptPath" -Level Error
@@ -90,8 +90,8 @@ function Invoke-Step4Run {
         $BrushDanger
     )
     Invoke-StartTaskScript `
-        -TaskFolder      $Script:Config.Paths.TaskFolder `
-        -ZahllaufFolder  $Script:Config.Paths.ZahllaufFolder `
+        -TaskFolder      $global:Config.Paths.TaskFolder `
+        -ZahllaufFolder  $global:Config.Paths.ZahllaufFolder `
         -StatusTextBlock $StatusTextBlock `
         -BrushSuccess $BrushSuccess `
         -BrushDanger $BrushDanger

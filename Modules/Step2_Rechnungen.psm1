@@ -15,8 +15,8 @@ function Invoke-ExtractRechnungen {
         $BrushDanger
     )
 
-    $scriptName = $Script:Config.Paths.ScriptRechnungen
-    $scriptPath = Join-Path $Script:AppRoot ("Scripts\" + $scriptName)
+    $scriptName = $global:Config.Paths.ScriptRechnungen
+    $scriptPath = Join-Path $global:AppRoot ("Scripts\" + $scriptName)
 
     if (-not (Test-Path -LiteralPath $scriptPath)) {
         Write-Log "Rechnungs-Skript nicht gefunden: $scriptPath" -Level Error
@@ -96,8 +96,8 @@ function Invoke-Step2Run {
     Invoke-ExtractRechnungen `
         -NurExcel:$effectiveNurExcel `
         -CsvOrdner  $CsvOrdner `
-        -MsgFolder  $Script:Config.Paths.MsgFolder `
-        -TaskFolder $Script:Config.Paths.TaskFolder `
+        -MsgFolder  $global:Config.Paths.MsgFolder `
+        -TaskFolder $global:Config.Paths.TaskFolder `
         -StatusTextBlock $StatusTextBlock `
         -BrushSuccess $BrushSuccess `
         -BrushDanger $BrushDanger

@@ -24,9 +24,11 @@ if ([Threading.Thread]::CurrentThread.GetApartmentState() -ne 'STA') {
 
 # -- Pfade ---------------------------------------------------------------------
 $Script:AppRoot = Split-Path -Parent $PSCommandPath
+$global:AppRoot = $Script:AppRoot
 $Script:LogDir  = Join-Path $Script:AppRoot 'Logs'
 if (-not (Test-Path $Script:LogDir)) { New-Item -ItemType Directory -Path $Script:LogDir | Out-Null }
 $Script:LogFile = Join-Path $Script:LogDir ("zahllauf_{0:yyyy-MM-dd}.log" -f (Get-Date))
+$global:LogFile = $Script:LogFile
 
 # -- Assemblies ----------------------------------------------------------------
 Add-Type -AssemblyName PresentationFramework
@@ -46,6 +48,7 @@ Get-ChildItem -Path (Join-Path $Script:AppRoot 'Modules') -Filter '*.psm1' |
 
 # -- Config laden --------------------------------------------------------------
 $Script:Config = Import-AppConfig
+$global:Config = $Script:Config
 
 # =============================================================================
 #  XAML laden
@@ -53,6 +56,7 @@ $Script:Config = Import-AppConfig
 [xml]$xaml = Get-Content -Path (Join-Path $Script:AppRoot 'Views\MainWindow.xaml') -Raw -Encoding UTF8
 $reader    = New-Object System.Xml.XmlNodeReader $xaml
 $Script:Window = [Windows.Markup.XamlReader]::Load($reader)
+$global:Window = $Script:Window
 
 # -- Hilfsfunktion: Element nach Name suchen -----------------------------------
 function Find-Element {
@@ -136,8 +140,8 @@ $ui = @{
     TxtSetStatus         = Find-Element 'TxtSetStatus'
 }
 
-# Log-Box global verfuegbar machen, bevor irgendwer Write-Log aufruft
 $Script:LogBox = $ui.LogBox
+$global:LogBox = $Script:LogBox
 
 # =============================================================================
 #  Navigation

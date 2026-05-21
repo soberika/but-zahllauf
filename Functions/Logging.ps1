@@ -1,10 +1,9 @@
 # =============================================================================
 #  Logging.ps1
-#  Schreibt farbige Eintraege in die globale Log-RichTextBox (Script:LogBox).
-#  Schreibt zusaetzlich in eine Tages-Logdatei unter ./Logs.
+#  Schreibt farbige Eintraege in die globale Log-RichTextBox (global:LogBox).
 # =============================================================================
 
-function Write-Log {
+function global:Write-Log {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
@@ -17,13 +16,11 @@ function Write-Log {
     $timestamp = (Get-Date).ToString('HH:mm:ss')
     $line      = "[$timestamp] [$Level] $Message"
 
-    # --- in Datei schreiben ---------------------------------------------------
-    if ($Script:LogFile) {
-        try { Add-Content -Path $Script:LogFile -Value $line -Encoding UTF8 } catch { }
+    if ($global:LogFile) {
+        try { Add-Content -Path $global:LogFile -Value $line -Encoding UTF8 } catch { }
     }
 
-    # --- in WPF-RichTextBox schreiben ----------------------------------------
-    if (-not $Script:LogBox) { return }
+    if (-not $global:LogBox) { return }
 
     $color = switch ($Level) {
         'Info'    { '#E0E0E0' }
@@ -46,13 +43,13 @@ function Write-Log {
         $box.ScrollToEnd()
     }
 
-    if ($Script:LogBox.Dispatcher.CheckAccess()) {
-        & $action $Script:LogBox $line $color
+    if ($global:LogBox.Dispatcher.CheckAccess()) {
+        & $action $global:LogBox $line $color
     } else {
-        $Script:LogBox.Dispatcher.Invoke($action, @($Script:LogBox, $line, $color))
+        $global:LogBox.Dispatcher.Invoke($action, @($global:LogBox, $line, $color))
     }
 }
 
-function Clear-Log {
-    if ($Script:LogBox) { $Script:LogBox.Document.Blocks.Clear() }
+function global:Clear-Log {
+    if ($global:LogBox) { $global:LogBox.Document.Blocks.Clear() }
 }

@@ -3,7 +3,7 @@
 #  Datumsfunktionen fuer den viafintech Zahllauf
 # =============================================================================
 
-function Get-IsoCalendarWeek {
+function global:Get-IsoCalendarWeek {
     <#
     .SYNOPSIS
         Liefert die ISO-8601-Kalenderwoche (Montag = Wochenbeginn).

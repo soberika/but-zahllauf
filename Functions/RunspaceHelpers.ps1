@@ -1,41 +1,33 @@
 # =============================================================================
 #  RunspaceHelpers.ps1
-#  Fuehrt langlaufende Skripte in einem eigenen STA-Runspace aus, damit die
-#  WPF-GUI responsiv bleibt. Write-Host / Write-Log aus dem Runspace werden
-#  per Dispatcher in die globale Log-Box (Script:LogBox) umgeleitet.
+#  Fuehrt langlaufende Skripte in einem eigenen STA-Runspace aus.
 # =============================================================================
 
-function Start-RunspaceJob {
+function global:Start-RunspaceJob {
     [CmdletBinding()]
     param(
-        # Eigentlicher Code, der im Runspace laeuft.
         [Parameter(Mandatory)]
         [scriptblock]$ScriptBlock,
 
-        # Variablen, die in den Runspace gesetzt werden (Name -> Wert).
         [hashtable]$Parameters = @{},
 
-        # Wird im GUI-Thread aufgerufen, sobald der Runspace fertig ist.
-        # Bekommt das Sync-Hashtable (mit .Error, .Result, .Done).
         [scriptblock]$OnComplete
     )
 
-    if (-not $Script:Window) {
-        throw "Start-RunspaceJob: Script:Window fehlt - kann keinen Dispatcher anbinden."
+    if (-not $global:Window) {
+        throw "Start-RunspaceJob: global:Window fehlt - kann keinen Dispatcher anbinden."
     }
 
-    # --- gemeinsamer Zustand zwischen GUI-Thread und Runspace --------------
     $sync = [hashtable]::Synchronized(@{
-        LogBox     = $Script:LogBox
-        Dispatcher = $Script:Window.Dispatcher
-        LogFile    = $Script:LogFile
-        AppRoot    = $Script:AppRoot
+        LogBox     = $global:LogBox
+        Dispatcher = $global:Window.Dispatcher
+        LogFile    = $global:LogFile
+        AppRoot    = $global:AppRoot
         Done       = $false
         Error      = $null
         Result     = $null
     })
 
-    # --- Runspace + PowerShell-Pipeline ------------------------------------
     $rs = [runspacefactory]::CreateRunspace()
     $rs.ApartmentState = 'STA'
     $rs.ThreadOptions  = 'ReuseThread'
@@ -49,8 +41,6 @@ function Start-RunspaceJob {
     $ps = [powershell]::Create()
     $ps.Runspace = $rs
 
-    # Der Wrapper definiert Log-Funktionen im Runspace und ruft dann das
-    # eigentliche User-Skript auf.
     [void]$ps.AddScript({
 
         function Write-Log {
@@ -87,8 +77,6 @@ function Start-RunspaceJob {
             $Sync.Dispatcher.Invoke($action, @($Sync.LogBox, $line, $hex))
         }
 
-        # Write-Host der Originalskripte umlenken (anhand der Farbe das
-        # passende Log-Level waehlen).
         function Write-Host {
             param(
                 [Parameter(Position=0, ValueFromPipeline=$true, ValueFromRemainingArguments=$true)]
@@ -111,8 +99,6 @@ function Start-RunspaceJob {
             Write-Log -Message $text -Level $level
         }
 
-        # Read-Host nicht-interaktiv machen: Defaultantwort ist leer
-        # -> die Originalskripte nehmen den jeweiligen Standardpfad.
         function Read-Host {
             param([string]$Prompt = '')
             Write-Log "Read-Host unterdrueckt (Prompt: '$Prompt') - liefere leeren String." -Level Debug
@@ -131,7 +117,6 @@ function Start-RunspaceJob {
 
     $handle = $ps.BeginInvoke()
 
-    # --- Abschluss-Erkennung via DispatcherTimer ---------------------------
     $timer = New-Object System.Windows.Threading.DispatcherTimer
     $timer.Interval = [TimeSpan]::FromMilliseconds(250)
     $timer.Add_Tick({
