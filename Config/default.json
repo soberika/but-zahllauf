@@ -6,7 +6,8 @@
         "TempRoot":          "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp",
         "ZahllaufRoot":      "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\Zahllauf",
         "ScriptRechnungen":  "RechnungenausMailinExcel.ps1",
-        "ScriptTask":        "viafintech_Task_Skript.ps1"
+        "ScriptTask":        "viafintech_Task_Skript.ps1",
+        "ScriptMail":        "MailanHaushalt.ps1"
     },
     "UI": {
         "Title":          "viafintech Zahllauf Dashboard",
