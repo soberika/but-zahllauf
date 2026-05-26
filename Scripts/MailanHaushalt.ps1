@@ -4,9 +4,13 @@
     - Setzt Absender auf JC.Systembetreuung@kreis-meissen.de
 #>
 
+param(
+    [string]$Bezeichnung = 'Zahllauf'
+)
+
 # Parameter / Konfiguration
 $recipient   = "JC.Haushalt@kreis-meissen.de"
-$subject     = "Auszahlungslauf JC_000_00 steht zur weiteren Bearbeitung bereit"
+$subject     = "$Bezeichnung Prüflauf - steht zur weiteren Kontrolle bereit"
 $desiredFrom = "jc.systembetreuung@kreis-meissen.de"
 
 $inspector = $null
