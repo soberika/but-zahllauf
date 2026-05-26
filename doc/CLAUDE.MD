@@ -40,16 +40,20 @@ Du antwortest **immer** in folgender Reihenfolge:
 
 ---
 
-## Aktueller Stand (Stand 2026-05-21, Commit `43176c9`)
+## Aktueller Stand (Stand 2026-05-26)
 
 - **Phase 1 (Skeleton):** fertig — WPF-GUI, Sidebar, Dark Theme, RichTextBox-Log, ISO-KW, 5 Schritte als Pages.
 - **Phase 2 (Skript-Integration):** fertig — Originalskripte laufen via `Start-RunspaceJob`:
-  - Schritt 2: `Scripts/RechnungenausMailinExcel.ps1` via `Invoke-ExtractRechnungen` (`-NurExcel`, `-CsvOrdner`, `-MsgFolder`, `-TaskFolder`).
-  - Schritt 4: `Scripts/viafintech_Task_Skript.ps1` via `Invoke-StartTaskScript` (nicht-interaktiv, `-TaskFolder`, `-ZahllaufFolder`, prueft Zielordner unter `Zahllauf\`).
+  - Schritt 2: `Scripts/RechnungenausMailinExcel.ps1` via `Invoke-ExtractRechnungen` (`-NurExcel`, `-CsvOrdner`, `-MsgFolder`, `-TaskFolder`). Excel wird nicht-interaktiv nach `TargetFolder` verschoben (frueherer `Read-Host`-Netzwerk-Prompt entfernt).
+  - Schritt 4: `Scripts/viafintech_Task_Skript.ps1` via `Invoke-StartTaskScript` (`-TaskFolder`, `-ZahllaufFolder`). Bei existierendem Zielordner erscheint jetzt ein `Confirm-Dialog` (Ja/Nein) statt stillem Ueberspringen.
 - **Phase 3 (Config-GUI):** fertig — `MsgFolder`, `TaskFolder`, `ZahllaufFolder` werden in der GUI per FolderBrowserDialog gepflegt, in `Config/default.json` gespeichert und ueber Wrapper an die Skripte uebergeben.
+- **Phase 5 (Abschluss):** fertig —
+  - `Invoke-Step5MailTemplate -Bezeichnung` ruft `Scripts/MailanHaushalt.ps1` via Runspace, oeffnet einen Outlook-Entwurf mit Betreff `<Bezeichnung> Prueflauf - steht zur weiteren Kontrolle bereit`. Die Bezeichnung wird aus `Main.ps1` (`$Script:Context.Bezeichnung`) uebergeben, **nicht** im Modul berechnet (`Get-ZahllaufContext` ist aus Modulen nicht erreichbar).
+  - `Invoke-Step5Finish` raeumt auf: `.msg`-Dateien + `extracted_Attachements` loeschen, Tageslog nach `\\VJC\GB1_Systembetreuung\Taskplaner\<Bezeichnung>_<yyyyMMdd_HHmmss>_<guid8>.log` sichern. Gesteuert ueber `Behavior.SimulateCleanup` (Default `true`).
+- **Simulation-Toggle:** CheckBox in den Einstellungen (`ChkSetSimulate`) -> `Config.Behavior.SimulateCleanup`. Bei `true` wird das Loeschen nur protokolliert, nicht ausgefuehrt.
 - **Stabilisierung:** fertig — Modul-Scope (`global:`), Cmdlet-Lookup-Verlust nach Runspace-Disposal, Dispatcher.Invoke-Overload, Scriptblock-SessionState-Affinitaet behoben.
-- **Getestet OK:** Schritt 1 (Pfad oeffnen / markieren), Schritt 3 (Clipboard, Prosos), Einstellungen speichern/laden, Fehler-Log + Notepad-Button.
-- **Offen:** Schritt 2 und Schritt 4 End-to-End nach Pull `43176c9`, Schritt 5, Persistenz ueber App-Neustart.
+- **Getestet OK (lokal vom Maintainer):** Schritt 1, Schritt 3, Einstellungen, Fehler-Log, Schritt 5 Mail-Vorlage.
+- **Offen:** Schritt 2/4/5 End-to-End final, Persistenz ueber App-Neustart final bestaetigen.
 
 Detail-Log: siehe `Changes/AktuellerStand.md`.
 
@@ -57,37 +61,41 @@ Detail-Log: siehe `Changes/AktuellerStand.md`.
 
 - **Globaler Scope statt Script-Scope:** Da Module (`.psm1`) den `$Script:`-Scope von `Main.ps1` nicht sehen, sind kritische Funktionen als `function global:...` deklariert (`Write-Log`, `Clear-Log`, `Get-IsoCalendarWeek`, `Start-RunspaceJob`) und Variablen werden gespiegelt (`$global:AppRoot`, `$global:Config`, `$global:LogBox`, `$global:LogFile`, `$global:Window`). Der `$Script:`-Prefix bleibt in `Main.ps1` Primaerquelle.
 - **Runspaces:** STA-Runspace via `Start-RunspaceJob` (`Functions/RunspaceHelpers.ps1`).
-  - Shared State: `[hashtable]::Synchronized(@{ LogBox; Dispatcher; LogFile; AppRoot; Done; Error; Result })`.
-  - Inner Proxies: `Write-Log` (RichTextBox + Datei via .NET `AppendAllText`), `Write-Host` (Farbe -> Level), `Read-Host` (liefert `''`).
+  - Shared State: `[hashtable]::Synchronized(@{ LogBox; Dispatcher; LogFile; AppRoot; Done; Error; Result; DialogResult })`.
+  - Inner Proxies: `Write-Log` (RichTextBox + Datei via .NET `AppendAllText`), `Write-Host` (Farbe -> Level), `Read-Host` (liefert `''`), `Confirm-Dialog`.
   - User-Scriptblock wird im Runspace via `[scriptblock]::Create($UserScriptText)` neu erzeugt, sonst behaelt er seinen Ursprungs-SessionState und sieht die Proxies nicht.
   - Abschluss-Erkennung via `DispatcherTimer` (250 ms). `OnComplete` laeuft **vor** `Dispose()`, um den PS5.1-Cmdlet-Lookup-Bug zu vermeiden.
+- **Confirm-Dialog (Dialoge aus dem Runspace):** Die Proxy zeigt per `[void]$Sync.Dispatcher.Invoke([Action]$closure)` eine `[System.Windows.MessageBox]::Show(...)` auf dem UI-Thread und blockiert den Runspace-Thread bis zur Antwort. Ergebnis wird in `$Sync.DialogResult` abgelegt und als `[bool]` (Yes) zurueckgegeben. Wichtig: fuer Rueckgabewerte **nicht** `[Func[...]]`, sondern Ergebnis ueber `$Sync` + `[Action]`-Cast, sonst greift wieder die Overload-Falle. Scripts im Runspace rufen `Confirm-Dialog` einfach auf (Funktion liegt im Eltern-Scope).
 - **Dispatcher.Invoke:** Immer `GetNewClosure()` + `[void]$dispatcher.Invoke([Action]$closure)` ohne Args-Array, sonst kollidiert PS5.1 mit der `DispatcherPriority`-Overload.
 - **.NET statt Cmdlet:** In kritischen Pfaden (Logging, Process-Start, File-Existenz, Clipboard) reines .NET (`[System.IO.File]::AppendAllText`, `[System.Diagnostics.Process]::Start`, `[System.IO.Directory]::Exists`, `[System.Windows.Clipboard]::SetText`, `[DateTime]::Now`).
-- **Originalskripte in `Scripts/`** bekommen nur einen Param-Block — Body bleibt unveraendert.
-- **Skript-Pfade** kommen aus `Config/default.json` (`Paths.ScriptRechnungen`, `Paths.ScriptTask`); Arbeits-Pfade (`MsgFolder`, `TaskFolder`, `ZahllaufFolder`) ebenfalls dort und ueber GUI editierbar.
+- **Encoding-Falle (STRIKT):** `.ps1`-Dateien **ohne BOM** (z. B. `RechnungenausMailinExcel.ps1`) liest PS5.1 als CP1252. Multibyte-UTF-8 in **String-Literalen** kann den Parser zerschiessen — En-Dash `–`/Em-Dash `—` enden auf Byte `0x93`/`0x94` = typografische Anfuehrungszeichen, die PowerShell als String-Delimiter behandelt. Regel: in BOM-losen Dateien **nur ASCII** in Code/Strings (Umlaute als `ue`/`ae`/`oe`, normaler Bindestrich statt En-Dash). Box-Zeichen in **Kommentaren** sind harmlos. Dateien **mit** BOM (`viafintech_Task_Skript.ps1`, `MailanHaushalt.ps1`) vertragen UTF-8.
+- **Funktions-Sichtbarkeit aus Modulen:** Module sehen nur globalen Scope. Dot-gesourcte Helfer wie `Get-ZahllaufContext` (nur `Get-IsoCalendarWeek` ist `global:`) sind aus `.psm1` **nicht** erreichbar — berechnete Werte daher in `Main.ps1` ermitteln und als Parameter uebergeben.
+- **Originalskripte in `Scripts/`** bekommen primaer einen Param-Block; punktuelle Anpassungen (interaktive Prompts -> nicht-interaktiv, `Confirm-Dialog`) sind erlaubt, Body sonst unveraendert.
+- **Skript-Pfade** kommen aus `Config/default.json` (`Paths.ScriptRechnungen`, `Paths.ScriptTask`, `Paths.ScriptMail`); Arbeits-Pfade (`MsgFolder`, `TaskFolder`, `ZahllaufFolder`) und `Behavior.SimulateCleanup` ebenfalls dort und ueber GUI editierbar.
 - **UI-Status** (`Txt2LastRun`, `Txt4Status`, `TxtSettingsStatus`) wird in `OnComplete` gruen (Brush `Success`) oder rot (Brush `Danger`) gefaerbt.
 
 ## Datei-Layout
 
 ```
 Main.ps1                          # Einstieg, XAML, Event-Handler, Settings, $global:-Mirror
-Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder, Skriptnamen, UI-Defaults
+Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder + Skriptnamen, Behavior.SimulateCleanup, UI-Defaults
 Changes/AktuellerStand.md         # Detailliertes Stand- und Bug-Log
 doc/CLAUDE.MD                     # diese Datei
 doc/prompt.md
 Functions/
   ConfigLoader.ps1                # Import-AppConfig, Save-AppConfig
-  DateHelpers.ps1                 # global:Get-IsoCalendarWeek
+  DateHelpers.ps1                 # global:Get-IsoCalendarWeek + Get-ZahllaufContext (script-scope)
   Logging.ps1                     # global:Write-Log, global:Clear-Log
-  RunspaceHelpers.ps1             # global:Start-RunspaceJob
+  RunspaceHelpers.ps1             # global:Start-RunspaceJob + Inner-Proxies (inkl. Confirm-Dialog)
 Modules/
-  Step1_Mail.psm1
-  Step2_Rechnungen.psm1           # Invoke-ExtractRechnungen, Invoke-Step2Run
+  Step1_Mail.psm1                 # Invoke-Step1OpenPath, Invoke-Step1MarkDone
+  Step2_Rechnungen.psm1           # Invoke-ExtractRechnungen, Invoke-Step2Run, Invoke-Step2OpenPath
   Step3_Pruflauf.psm1             # Invoke-Step3Copy, Invoke-Step3OpenProsos
-  Step4_Auszahlung.psm1           # Invoke-StartTaskScript, Invoke-Step4Run
-  Step5_Abschluss.psm1
-Scripts/                          # Originale - nur Param-Block ergaenzt
-  RechnungenausMailinExcel.ps1
-  viafintech_Task_Skript.ps1
+  Step4_Auszahlung.psm1           # Invoke-StartTaskScript, Invoke-Step4Run, Invoke-Step4OpenTask
+  Step5_Abschluss.psm1            # Invoke-Step5MailTemplate, Invoke-Step5Finish
+Scripts/                          # Originale - Param-Block + punktuelle Anpassungen
+  RechnungenausMailinExcel.ps1    # KEIN BOM -> nur ASCII in Strings!
+  viafintech_Task_Skript.ps1      # UTF-8 mit BOM
+  MailanHaushalt.ps1              # UTF-8 mit BOM; Outlook-Entwurf, -Bezeichnung-Param
 Views/MainWindow.xaml
 ```
