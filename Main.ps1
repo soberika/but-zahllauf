@@ -260,7 +260,7 @@ $ui.Btn4Check.Add_Click({ Invoke-Step4CheckCorrection })
 $ui.Btn4OpenTask.Add_Click({ Invoke-Step4OpenTask -Path $Script:Config.Paths.TaskFolder })
 
 # Step 5
-$ui.Btn5MailTemplate.Add_Click({ Invoke-Step5MailTemplate })
+$ui.Btn5MailTemplate.Add_Click({ Invoke-Step5MailTemplate -Bezeichnung $Script:Context.Bezeichnung })
 $ui.Btn5Finish.Add_Click({ Invoke-Step5Finish })
 
 # Settings

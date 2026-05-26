@@ -4,6 +4,8 @@
 # =============================================================================
 
 function Invoke-Step5MailTemplate {
+    param([string]$Bezeichnung)
+
     $scriptName = $global:Config.Paths.ScriptMail
     $scriptPath = Join-Path $global:AppRoot ("Scripts\" + $scriptName)
 
@@ -12,12 +14,11 @@ function Invoke-Step5MailTemplate {
         return
     }
 
-    $bezeichnung = (Get-ZahllaufContext).Bezeichnung
-    Write-Log "Oeffne Mail-Vorlage fuer: $bezeichnung" -Level Info
+    Write-Log "Oeffne Mail-Vorlage fuer: $Bezeichnung" -Level Info
 
     $params = @{
         ScriptPath  = $scriptPath
-        Bezeichnung = $bezeichnung
+        Bezeichnung = $Bezeichnung
     }
 
     Start-RunspaceJob -Parameters $params -OnComplete {
