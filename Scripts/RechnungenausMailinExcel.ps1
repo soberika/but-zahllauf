@@ -274,7 +274,7 @@ if (-not [string]::IsNullOrWhiteSpace($TargetFolder)) {
         Write-Host "Datei liegt noch unter: $excelOutputFile" -ForegroundColor Yellow
     }
 } else {
-    Write-Host "Kein Zielordner konfiguriert – Excel liegt unter: $excelOutputFile" -ForegroundColor Yellow
+    Write-Host "Kein Zielordner konfiguriert - Excel liegt unter: $excelOutputFile" -ForegroundColor Yellow
 }
 
 Write-Host ""
