@@ -218,10 +218,19 @@ $finalDestination = Join-Path $targetBase $folderName
 
 try {
     if (Test-Path $finalDestination) {
-        Write-Host "Zielordner existiert bereits – überspringe: $finalDestination" -ForegroundColor Yellow
+        $ersetzen = Confirm-Dialog `
+            -Message "Zielordner existiert bereits:`n$finalDestination`n`nOrdner ersetzen?" `
+            -Title "Ordner existiert bereits"
+        if ($ersetzen) {
+            Remove-Item -Path $finalDestination -Recurse -Force -ErrorAction Stop
+            Move-Item -Path $newFolderPath -Destination $finalDestination -ErrorAction Stop
+            Write-Host "Ordner ersetzt: $finalDestination" -ForegroundColor Green
+        } else {
+            Write-Host "Abgebrochen - vorhandener Ordner bleibt: $finalDestination" -ForegroundColor Yellow
+        }
     } else {
         Move-Item -Path $newFolderPath -Destination $finalDestination -ErrorAction Stop
-        Write-Host "Ordner verschoben → $finalDestination" -ForegroundColor Green
+        Write-Host "Ordner verschoben: $finalDestination" -ForegroundColor Green
     }
 } catch {
     Write-Host "FEHLER beim finalen Verschieben: $($_.Exception.Message)" -ForegroundColor Red

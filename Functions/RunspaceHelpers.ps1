@@ -19,13 +19,14 @@ function global:Start-RunspaceJob {
     }
 
     $sync = [hashtable]::Synchronized(@{
-        LogBox     = $global:LogBox
-        Dispatcher = $global:Window.Dispatcher
-        LogFile    = $global:LogFile
-        AppRoot    = $global:AppRoot
-        Done       = $false
-        Error      = $null
-        Result     = $null
+        LogBox       = $global:LogBox
+        Dispatcher   = $global:Window.Dispatcher
+        LogFile      = $global:LogFile
+        AppRoot      = $global:AppRoot
+        Done         = $false
+        Error        = $null
+        Result       = $null
+        DialogResult = $null
     })
 
     $rs = [runspacefactory]::CreateRunspace()
@@ -109,6 +110,23 @@ function global:Start-RunspaceJob {
             param([string]$Prompt = '')
             Write-Log "Read-Host unterdrueckt (Prompt: '$Prompt') - liefere leeren String." -Level Debug
             return ''
+        }
+
+        function Confirm-Dialog {
+            param(
+                [string]$Message,
+                [string]$Title = 'Bestaetigung'
+            )
+            $closure = {
+                $Sync.DialogResult = [System.Windows.MessageBox]::Show(
+                    $Message,
+                    $Title,
+                    [System.Windows.MessageBoxButton]::YesNo,
+                    [System.Windows.MessageBoxImage]::Question
+                )
+            }.GetNewClosure()
+            [void]$Sync.Dispatcher.Invoke([Action]$closure)
+            return ($Sync.DialogResult -eq [System.Windows.MessageBoxResult]::Yes)
         }
 
         try {
