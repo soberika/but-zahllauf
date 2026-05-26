@@ -19,6 +19,9 @@
         "BezeichnungFormat": "Viafintech vom {0}.KW {1}",
         "OrdnerFormat":      "{0} Fuer {1}.KW"
     },
+    "Behavior": {
+        "SimulateCleanup": true
+    },
     "Steps": [
         { "Id": 1, "Name": "Mail",           "Icon": "" },
         { "Id": 2, "Name": "Rechnungen",     "Icon": "" },

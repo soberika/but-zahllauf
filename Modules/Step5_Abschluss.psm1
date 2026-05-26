@@ -33,7 +33,7 @@ function Invoke-Step5MailTemplate {
 }
 
 function Invoke-Step5Finish {
-    $simulate = $true   # <-- auf $false setzen fuer echtes Loeschen
+    $simulate = [bool]$global:Config.Behavior.SimulateCleanup
 
     $ctx         = Get-ZahllaufContext
     $bezeichnung = $ctx.Bezeichnung -replace '[\\/:*?"<>|]', '_'

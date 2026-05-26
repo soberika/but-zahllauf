@@ -139,6 +139,7 @@ $ui = @{
     BtnSetZahllaufBrowse = Find-Element 'BtnSetZahllaufBrowse'
     BtnSetSave           = Find-Element 'BtnSetSave'
     TxtSetStatus         = Find-Element 'TxtSetStatus'
+    ChkSetSimulate       = Find-Element 'ChkSetSimulate'
 }
 
 $Script:LogBox = $ui.LogBox
@@ -282,9 +283,10 @@ $ui.BtnSetTaskBrowse.Add_Click({     Select-FolderInto -TextBox $ui.TxtSetTask  
 $ui.BtnSetZahllaufBrowse.Add_Click({ Select-FolderInto -TextBox $ui.TxtSetZahllauf -Description 'Zahllauf-Ordner waehlen' })
 
 $ui.BtnSetSave.Add_Click({
-    $Script:Config.Paths.MsgFolder      = $ui.TxtSetMsg.Text
-    $Script:Config.Paths.TaskFolder     = $ui.TxtSetTask.Text
-    $Script:Config.Paths.ZahllaufFolder = $ui.TxtSetZahllauf.Text
+    $Script:Config.Paths.MsgFolder           = $ui.TxtSetMsg.Text
+    $Script:Config.Paths.TaskFolder          = $ui.TxtSetTask.Text
+    $Script:Config.Paths.ZahllaufFolder      = $ui.TxtSetZahllauf.Text
+    $Script:Config.Behavior.SimulateCleanup  = [bool]$ui.ChkSetSimulate.IsChecked
     Save-AppConfig
     $ui.TxtSetStatus.Text = "Einstellungen gespeichert ($((Get-Date).ToString('HH:mm:ss')))."
     $ui.TxtSetStatus.Foreground = $Script:Window.Resources['Success']
@@ -311,9 +313,10 @@ $Script:Window.Add_Loaded({
         [System.Environment]::OSVersion.VersionString, `
         $Script:LogFile) -Level Debug
     Update-Context
-    $ui.TxtSetMsg.Text      = [string]$Script:Config.Paths.MsgFolder
-    $ui.TxtSetTask.Text     = [string]$Script:Config.Paths.TaskFolder
-    $ui.TxtSetZahllauf.Text = [string]$Script:Config.Paths.ZahllaufFolder
+    $ui.TxtSetMsg.Text           = [string]$Script:Config.Paths.MsgFolder
+    $ui.TxtSetTask.Text          = [string]$Script:Config.Paths.TaskFolder
+    $ui.TxtSetZahllauf.Text      = [string]$Script:Config.Paths.ZahllaufFolder
+    $ui.ChkSetSimulate.IsChecked = [bool]$Script:Config.Behavior.SimulateCleanup
     Show-Step 1
 })
 

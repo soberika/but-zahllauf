@@ -478,6 +478,17 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Abschluss-Optionen" Style="{StaticResource H2}"/>
+                                <CheckBox x:Name="ChkSetSimulate"
+                                          Content="Cleanup simulieren (kein echtes Loeschen)"/>
+                                <TextBlock Text="Wenn aktiv: .msg-Dateien und Anhaenge werden nur im Log aufgelistet, nicht geloescht."
+                                           Style="{StaticResource Muted}" TextWrapping="Wrap"
+                                           Margin="22,4,0,0"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>
