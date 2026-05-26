@@ -254,39 +254,27 @@ Write-Host "Zeilen gesamt: $($allData.Count)"
 Write-Host ""
 
 # ────────────────────────────────────────────────────────────────
-# TEIL 3: Fertige Excel-Datei ins Netzwerk verschieben (optional)
+# TEIL 3: Fertige Excel-Datei in den Zielordner verschieben
 # ────────────────────────────────────────────────────────────────
 
-$defaultTargetFolder = $TargetFolder
-
-Write-Host "Moechtest du die Datei ins Netzwerk verschieben?"
-Write-Host "Standard-Zielordner: $defaultTargetFolder"
-Write-Host "  Enter    = Standardpfad verwenden"
-Write-Host "  Pfad     = Eigenen Zielordner eingeben"
-Write-Host "  'nein'   = Ueberspringen, Datei bleibt lokal"
-Write-Host ""
-
-$userInput = Read-Host "Zielordner"
-
-if ($userInput -eq "nein" -or $userInput -eq "Nein" -or $userInput -eq "n") {
-    Write-Host "Verschiebung uebersprungen. Datei liegt unter: $excelOutputFile" -ForegroundColor Yellow
-} else {
-    $targetFolder = if ([string]::IsNullOrWhiteSpace($userInput)) { $defaultTargetFolder } else { $userInput.Trim() }
-    $targetFile = Join-Path $targetFolder "alleRechnungen.xlsx"
+if (-not [string]::IsNullOrWhiteSpace($TargetFolder)) {
+    $targetFile = Join-Path $TargetFolder "alleRechnungen.xlsx"
 
     try {
-        if (-not (Test-Path $targetFolder)) {
-            New-Item -Path $targetFolder -ItemType Directory -Force | Out-Null
-            Write-Host "Zielordner erstellt: $targetFolder"
+        if (-not (Test-Path $TargetFolder)) {
+            New-Item -Path $TargetFolder -ItemType Directory -Force | Out-Null
+            Write-Host "Zielordner erstellt: $TargetFolder"
         }
 
         Move-Item -Path $excelOutputFile -Destination $targetFile -Force
-        Write-Host "Datei verschoben nach: $targetFile" -ForegroundColor Green
+        Write-Host "Excel verschoben nach: $targetFile" -ForegroundColor Green
 
     } catch {
         Write-Host "Fehler beim Verschieben: $($_.Exception.Message)" -ForegroundColor Red
-        Write-Host "Du kannst die Datei manuell verschieben von: $excelOutputFile"
+        Write-Host "Datei liegt noch unter: $excelOutputFile" -ForegroundColor Yellow
     }
+} else {
+    Write-Host "Kein Zielordner konfiguriert – Excel liegt unter: $excelOutputFile" -ForegroundColor Yellow
 }
 
 Write-Host ""
