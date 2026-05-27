@@ -179,6 +179,25 @@
             <Setter Property="Background" Value="{StaticResource BgTertiary}"/>
             <Setter Property="Foreground" Value="Black"/>
         </Style>
+
+        <!-- ===================== HINWEIS-EXPANDER (Galerie) ===================== -->
+        <Style x:Key="HintExpander" TargetType="Expander">
+            <Setter Property="Background" Value="{StaticResource BgCard}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   Foreground="{StaticResource TextPrimary}"
+                                   FontWeight="SemiBold" FontSize="14"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <!-- ===================== HAUPT-LAYOUT ===================== -->
@@ -270,7 +289,7 @@
                     <Button x:Name="BtnStep2" Style="{StaticResource SideBtn}"
                             Content="2.  Rechnungen"/>
                     <Button x:Name="BtnStep3" Style="{StaticResource SideBtn}"
-                            Content="3.  Pruflauf"/>
+                            Content="3.  Prüflauf"/>
                     <Button x:Name="BtnStep4" Style="{StaticResource SideBtn}"
                             Content="4.  Auszahlungslauf"/>
                     <Button x:Name="BtnStep5" Style="{StaticResource SideBtn}"
@@ -290,63 +309,71 @@
                     <!-- ============ SCHRITT 1 - MAIL ============ -->
                     <StackPanel x:Name="PageStep1" Visibility="Visible">
                         <TextBlock Text="Schritt 1 - Mail" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Wochenmail von viafintech pruefen und .msg-Dateien in den _Temp-Ordner ablegen."
+                        <TextBlock Text="Wochenmail von viafintech prüfen und .msg-Dateien im _Temp-Ordner ablegen."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
                                 <TextBlock Text="Anleitung" Style="{StaticResource H2}"/>
                                 <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                                    1. Outlook oeffnen und die Wochenmail mit den Rechnungen suchen.
+                                    1. Outlook öffnen und die Wochenmail mit den Rechnungen suchen.
                                 </TextBlock>
                                 <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
                                     2. Alle relevanten .msg-Dateien in den _Temp-Ordner ziehen.
                                 </TextBlock>
                                 <TextBlock TextWrapping="Wrap" Margin="0,0,0,16">
-                                    3. Unten "Pfad oeffnen" klicken, um den Ordner zu pruefen.
+                                    3. Unten "Pfad öffnen" klicken, um den Ordner zu prüfen.
                                 </TextBlock>
                                 <StackPanel Orientation="Horizontal">
                                     <Button x:Name="Btn1OpenPath"  Style="{StaticResource BtnBase}"
-                                            Content="Pfad oeffnen" Margin="0,0,10,0"/>
+                                            Content="Pfad öffnen" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn1Done"      Style="{StaticResource BtnSuccess}"
                                             Content="Schritt als erledigt markieren"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                            <WrapPanel x:Name="Sp1Hints" Margin="0,10,0,0"/>
+                        </Expander>
                     </StackPanel>
 
                     <!-- ============ SCHRITT 2 - RECHNUNGEN ============ -->
                     <StackPanel x:Name="PageStep2" Visibility="Collapsed">
                         <TextBlock Text="Schritt 2 - Rechnungen extrahieren" Style="{StaticResource H1}"/>
-                        <TextBlock Text="alleRechnungen.ps1 verarbeitet .msg-Dateien und erstellt alleRechnungen.xlsx."
+                        <TextBlock Text="Verarbeitet die .msg-Dateien und erstellt die Excel-Sammeldatei (alleRechnungen.xlsx)."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
                                 <TextBlock Text="Optionen" Style="{StaticResource H2}"/>
-                                <CheckBox x:Name="Chk2NurExcel"        Content="-NurExcel"/>
-                                <CheckBox x:Name="Chk2NurExcelCsv"     Content="NurExcel + eigener CsvOrdner"/>
+                                <CheckBox x:Name="Chk2NurExcel"
+                                          Content="Nur Excel erstellen (CSV-Dateien liegen bereits vor)"/>
 
                                 <TextBlock Text="Vorschau Excel-Bezeichnung" Style="{StaticResource H2}" Margin="0,16,0,4"/>
                                 <TextBox x:Name="Txt2Preview" IsReadOnly="True" Text="--"/>
 
                                 <TextBlock Text="Letzter Lauf" Style="{StaticResource H2}" Margin="0,16,0,4"/>
-                                <TextBlock x:Name="Txt2LastRun" Style="{StaticResource Muted}" Text="noch nicht ausgefuehrt"/>
+                                <TextBlock x:Name="Txt2LastRun" Style="{StaticResource Muted}" Text="noch nicht ausgeführt"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
                                     <Button x:Name="Btn2Run"      Style="{StaticResource BtnPrimary}"
-                                            Content="alleRechnungen.ps1 ausfuehren" Margin="0,0,10,0"/>
+                                            Content="Rechnungen extrahieren" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn2OpenPath" Style="{StaticResource BtnBase}"
-                                            Content="Ergebnis-Ordner oeffnen"/>
+                                            Content="Ergebnis-Ordner öffnen"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                            <WrapPanel x:Name="Sp2Hints" Margin="0,10,0,0"/>
+                        </Expander>
                     </StackPanel>
 
                     <!-- ============ SCHRITT 3 - PRUFLAUF ============ -->
                     <StackPanel x:Name="PageStep3" Visibility="Collapsed">
-                        <TextBlock Text="Schritt 3 - Pruflauf in Prosos" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Bezeichnung und Faelligkeit fuer den Pruflauf festlegen."
+                        <TextBlock Text="Schritt 3 - Prüflauf in Prosos" Style="{StaticResource H1}"/>
+                        <TextBlock Text="Bezeichnung und Fälligkeit für den Prüflauf festlegen."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">
@@ -354,40 +381,50 @@
                                 <TextBlock Text="Bezeichnung" Style="{StaticResource H2}"/>
                                 <TextBox x:Name="Txt3Bezeichnung" Text="--"/>
 
-                                <TextBlock Text="Faelligkeit (letzter Sonntag)" Style="{StaticResource H2}" Margin="0,14,0,4"/>
+                                <TextBlock Text="Fälligkeit (letzter Sonntag)" Style="{StaticResource H2}" Margin="0,14,0,4"/>
                                 <DatePicker x:Name="Dp3Faelligkeit" Width="200" HorizontalAlignment="Left"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
                                     <Button x:Name="Btn3Copy"   Style="{StaticResource BtnPrimary}"
                                             Content="Bezeichnung in Zwischenablage" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn3Prosos" Style="{StaticResource BtnBase}"
-                                            Content="Prosos oeffnen"/>
+                                            Content="Prosos öffnen"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Checkliste" Style="{StaticResource H2}"/>
-                                <CheckBox Content="Pruflauf in Prosos angelegt"/>
-                                <CheckBox Content="Bezeichnung gesetzt"/>
-                                <CheckBox Content="Faelligkeit auf letzten Sonntag gestellt"/>
-                                <CheckBox Content="Pruflauf erfolgreich abgeschlossen"/>
+                                <Grid Margin="0,0,0,4">
+                                    <TextBlock Text="Checkliste" Style="{StaticResource H2}"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="Txt3Checklist" Style="{StaticResource Muted}"
+                                               HorizontalAlignment="Right" VerticalAlignment="Center"
+                                               Text="0/4 erledigt"/>
+                                </Grid>
+                                <CheckBox x:Name="Chk3Done0" Content="Prüflauf in Prosos angelegt"/>
+                                <CheckBox x:Name="Chk3Done1" Content="Bezeichnung gesetzt"/>
+                                <CheckBox x:Name="Chk3Done2" Content="Fälligkeit auf letzten Sonntag gestellt"/>
+                                <CheckBox x:Name="Chk3Done3" Content="Prüflauf erfolgreich abgeschlossen"/>
                             </StackPanel>
                         </Border>
+
+                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                            <WrapPanel x:Name="Sp3Hints" Margin="0,10,0,0"/>
+                        </Expander>
                     </StackPanel>
 
                     <!-- ============ SCHRITT 4 - AUSZAHLUNG ============ -->
                     <StackPanel x:Name="PageStep4" Visibility="Collapsed">
                         <TextBlock Text="Schritt 4 - Auszahlungslauf" Style="{StaticResource H1}"/>
-                        <TextBlock Text="viafintech_Task_Skript.ps1 baut den Task-Ordner und verschiebt die Dateien."
+                        <TextBlock Text="Baut den Task-Ordner und verschiebt die Dateien in den Zahllauf-Ordner."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <!-- Aufgabenplanung: Windows-Tasks on demand starten -->
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
                                 <TextBlock Text="Aufgabenplanung" Style="{StaticResource H2}"/>
-                                <TextBlock Text="Startet einen registrierten Windows-Task und meldet den Ausfuehrungsstatus."
+                                <TextBlock Text="Startet einen registrierten Windows-Task und meldet den Ausführungsstatus."
                                            Style="{StaticResource Muted}" Margin="0,0,0,12" TextWrapping="Wrap"/>
                                 <StackPanel x:Name="Sp4Tasks" Orientation="Horizontal" Margin="0,0,0,10"/>
                                 <TextBlock x:Name="Txt4TaskStatus" Style="{StaticResource Muted}" Text="nicht gestartet"/>
@@ -400,41 +437,47 @@
                                 <TextBox x:Name="Txt4Ordner" IsReadOnly="True" Text="--"/>
 
                                 <TextBlock Text="Task-Ordner Status" Style="{StaticResource H2}" Margin="0,14,0,4"/>
-                                <TextBlock x:Name="Txt4Status" Style="{StaticResource Muted}" Text="nicht geprueft"/>
+                                <TextBlock x:Name="Txt4Status" Style="{StaticResource Muted}" Text="nicht geprüft"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
                                     <Button x:Name="Btn4Run"        Style="{StaticResource BtnPrimary}"
-                                            Content="viafintech_Task_Skript.ps1 starten" Margin="0,0,10,0"/>
-                                    <Button x:Name="Btn4Check"      Style="{StaticResource BtnBase}"
-                                            Content="Letzte Korrektur pruefen" Margin="0,0,10,0"/>
+                                            Content="Auszahlungslauf starten" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn4OpenTask"   Style="{StaticResource BtnBase}"
-                                            Content="Task-Ordner oeffnen"/>
+                                            Content="Task-Ordner öffnen"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                            <WrapPanel x:Name="Sp4Hints" Margin="0,10,0,0"/>
+                        </Expander>
                     </StackPanel>
 
                     <!-- ============ SCHRITT 5 - ABSCHLUSS ============ -->
                     <StackPanel x:Name="PageStep5" Visibility="Collapsed">
                         <TextBlock Text="Schritt 5 - Abschluss" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Mail an Buchhaltung versenden und Lauf abschliessen."
+                        <TextBlock Text="Mail an Buchhaltung versenden und Lauf abschließen."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
                                 <TextBlock Text="Letzte Schritte" Style="{StaticResource H2}"/>
                                 <CheckBox Content="Zahlungsdatei in Zahllauf-Ordner kopiert"/>
-                                <CheckBox Content="Bestaetigung von Buchhaltung erhalten"/>
+                                <CheckBox Content="Bestätigung von Buchhaltung erhalten"/>
                                 <CheckBox Content="Backup gesichert"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
                                     <Button x:Name="Btn5MailTemplate" Style="{StaticResource BtnBase}"
-                                            Content="Mail-Vorlage oeffnen" Margin="0,0,10,0"/>
+                                            Content="Mail-Vorlage öffnen" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn5Finish"       Style="{StaticResource BtnSuccess}"
-                                            Content="Alles abschliessen"/>
+                                            Content="Alles abschließen"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                            <WrapPanel x:Name="Sp5Hints" Margin="0,10,0,0"/>
+                        </Expander>
                     </StackPanel>
 
                     <!-- ============ SETTINGS ============ -->
@@ -454,7 +497,7 @@
                                     <TextBox x:Name="TxtSetMsg" Grid.Column="0"/>
                                     <Button x:Name="BtnSetMsgBrowse" Grid.Column="1"
                                             Style="{StaticResource BtnBase}"
-                                            Content="Ordner auswaehlen" Margin="10,0,0,0"/>
+                                            Content="Ordner auswählen" Margin="10,0,0,0"/>
                                 </Grid>
 
                                 <TextBlock Text="Task-Ordner (alleRechnungen.xlsx + Task-Skript-Arbeitsbereich)"
@@ -467,7 +510,7 @@
                                     <TextBox x:Name="TxtSetTask" Grid.Column="0"/>
                                     <Button x:Name="BtnSetTaskBrowse" Grid.Column="1"
                                             Style="{StaticResource BtnBase}"
-                                            Content="Ordner auswaehlen" Margin="10,0,0,0"/>
+                                            Content="Ordner auswählen" Margin="10,0,0,0"/>
                                 </Grid>
 
                                 <TextBlock Text="Zahllauf-Ordner (Zielordner)" Style="{StaticResource H2}"/>
@@ -479,7 +522,7 @@
                                     <TextBox x:Name="TxtSetZahllauf" Grid.Column="0"/>
                                     <Button x:Name="BtnSetZahllaufBrowse" Grid.Column="1"
                                             Style="{StaticResource BtnBase}"
-                                            Content="Ordner auswaehlen" Margin="10,0,0,0"/>
+                                            Content="Ordner auswählen" Margin="10,0,0,0"/>
                                 </Grid>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
@@ -495,8 +538,8 @@
                             <StackPanel>
                                 <TextBlock Text="Abschluss-Optionen" Style="{StaticResource H2}"/>
                                 <CheckBox x:Name="ChkSetSimulate"
-                                          Content="Cleanup simulieren (kein echtes Loeschen)"/>
-                                <TextBlock Text="Wenn aktiv: .msg-Dateien und Anhaenge werden nur im Log aufgelistet, nicht geloescht."
+                                          Content="Cleanup simulieren (kein echtes Löschen)"/>
+                                <TextBlock Text="Wenn aktiv: .msg-Dateien und Anhänge werden nur im Log aufgelistet, nicht gelöscht."
                                            Style="{StaticResource Muted}" TextWrapping="Wrap"
                                            Margin="22,4,0,0"/>
                             </StackPanel>
@@ -558,10 +601,10 @@
                                FontSize="11" FontWeight="Bold"
                                VerticalAlignment="Center"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button x:Name="BtnOpenLog" Content="Log-Datei oeffnen"
+                        <Button x:Name="BtnOpenLog" Content="Log-Datei öffnen"
                                 Style="{StaticResource BtnBase}"
                                 Padding="10,4" FontSize="11" Margin="0,0,8,0"/>
-                        <Button x:Name="BtnClearLog" Content="Log loeschen"
+                        <Button x:Name="BtnClearLog" Content="Log löschen"
                                 Style="{StaticResource BtnBase}"
                                 Padding="10,4" FontSize="11"/>
                     </StackPanel>

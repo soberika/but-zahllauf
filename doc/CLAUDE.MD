@@ -54,6 +54,12 @@ Du antwortest **immer** in folgender Reihenfolge:
 - **Stabilisierung:** fertig — Modul-Scope (`global:`), Cmdlet-Lookup-Verlust nach Runspace-Disposal, Dispatcher.Invoke-Overload, Scriptblock-SessionState-Affinitaet behoben.
 - **KW-Auswahl:** fertig — `Get-ZahllaufContext` rechnet mit einem Stichtag (`-RefDate`, Default = letzter Sonntag der vergangenen Woche). Neuer Helfer `Get-RecentWeeks` liefert die letzten 4 Wochen. Top-Bar zeigt statt eines Refresh-Buttons eine ComboBox `CmbWeek`; Auswahl loest `Update-Context` aus. Button "Werte neu berechnen" entfernt.
 - **Aufgabenplanung (on demand):** fertig — neues Modul `Modules/Step4_ScheduledTasks.psm1`. `Invoke-StartScheduledTask` stoesst einen in der Windows-Aufgabenplanung registrierten Task im Runspace an (`Start-ScheduledTask`, Fallback `schtasks.exe /Run /TN "<Pfad><Name>"`), pollt den Abschluss **ausschliesslich** ueber `Get-ScheduledTaskInfo` (`LastTaskResult`/`LastRunTime`; `0x41301` = laeuft, danach neue `LastRunTime`) und faerbt `Txt4TaskStatus` gruen/rot. `Confirm-Dialog` vor jedem Start. Wrapper `Invoke-ScheduledTaskById` loest den Task per `Id` aus `Config.ScheduledTasks` auf (analog `Invoke-Step4Run`). Buttons werden in `Initialize-ScheduledTaskButtons` (Main.ps1) dynamisch aus `Config.ScheduledTasks` in der Karte "Aufgabenplanung" (Schritt 4) erzeugt. **Sicherheit (STRIKT):** keine Credentials, Argumente oder Task-XML im Repo, in der Config oder im Log; das Dashboard referenziert ausschliesslich `TaskPath`+`TaskName` und loggt nur den Ergebnis-Code. Niemals `schtasks /Query /XML`.
+- **UI-Ueberarbeitung (2026-05-27):**
+  - UI-Texte auf echte Umlaute umgestellt (XAML wird mit `-Encoding UTF8` geladen, daher gefahrlos; ASCII-Regel gilt nur fuer BOM-lose `.ps1`). Button-Labels aufgabenorientiert statt Skriptnamen ("Rechnungen extrahieren", "Auszahlungslauf starten").
+  - Schritt 2: nur noch **eine** Option-Checkbox `Chk2NurExcel`. Die fruehere zweite Checkbox `Chk2NurExcelCsv` war funktional identisch (kein CSV-Ordner-Feld, `-CsvOrdner` nie uebergeben) und wurde entfernt; `Invoke-Step2Run` reicht `-NurExcel` direkt durch.
+  - Schritt 3: Checkliste verdrahtet (`Chk3Done0..3`) und **pro KW** in `Config.Checklist[<OrdnerName>]` persistiert. `Sync-Step3Checklist` laedt beim KW-Wechsel, `Save-Step3Checklist` speichert pro Klick; Zaehler `Txt3Checklist` ("x/4 erledigt", gruen bei vollstaendig).
+  - Schritt 4: Platzhalter-Button "Letzte Korrektur pruefen" (`Btn4Check`) + Funktion `Invoke-Step4CheckCorrection` ersatzlos entfernt (war ein reiner Log-No-op).
+  - **Bebilderte Hinweise (Galerie):** pro Step ein `Expander` "Bebilderte Hinweise" mit `WrapPanel` (`Sp1Hints..Sp5Hints`), datengetrieben aus `Config.Hints.Step1..Step5` (`{ Image, Caption }`). `Initialize-HintGalleries` baut Thumbnail-Kacheln; fehlt die Bilddatei, erscheint eine Platzhalter-Kachel ("Bild folgt"). Klick oeffnet die Grossansicht via `global:Show-HintImage` (modal). Closure-Werte (Pfad/Caption/Owner) **vor** `GetNewClosure()` in lokale Variablen gehoben (siehe Closure-Scope-Note). Bilder liegen unter `Assets/hints/` und sind **gitignored** (Screenshots interner Systeme nicht committen).
 - **Getestet OK (lokal vom Maintainer):** Schritt 1, Schritt 3, Einstellungen, Fehler-Log, Schritt 5 Mail-Vorlage.
 - **Offen:** Schritt 2/4/5 End-to-End final, Persistenz ueber App-Neustart final bestaetigen.
 
@@ -81,8 +87,9 @@ Detail-Log: siehe `Changes/AktuellerStand.md`.
 ## Datei-Layout
 
 ```
-Main.ps1                          # Einstieg, XAML, Event-Handler, Settings, $global:-Mirror
-Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder + Skriptnamen, Behavior.SimulateCleanup, ScheduledTasks[], UI-Defaults
+Main.ps1                          # Einstieg, XAML, Event-Handler, Settings, $global:-Mirror, Hint-Galerie, Step3-Checkliste
+Assets/hints/                     # Hinweisbilder (gitignored, .gitkeep). Pfade aus Config.Hints
+Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder + Skriptnamen, Behavior.SimulateCleanup, ScheduledTasks[], Hints{}, Checklist{}, UI-Defaults
 Changes/AktuellerStand.md         # Detailliertes Stand- und Bug-Log
 doc/CLAUDE.MD                     # diese Datei
 doc/prompt.md

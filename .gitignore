@@ -4,3 +4,5 @@ Logs/*.log
 .vs/
 .idea/
 *.local.json
+Assets/hints/*
+!Assets/hints/.gitkeep

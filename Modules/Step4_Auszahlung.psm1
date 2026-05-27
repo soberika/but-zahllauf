@@ -108,8 +108,4 @@ function Invoke-Step4OpenTask {
     }
 }
 
-function Invoke-Step4CheckCorrection {
-    Write-Log "Letzte Korrektur pruefen (Platzhalter)." -Level Info
-}
-
 Export-ModuleMember -Function *

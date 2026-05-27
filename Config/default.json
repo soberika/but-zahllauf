@@ -37,5 +37,27 @@
         { "Id": 3, "Name": "Pruflauf",       "Icon": "" },
         { "Id": 4, "Name": "Auszahlung",     "Icon": "" },
         { "Id": 5, "Name": "Abschluss",      "Icon": "" }
-    ]
+    ],
+    "Hints": {
+        "Step1": [
+            { "Image": "Assets\\hints\\step1_outlook.png", "Caption": "Wochenmail in Outlook finden" },
+            { "Image": "Assets\\hints\\step1_drag.png",    "Caption": ".msg in den _Temp-Ordner ziehen" }
+        ],
+        "Step2": [
+            { "Image": "Assets\\hints\\step2_run.png",     "Caption": "Extraktion starten" },
+            { "Image": "Assets\\hints\\step2_excel.png",   "Caption": "Ergebnis: alleRechnungen.xlsx" }
+        ],
+        "Step3": [
+            { "Image": "Assets\\hints\\step3_prosos.png",  "Caption": "Pruflauf in Prosos anlegen" },
+            { "Image": "Assets\\hints\\step3_faellig.png", "Caption": "Faelligkeit auf letzten Sonntag" }
+        ],
+        "Step4": [
+            { "Image": "Assets\\hints\\step4_task.png",    "Caption": "Auszahlungslauf starten" },
+            { "Image": "Assets\\hints\\step4_folder.png",  "Caption": "Zielordner pruefen" }
+        ],
+        "Step5": [
+            { "Image": "Assets\\hints\\step5_mail.png",    "Caption": "Mail an Buchhaltung" }
+        ]
+    },
+    "Checklist": {}
 }

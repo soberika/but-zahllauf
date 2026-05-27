@@ -84,17 +84,14 @@ function Invoke-Step2Run {
     [CmdletBinding()]
     param(
         [switch]$NurExcel,
-        [switch]$NurExcelCsv,
         [string]$CsvOrdner = '',
         $StatusTextBlock,
         $BrushSuccess,
         $BrushDanger
     )
 
-    $effectiveNurExcel = [bool]($NurExcel -or $NurExcelCsv)
-
     Invoke-ExtractRechnungen `
-        -NurExcel:$effectiveNurExcel `
+        -NurExcel:$NurExcel `
         -CsvOrdner  $CsvOrdner `
         -MsgFolder  $global:Config.Paths.MsgFolder `
         -TaskFolder $global:Config.Paths.TaskFolder `

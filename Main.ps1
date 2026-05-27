@@ -97,33 +97,41 @@ $ui = @{
     # Step 1
     Btn1OpenPath     = Find-Element 'Btn1OpenPath'
     Btn1Done         = Find-Element 'Btn1Done'
+    Sp1Hints         = Find-Element 'Sp1Hints'
 
     # Step 2
     Chk2NurExcel     = Find-Element 'Chk2NurExcel'
-    Chk2NurExcelCsv  = Find-Element 'Chk2NurExcelCsv'
     Txt2Preview      = Find-Element 'Txt2Preview'
     Txt2LastRun      = Find-Element 'Txt2LastRun'
     Btn2Run          = Find-Element 'Btn2Run'
     Btn2OpenPath     = Find-Element 'Btn2OpenPath'
+    Sp2Hints         = Find-Element 'Sp2Hints'
 
     # Step 3
     Txt3Bezeichnung  = Find-Element 'Txt3Bezeichnung'
     Dp3Faelligkeit   = Find-Element 'Dp3Faelligkeit'
     Btn3Copy         = Find-Element 'Btn3Copy'
     Btn3Prosos       = Find-Element 'Btn3Prosos'
+    Chk3Done0        = Find-Element 'Chk3Done0'
+    Chk3Done1        = Find-Element 'Chk3Done1'
+    Chk3Done2        = Find-Element 'Chk3Done2'
+    Chk3Done3        = Find-Element 'Chk3Done3'
+    Txt3Checklist    = Find-Element 'Txt3Checklist'
+    Sp3Hints         = Find-Element 'Sp3Hints'
 
     # Step 4
     Txt4Ordner       = Find-Element 'Txt4Ordner'
     Txt4Status       = Find-Element 'Txt4Status'
     Btn4Run          = Find-Element 'Btn4Run'
-    Btn4Check        = Find-Element 'Btn4Check'
     Btn4OpenTask     = Find-Element 'Btn4OpenTask'
     Sp4Tasks         = Find-Element 'Sp4Tasks'
     Txt4TaskStatus   = Find-Element 'Txt4TaskStatus'
+    Sp4Hints         = Find-Element 'Sp4Hints'
 
     # Step 5
     Btn5MailTemplate = Find-Element 'Btn5MailTemplate'
     Btn5Finish       = Find-Element 'Btn5Finish'
+    Sp5Hints         = Find-Element 'Sp5Hints'
 
     # Log
     LogBox           = Find-Element 'LogBox'
@@ -226,6 +234,9 @@ function Update-Context {
     # Step 4
     $ui.Txt4Ordner.Text = $ctx.OrdnerName
 
+    # Schritt-3-Checkliste fuer die gewaehlte KW laden
+    Sync-Step3Checklist
+
     Write-Log "Kontext aktualisiert: KW=$($ctx.KW), Bezeichnung='$($ctx.Bezeichnung)'" -Level Info
 }
 
@@ -263,6 +274,192 @@ function Initialize-ScheduledTaskButtons {
 }
 
 # =============================================================================
+#  Bebilderte Hinweise (Galerie)
+# =============================================================================
+# Zeigt ein Hinweisbild gross in einem modalen Fenster (oder Platzhalter-Hinweis).
+function global:Show-HintImage {
+    param([string]$Path, [string]$Caption, $Owner)
+
+    if (-not [System.IO.File]::Exists($Path)) {
+        [void][System.Windows.MessageBox]::Show(
+            "Platzhalter - fuer diesen Hinweis ist noch kein Bild hinterlegt.`r`n`r`n$Caption",
+            "Bebilderter Hinweis")
+        return
+    }
+
+    $bmp = New-Object System.Windows.Media.Imaging.BitmapImage
+    $bmp.BeginInit()
+    $bmp.CacheOption = [System.Windows.Media.Imaging.BitmapCacheOption]::OnLoad
+    $bmp.UriSource   = New-Object System.Uri($Path)
+    $bmp.EndInit()
+
+    $img = New-Object System.Windows.Controls.Image
+    $img.Stretch = [System.Windows.Media.Stretch]::Uniform
+    $img.Source  = $bmp
+    $img.Margin  = [System.Windows.Thickness]::new(10)
+
+    $win = New-Object System.Windows.Window
+    $win.Title  = $Caption
+    $win.Width  = 960
+    $win.Height = 720
+    $win.WindowStartupLocation = [System.Windows.WindowStartupLocation]::CenterOwner
+    $win.Background = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.Color]::FromRgb(30, 30, 46))
+    if ($Owner) { $win.Owner = $Owner }
+    $win.Content = $img
+    [void]$win.ShowDialog()
+}
+
+# Baut pro Step eine Thumbnail-Galerie aus Config.Hints. Fehlt eine Bilddatei,
+# erscheint eine Platzhalter-Kachel. Klick oeffnet die Grossansicht.
+function Initialize-HintGalleries {
+    $hints = $Script:Config.Hints
+    if (-not $hints) { return }
+
+    $panels = @{
+        Step1 = $ui.Sp1Hints
+        Step2 = $ui.Sp2Hints
+        Step3 = $ui.Sp3Hints
+        Step4 = $ui.Sp4Hints
+        Step5 = $ui.Sp5Hints
+    }
+
+    # In lokale Variablen heben (Closure-Scope, siehe CLAUDE.MD).
+    $brushBorder   = $Script:Window.Resources['Border']
+    $brushTertiary = $Script:Window.Resources['BgTertiary']
+    $brushMuted    = $Script:Window.Resources['TextMuted']
+    $brushText     = $Script:Window.Resources['TextPrimary']
+    $owner         = $Script:Window
+
+    foreach ($key in $panels.Keys) {
+        $panel = $panels[$key]
+        if (-not $panel) { continue }
+        $panel.Children.Clear()
+
+        $items = $hints.$key
+        if (-not $items) { continue }
+
+        foreach ($h in $items) {
+            $imgPath = Join-Path $global:AppRoot ([string]$h.Image)
+            $caption = [string]$h.Caption
+            $exists  = [System.IO.File]::Exists($imgPath)
+
+            $inner = New-Object System.Windows.Controls.StackPanel
+
+            if ($exists) {
+                $bmp = New-Object System.Windows.Media.Imaging.BitmapImage
+                $bmp.BeginInit()
+                $bmp.CacheOption = [System.Windows.Media.Imaging.BitmapCacheOption]::OnLoad
+                $bmp.UriSource   = New-Object System.Uri($imgPath)
+                $bmp.EndInit()
+                $thumb = New-Object System.Windows.Controls.Image
+                $thumb.Height  = 110
+                $thumb.Stretch = [System.Windows.Media.Stretch]::Uniform
+                $thumb.Source  = $bmp
+                [void]$inner.Children.Add($thumb)
+            } else {
+                $ph = New-Object System.Windows.Controls.TextBlock
+                $ph.Text                = "Bild folgt"
+                $ph.Foreground          = $brushMuted
+                $ph.Height              = 110
+                $ph.TextAlignment       = [System.Windows.TextAlignment]::Center
+                $ph.Padding             = [System.Windows.Thickness]::new(0, 44, 0, 0)
+                [void]$inner.Children.Add($ph)
+            }
+
+            $cap = New-Object System.Windows.Controls.TextBlock
+            $cap.Text          = $caption
+            $cap.Foreground    = $brushText
+            $cap.FontSize      = 11
+            $cap.TextWrapping  = [System.Windows.TextWrapping]::Wrap
+            $cap.TextAlignment = [System.Windows.TextAlignment]::Center
+            $cap.Margin        = [System.Windows.Thickness]::new(6, 8, 6, 2)
+            [void]$inner.Children.Add($cap)
+
+            $tile = New-Object System.Windows.Controls.Border
+            $tile.Width           = 190
+            $tile.Margin          = [System.Windows.Thickness]::new(0, 0, 12, 12)
+            $tile.Padding         = [System.Windows.Thickness]::new(6)
+            $tile.CornerRadius    = [System.Windows.CornerRadius]::new(6)
+            $tile.BorderThickness = [System.Windows.Thickness]::new(1)
+            $tile.BorderBrush     = $brushBorder
+            $tile.Background      = $brushTertiary
+            $tile.Cursor          = [System.Windows.Input.Cursors]::Hand
+            $tile.Child           = $inner
+
+            $pathLocal  = $imgPath
+            $capLocal   = $caption
+            $ownerLocal = $owner
+            $handler = {
+                Show-HintImage -Path $pathLocal -Caption $capLocal -Owner $ownerLocal
+            }.GetNewClosure()
+            $tile.Add_MouseLeftButtonUp($handler)
+
+            [void]$panel.Children.Add($tile)
+        }
+    }
+    Write-Log "Bebilderte Hinweise geladen." -Level Debug
+}
+
+# =============================================================================
+#  Schritt-3-Checkliste (pro KW persistiert)
+# =============================================================================
+function Get-ChecklistBoxes {
+    return @($ui.Chk3Done0, $ui.Chk3Done1, $ui.Chk3Done2, $ui.Chk3Done3)
+}
+
+function Update-ChecklistCounter {
+    $boxes = Get-ChecklistBoxes
+    $done  = @($boxes | Where-Object { $_.IsChecked }).Count
+    $ui.Txt3Checklist.Text = "$done/$($boxes.Count) erledigt"
+    $ui.Txt3Checklist.Foreground = if ($done -eq $boxes.Count) {
+        $Script:Window.Resources['Success']
+    } else {
+        $Script:Window.Resources['TextMuted']
+    }
+}
+
+# Laedt den gespeicherten Zustand fuer die aktuelle KW in die Checkboxen.
+function Sync-Step3Checklist {
+    $key   = if ($Script:Context) { [string]$Script:Context.OrdnerName } else { '' }
+    $boxes = Get-ChecklistBoxes
+
+    $node = $null
+    if ($key -and $Script:Config.Checklist.PSObject.Properties[$key]) {
+        $node = $Script:Config.Checklist.$key
+    }
+
+    for ($i = 0; $i -lt $boxes.Count; $i++) {
+        $val = $false
+        if ($node) {
+            $p = "c$i"
+            if ($node.PSObject.Properties[$p]) { $val = [bool]$node.$p }
+        }
+        $boxes[$i].IsChecked = $val
+    }
+    Update-ChecklistCounter
+}
+
+# Schreibt den aktuellen Checkbox-Zustand fuer die aktuelle KW in die Config.
+function Save-Step3Checklist {
+    $key = if ($Script:Context) { [string]$Script:Context.OrdnerName } else { '' }
+    if (-not $key) { return }
+
+    if (-not $Script:Config.Checklist.PSObject.Properties[$key]) {
+        $Script:Config.Checklist | Add-Member -NotePropertyName $key -NotePropertyValue ([pscustomobject]@{})
+    }
+    $node  = $Script:Config.Checklist.$key
+    $boxes = Get-ChecklistBoxes
+    for ($i = 0; $i -lt $boxes.Count; $i++) {
+        $p   = "c$i"
+        $val = [bool]$boxes[$i].IsChecked
+        if ($node.PSObject.Properties[$p]) { $node.$p = $val }
+        else { $node | Add-Member -NotePropertyName $p -NotePropertyValue $val }
+    }
+    Save-AppConfig
+    Update-ChecklistCounter
+}
+
+# =============================================================================
 #  Event-Handler
 # =============================================================================
 # Sidebar
@@ -286,7 +483,6 @@ $ui.Btn2Run.Add_Click({
     $ui.Txt2LastRun.Text = "Letzter Aufruf: $((Get-Date).ToString('dd.MM.yyyy HH:mm')) - laeuft..."
     Invoke-Step2Run `
         -NurExcel:$ui.Chk2NurExcel.IsChecked `
-        -NurExcelCsv:$ui.Chk2NurExcelCsv.IsChecked `
         -StatusTextBlock $ui.Txt2LastRun `
         -BrushSuccess $Script:Window.Resources['Success'] `
         -BrushDanger  $Script:Window.Resources['Danger']
@@ -296,6 +492,10 @@ $ui.Btn2OpenPath.Add_Click({ Invoke-Step2OpenPath -Path $Script:Config.Paths.Tem
 # Step 3
 $ui.Btn3Copy.Add_Click({ Invoke-Step3Copy -Text $ui.Txt3Bezeichnung.Text })
 $ui.Btn3Prosos.Add_Click({ Invoke-Step3OpenProsos })
+$ui.Chk3Done0.Add_Click({ Save-Step3Checklist })
+$ui.Chk3Done1.Add_Click({ Save-Step3Checklist })
+$ui.Chk3Done2.Add_Click({ Save-Step3Checklist })
+$ui.Chk3Done3.Add_Click({ Save-Step3Checklist })
 
 # Step 4
 $ui.Btn4Run.Add_Click({
@@ -304,7 +504,6 @@ $ui.Btn4Run.Add_Click({
         -BrushSuccess $Script:Window.Resources['Success'] `
         -BrushDanger  $Script:Window.Resources['Danger']
 })
-$ui.Btn4Check.Add_Click({ Invoke-Step4CheckCorrection })
 $ui.Btn4OpenTask.Add_Click({ Invoke-Step4OpenTask -Path $Script:Config.Paths.TaskFolder })
 
 # Step 5
@@ -362,6 +561,7 @@ $Script:Window.Add_Loaded({
         $Script:LogFile) -Level Debug
     Initialize-WeekPicker
     Initialize-ScheduledTaskButtons
+    Initialize-HintGalleries
     $ui.TxtSetMsg.Text           = [string]$Script:Config.Paths.MsgFolder
     $ui.TxtSetTask.Text          = [string]$Script:Config.Paths.TaskFolder
     $ui.TxtSetZahllauf.Text      = [string]$Script:Config.Paths.ZahllaufFolder
