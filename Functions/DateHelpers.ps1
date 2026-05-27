@@ -75,20 +75,62 @@ function Get-OrdnerName {
 function Get-ZahllaufContext {
     <#
     .SYNOPSIS
-        Liefert ein PSCustomObject mit allen aktuell berechneten Werten.
+        Liefert ein PSCustomObject mit allen berechneten Werten.
+    .DESCRIPTION
+        Abgerechnet wird die VERGANGENE Woche: Der Stichtag ($RefDate) ist
+        standardmaessig der letzte Sonntag. Seine ISO-Woche bestimmt KW, Jahr,
+        Bezeichnung und OrdnerName; $RefDate ist zugleich die Faelligkeit.
+        "Heute" (Now/Date/Weekday) bleibt das tatsaechliche Tagesdatum.
+    .PARAMETER Today
+        Tagesdatum fuer die "Heute"-Anzeige.
+    .PARAMETER RefDate
+        Stichtag (Sonntag) der zu bearbeitenden Woche. Default = letzter Sonntag.
     #>
-    param([datetime]$Date = (Get-Date))
+    param(
+        [datetime]$Today = (Get-Date),
+        $RefDate         = $null
+    )
+
+    if (-not $RefDate) { $RefDate = Get-LastSunday -From $Today }
+    $RefDate = [datetime]$RefDate
 
     [pscustomobject]@{
-        Now           = $Date
-        Date          = $Date.ToString('dd.MM.yyyy')
-        Weekday       = $Date.ToString('dddd', [Globalization.CultureInfo]::GetCultureInfo('de-DE'))
-        KW            = Get-IsoCalendarWeek -Date $Date
-        Year          = Get-IsoYear -Date $Date
-        Year2         = (Get-IsoYear -Date $Date).ToString().Substring(2,2)
-        LastSunday    = Get-LastSunday -From $Date
-        LastSundayStr = (Get-LastSunday -From $Date).ToString('dd.MM.yyyy')
-        Bezeichnung   = Get-Bezeichnung -Date $Date
-        OrdnerName    = Get-OrdnerName -Date $Date
+        Now           = $Today
+        Date          = $Today.ToString('dd.MM.yyyy')
+        Weekday       = $Today.ToString('dddd', [Globalization.CultureInfo]::GetCultureInfo('de-DE'))
+        KW            = Get-IsoCalendarWeek -Date $RefDate
+        Year          = Get-IsoYear -Date $RefDate
+        Year2         = (Get-IsoYear -Date $RefDate).ToString().Substring(2,2)
+        LastSunday    = $RefDate
+        LastSundayStr = $RefDate.ToString('dd.MM.yyyy')
+        Bezeichnung   = Get-Bezeichnung -Date $RefDate
+        OrdnerName    = Get-OrdnerName -Date $RefDate
     }
+}
+
+function Get-RecentWeeks {
+    <#
+    .SYNOPSIS
+        Liefert die letzten N abrechenbaren Wochen (Stichtag = Sonntag),
+        beginnend mit der vergangenen Woche. Jede Zeile traegt die KW und
+        einen Anzeigetext "XX.KW YY mit Faelligkeit dd.MM.yyyy".
+    #>
+    param(
+        [datetime]$From = (Get-Date),
+        [int]$Count     = 4
+    )
+
+    $sunday = Get-LastSunday -From $From
+    $list   = New-Object System.Collections.Generic.List[object]
+    for ($i = 0; $i -lt $Count; $i++) {
+        $d   = $sunday.AddDays(-7 * $i)
+        $kw  = Get-IsoCalendarWeek -Date $d
+        $yr2 = (Get-IsoYear -Date $d).ToString().Substring(2,2)
+        $list.Add([pscustomobject]@{
+            Sunday  = $d
+            KW      = $kw
+            Display = ('{0}.KW {1} mit Faelligkeit {2}' -f $kw, $yr2, $d.ToString('dd.MM.yyyy'))
+        })
+    }
+    return $list
 }

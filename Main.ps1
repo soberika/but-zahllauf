@@ -72,6 +72,7 @@ $ui = @{
     TxtKW            = Find-Element 'TxtKW'
     TxtDate          = Find-Element 'TxtDate'
     TxtSunday        = Find-Element 'TxtSunday'
+    CmbWeek          = Find-Element 'CmbWeek'
     BtnRefresh       = Find-Element 'BtnRefresh'
 
     # Right panel
@@ -186,8 +187,21 @@ function Show-Step {
 # =============================================================================
 #  Werte berechnen + UI aktualisieren
 # =============================================================================
+function Initialize-WeekPicker {
+    # Liste der letzten Wochen aufbauen, Default = vergangene Woche (Index 0).
+    $Script:Weeks = Get-RecentWeeks -From (Get-Date) -Count 4
+    $ui.CmbWeek.Items.Clear()
+    foreach ($w in $Script:Weeks) { [void]$ui.CmbWeek.Items.Add($w.Display) }
+    $ui.CmbWeek.SelectedIndex = 0   # loest SelectionChanged -> Update-Context aus
+}
+
 function Update-Context {
-    $ctx = Get-ZahllaufContext
+    if (-not $Script:Weeks) { return }
+    $idx = $ui.CmbWeek.SelectedIndex
+    if ($idx -lt 0) { return }       # transienter Zustand beim Neuaufbau
+
+    $refDate = $Script:Weeks[$idx].Sunday
+    $ctx = Get-ZahllaufContext -RefDate $refDate
     $Script:Context = $ctx
 
     # Top-Bar
@@ -225,7 +239,8 @@ $ui.BtnStep4.Add_Click({ Show-Step 4 })
 $ui.BtnStep5.Add_Click({ Show-Step 5 })
 
 # Top-Bar
-$ui.BtnRefresh.Add_Click({ Update-Context })
+$ui.BtnRefresh.Add_Click({ Initialize-WeekPicker })   # Liste neu aufbauen, Default = vergangene Woche
+$ui.CmbWeek.Add_SelectionChanged({ Update-Context })
 $ui.BtnClearLog.Add_Click({ Clear-Log; Write-Log "Log geleert." -Level Debug })
 $ui.BtnOpenLog.Add_Click({ [System.Diagnostics.Process]::Start('notepad.exe', $Script:LogFile) | Out-Null })
 
@@ -312,7 +327,7 @@ $Script:Window.Add_Loaded({
         $PSVersionTable.PSVersion, `
         [System.Environment]::OSVersion.VersionString, `
         $Script:LogFile) -Level Debug
-    Update-Context
+    Initialize-WeekPicker
     $ui.TxtSetMsg.Text           = [string]$Script:Config.Paths.MsgFolder
     $ui.TxtSetTask.Text          = [string]$Script:Config.Paths.TaskFolder
     $ui.TxtSetZahllauf.Text      = [string]$Script:Config.Paths.ZahllaufFolder
