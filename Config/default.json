@@ -22,6 +22,15 @@
     "Behavior": {
         "SimulateCleanup": true
     },
+    "ScheduledTasks": [
+        {
+            "Id":         "viafin_zahllisten",
+            "Label":      "Erstellung der Zahllisten",
+            "TaskPath":   "\\Paul\\viafintech\\",
+            "TaskName":   "4_viafin_Zahllisten",
+            "ResultFile": "\\\\vjc\\GB1_Systembetreuung\\Taskplaner\\viafin_zahllisten.txt"
+        }
+    ],
     "Steps": [
         { "Id": 1, "Name": "Mail",           "Icon": "" },
         { "Id": 2, "Name": "Rechnungen",     "Icon": "" },

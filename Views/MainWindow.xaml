@@ -383,6 +383,17 @@
                         <TextBlock Text="viafintech_Task_Skript.ps1 baut den Task-Ordner und verschiebt die Dateien."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
+                        <!-- Aufgabenplanung: Windows-Tasks on demand starten -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Aufgabenplanung" Style="{StaticResource H2}"/>
+                                <TextBlock Text="Startet einen registrierten Windows-Task und meldet den Ausfuehrungsstatus."
+                                           Style="{StaticResource Muted}" Margin="0,0,0,12" TextWrapping="Wrap"/>
+                                <StackPanel x:Name="Sp4Tasks" Orientation="Horizontal" Margin="0,0,0,10"/>
+                                <TextBlock x:Name="Txt4TaskStatus" Style="{StaticResource Muted}" Text="nicht gestartet"/>
+                            </StackPanel>
+                        </Border>
+
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
                                 <TextBlock Text="Vorschau Ordnername" Style="{StaticResource H2}"/>

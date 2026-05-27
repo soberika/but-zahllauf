@@ -118,6 +118,8 @@ $ui = @{
     Btn4Run          = Find-Element 'Btn4Run'
     Btn4Check        = Find-Element 'Btn4Check'
     Btn4OpenTask     = Find-Element 'Btn4OpenTask'
+    Sp4Tasks         = Find-Element 'Sp4Tasks'
+    Txt4TaskStatus   = Find-Element 'Txt4TaskStatus'
 
     # Step 5
     Btn5MailTemplate = Find-Element 'Btn5MailTemplate'
@@ -227,6 +229,32 @@ function Update-Context {
     Write-Log "Kontext aktualisiert: KW=$($ctx.KW), Bezeichnung='$($ctx.Bezeichnung)'" -Level Info
 }
 
+# Erzeugt pro Config.ScheduledTasks-Eintrag einen Button in Sp4Tasks
+function Initialize-ScheduledTaskButtons {
+    if (-not $ui.Sp4Tasks) { return }
+    $tasks = $Script:Config.ScheduledTasks
+    if (-not $tasks) { return }
+
+    $ui.Sp4Tasks.Children.Clear()
+    foreach ($t in $tasks) {
+        $btn         = New-Object System.Windows.Controls.Button
+        $btn.Content = [string]$t.Label
+        $btn.Style   = $Script:Window.Resources['BtnPrimary']
+        $btn.Margin  = [System.Windows.Thickness]::new(0, 0, 10, 0)
+        $taskId      = [string]$t.Id
+        $handler = {
+            Invoke-ScheduledTaskById `
+                -Id              $taskId `
+                -StatusTextBlock $ui.Txt4TaskStatus `
+                -BrushSuccess    $Script:Window.Resources['Success'] `
+                -BrushDanger     $Script:Window.Resources['Danger']
+        }.GetNewClosure()
+        $btn.Add_Click($handler)
+        [void]$ui.Sp4Tasks.Children.Add($btn)
+    }
+    Write-Log "Aufgabenplanung: $(@($tasks).Count) Task(s) geladen." -Level Debug
+}
+
 # =============================================================================
 #  Event-Handler
 # =============================================================================
@@ -326,6 +354,7 @@ $Script:Window.Add_Loaded({
         [System.Environment]::OSVersion.VersionString, `
         $Script:LogFile) -Level Debug
     Initialize-WeekPicker
+    Initialize-ScheduledTaskButtons
     $ui.TxtSetMsg.Text           = [string]$Script:Config.Paths.MsgFolder
     $ui.TxtSetTask.Text          = [string]$Script:Config.Paths.TaskFolder
     $ui.TxtSetZahllauf.Text      = [string]$Script:Config.Paths.ZahllaufFolder
