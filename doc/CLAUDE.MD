@@ -53,6 +53,7 @@ Du antwortest **immer** in folgender Reihenfolge:
 - **Simulation-Toggle:** CheckBox in den Einstellungen (`ChkSetSimulate`) -> `Config.Behavior.SimulateCleanup`. Bei `true` wird das Loeschen nur protokolliert, nicht ausgefuehrt.
 - **Stabilisierung:** fertig — Modul-Scope (`global:`), Cmdlet-Lookup-Verlust nach Runspace-Disposal, Dispatcher.Invoke-Overload, Scriptblock-SessionState-Affinitaet behoben.
 - **KW-Auswahl:** fertig — `Get-ZahllaufContext` rechnet mit einem Stichtag (`-RefDate`, Default = letzter Sonntag der vergangenen Woche). Neuer Helfer `Get-RecentWeeks` liefert die letzten 4 Wochen. Top-Bar zeigt statt eines Refresh-Buttons eine ComboBox `CmbWeek`; Auswahl loest `Update-Context` aus. Button "Werte neu berechnen" entfernt.
+- **Aufgabenplanung (on demand):** fertig — neues Modul `Modules/Step4_ScheduledTasks.psm1`. `Invoke-StartScheduledTask` stoesst einen in der Windows-Aufgabenplanung registrierten Task im Runspace an (`Start-ScheduledTask`, Fallback `schtasks.exe /Run /TN "<Pfad><Name>"`), pollt den Abschluss **ausschliesslich** ueber `Get-ScheduledTaskInfo` (`LastTaskResult`/`LastRunTime`; `0x41301` = laeuft, danach neue `LastRunTime`) und faerbt `Txt4TaskStatus` gruen/rot. `Confirm-Dialog` vor jedem Start. Wrapper `Invoke-ScheduledTaskById` loest den Task per `Id` aus `Config.ScheduledTasks` auf (analog `Invoke-Step4Run`). Buttons werden in `Initialize-ScheduledTaskButtons` (Main.ps1) dynamisch aus `Config.ScheduledTasks` in der Karte "Aufgabenplanung" (Schritt 4) erzeugt. **Sicherheit (STRIKT):** keine Credentials, Argumente oder Task-XML im Repo, in der Config oder im Log; das Dashboard referenziert ausschliesslich `TaskPath`+`TaskName` und loggt nur den Ergebnis-Code. Niemals `schtasks /Query /XML`.
 - **Getestet OK (lokal vom Maintainer):** Schritt 1, Schritt 3, Einstellungen, Fehler-Log, Schritt 5 Mail-Vorlage.
 - **Offen:** Schritt 2/4/5 End-to-End final, Persistenz ueber App-Neustart final bestaetigen.
 
@@ -68,6 +69,7 @@ Detail-Log: siehe `Changes/AktuellerStand.md`.
   - Abschluss-Erkennung via `DispatcherTimer` (250 ms). `OnComplete` laeuft **vor** `Dispose()`, um den PS5.1-Cmdlet-Lookup-Bug zu vermeiden.
 - **Confirm-Dialog (Dialoge aus dem Runspace):** Die Proxy zeigt per `[void]$Sync.Dispatcher.Invoke([Action]$closure)` eine `[System.Windows.MessageBox]::Show(...)` auf dem UI-Thread und blockiert den Runspace-Thread bis zur Antwort. Ergebnis wird in `$Sync.DialogResult` abgelegt und als `[bool]` (Yes) zurueckgegeben. Wichtig: fuer Rueckgabewerte **nicht** `[Func[...]]`, sondern Ergebnis ueber `$Sync` + `[Action]`-Cast, sonst greift wieder die Overload-Falle. Scripts im Runspace rufen `Confirm-Dialog` einfach auf (Funktion liegt im Eltern-Scope).
 - **Dispatcher.Invoke:** Immer `GetNewClosure()` + `[void]$dispatcher.Invoke([Action]$closure)` ohne Args-Array, sonst kollidiert PS5.1 mit der `DispatcherPriority`-Overload.
+- **Closure-Scope bei dynamischen Handlern:** `GetNewClosure()` erzeugt fuer den Scriptblock einen neuen Modulscope. Einfache Variablen (`$ui`, lokale) werden per Wert eingefangen, aber explizite `$Script:`-Referenzen (`$Script:Window`) loesen im Closure auf den **leeren** neuen Scope auf (`-> $null`, `$null.Resources['Success']` = "Index auf NULL-Array"). Werte wie Brushes/Styles/StatusBlock daher **vor** dem Closure in lokale Variablen heben (siehe `Initialize-ScheduledTaskButtons` in `Main.ps1`).
 - **.NET statt Cmdlet:** In kritischen Pfaden (Logging, Process-Start, File-Existenz, Clipboard) reines .NET (`[System.IO.File]::AppendAllText`, `[System.Diagnostics.Process]::Start`, `[System.IO.Directory]::Exists`, `[System.Windows.Clipboard]::SetText`, `[DateTime]::Now`).
 - **Encoding-Falle (STRIKT):** `.ps1`-Dateien **ohne BOM** (z. B. `RechnungenausMailinExcel.ps1`) liest PS5.1 als CP1252. Multibyte-UTF-8 in **String-Literalen** kann den Parser zerschiessen — En-Dash `–`/Em-Dash `—` enden auf Byte `0x93`/`0x94` = typografische Anfuehrungszeichen, die PowerShell als String-Delimiter behandelt. Regel: in BOM-losen Dateien **nur ASCII** in Code/Strings (Umlaute als `ue`/`ae`/`oe`, normaler Bindestrich statt En-Dash). Box-Zeichen in **Kommentaren** sind harmlos. Dateien **mit** BOM (`viafintech_Task_Skript.ps1`, `MailanHaushalt.ps1`) vertragen UTF-8.
 - **KW-Logik:** Abgerechnet wird die vergangene Woche. `Get-ZahllaufContext -RefDate <Sonntag>` leitet KW, Jahr, Bezeichnung, OrdnerName und Faelligkeit aus dem Stichtag ab; `Now/Date/Weekday` zeigen weiterhin das Tagesdatum. `Get-RecentWeeks -Count 4` baut die ComboBox-Liste (Sonntage der letzten 4 Wochen). Die Liste wird nur beim App-Start befuellt; nach einem Tageswechsel ist ein Neustart noetig.
@@ -80,7 +82,7 @@ Detail-Log: siehe `Changes/AktuellerStand.md`.
 
 ```
 Main.ps1                          # Einstieg, XAML, Event-Handler, Settings, $global:-Mirror
-Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder + Skriptnamen, Behavior.SimulateCleanup, UI-Defaults
+Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder + Skriptnamen, Behavior.SimulateCleanup, ScheduledTasks[], UI-Defaults
 Changes/AktuellerStand.md         # Detailliertes Stand- und Bug-Log
 doc/CLAUDE.MD                     # diese Datei
 doc/prompt.md
@@ -94,6 +96,7 @@ Modules/
   Step2_Rechnungen.psm1           # Invoke-ExtractRechnungen, Invoke-Step2Run, Invoke-Step2OpenPath
   Step3_Pruflauf.psm1             # Invoke-Step3Copy, Invoke-Step3OpenProsos
   Step4_Auszahlung.psm1           # Invoke-StartTaskScript, Invoke-Step4Run, Invoke-Step4OpenTask
+  Step4_ScheduledTasks.psm1       # Invoke-StartScheduledTask, Invoke-ScheduledTaskById (Aufgabenplanung on demand)
   Step5_Abschluss.psm1            # Invoke-Step5MailTemplate, Invoke-Step5Finish
 Scripts/                          # Originale - Param-Block + punktuelle Anpassungen
   RechnungenausMailinExcel.ps1    # KEIN BOM -> nur ASCII in Strings!

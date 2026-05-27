@@ -45,6 +45,7 @@ Das Skript startet sich bei Bedarf automatisch im STA-Modus neu.
 │   ├── Step2_Rechnungen.psm1
 │   ├── Step3_Pruflauf.psm1
 │   ├── Step4_Auszahlung.psm1
+│   ├── Step4_ScheduledTasks.psm1  # Windows-Tasks on demand anstossen + Status
 │   └── Step5_Abschluss.psm1       # Mail-Vorlage + Abschluss-Cleanup
 ├── Scripts/
 │   ├── RechnungenausMailinExcel.ps1
@@ -84,6 +85,13 @@ Das Skript startet sich bei Bedarf automatisch im STA-Modus neu.
 - **Schritt 4 — Auszahlung:** ruft `viafintech_Task_Skript.ps1`, baut den
   Task-Ordner und verschiebt ihn ins Zahllauf-Ziel. Existiert das Ziel bereits,
   fragt ein Ja/Nein-Dialog vor dem Ueberschreiben.
+  - *Aufgabenplanung (on demand):* startet in der Windows-Aufgabenplanung
+    registrierte Tasks (z. B. die OPEN-PROSOZ-Zahllistenerstellung) per Knopf
+    und meldet den Ausfuehrungsstatus zurueck. Ein Ja/Nein-Dialog bestaetigt
+    jeden Start; der Status wird ausschliesslich ueber `Get-ScheduledTaskInfo`
+    geprueft. **Es liegen keine Passwoerter, Argumente oder Task-XML im Repo** —
+    die Aufgabe ist bereits in der Aufgabenplanung registriert und wird nur
+    ueber Pfad + Name referenziert.
 - **Schritt 5 — Abschluss:**
   - *Mail-Vorlage oeffnen* erzeugt einen Outlook-Entwurf
     (`MailanHaushalt.ps1`) mit Betreff
@@ -100,6 +108,9 @@ Seite **Einstellungen** in der GUI editierbar (Ordner-Browser + Speichern):
 - `Paths.MsgFolder`, `Paths.TaskFolder`, `Paths.ZahllaufFolder` — Arbeitsordner
 - `Paths.ScriptRechnungen`, `Paths.ScriptTask`, `Paths.ScriptMail` — Skriptnamen
 - `Behavior.SimulateCleanup` — `true` = Abschluss-Cleanup nur simulieren
+- `ScheduledTasks[]` — anstossbare Windows-Tasks, je `Id`, `Label`, `TaskPath`,
+  `TaskName` und optional `ResultFile` (nur Existenz-/Aenderungszeit-Pruefung).
+  Nur Pfad/Name/Label — keine Geheimnisse, daher Git-unbedenklich.
 
 Aenderungen werden persistiert und beim naechsten Start wieder geladen.
 
