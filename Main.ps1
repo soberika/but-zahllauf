@@ -235,19 +235,26 @@ function Initialize-ScheduledTaskButtons {
     $tasks = $Script:Config.ScheduledTasks
     if (-not $tasks) { return }
 
+    # In lokale Variablen heben, damit GetNewClosure() sie per Wert einfaengt.
+    # $Script:-Referenzen wuerden im Closure-Modulscope auf $null aufloesen.
+    $btnStyle     = $Script:Window.Resources['BtnPrimary']
+    $statusBlock  = $ui.Txt4TaskStatus
+    $brushSuccess = $Script:Window.Resources['Success']
+    $brushDanger  = $Script:Window.Resources['Danger']
+
     $ui.Sp4Tasks.Children.Clear()
     foreach ($t in $tasks) {
         $btn         = New-Object System.Windows.Controls.Button
         $btn.Content = [string]$t.Label
-        $btn.Style   = $Script:Window.Resources['BtnPrimary']
+        $btn.Style   = $btnStyle
         $btn.Margin  = [System.Windows.Thickness]::new(0, 0, 10, 0)
         $taskId      = [string]$t.Id
         $handler = {
             Invoke-ScheduledTaskById `
                 -Id              $taskId `
-                -StatusTextBlock $ui.Txt4TaskStatus `
-                -BrushSuccess    $Script:Window.Resources['Success'] `
-                -BrushDanger     $Script:Window.Resources['Danger']
+                -StatusTextBlock $statusBlock `
+                -BrushSuccess    $brushSuccess `
+                -BrushDanger     $brushDanger
         }.GetNewClosure()
         $btn.Add_Click($handler)
         [void]$ui.Sp4Tasks.Children.Add($btn)
