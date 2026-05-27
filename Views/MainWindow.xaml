@@ -241,17 +241,10 @@
                     </Border>
                 </StackPanel>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal"
-                            VerticalAlignment="Center" Margin="0,0,20,0">
-                    <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
-                        <TextBlock Text="Bearbeitete KW" Style="{StaticResource Muted}"/>
-                        <ComboBox x:Name="CmbWeek" Width="250" Height="30"
-                                  VerticalContentAlignment="Center"/>
-                    </StackPanel>
-                    <Button x:Name="BtnRefresh"
-                            Style="{StaticResource BtnPrimary}"
-                            Content="Werte neu berechnen"
-                            VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,20,0">
+                    <TextBlock Text="Bearbeitete KW" Style="{StaticResource Muted}"/>
+                    <ComboBox x:Name="CmbWeek" Width="250" Height="30"
+                              VerticalContentAlignment="Center"/>
                 </StackPanel>
             </Grid>
         </Border>
