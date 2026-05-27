@@ -59,17 +59,19 @@ Das Skript startet sich bei Bedarf automatisch im STA-Modus neu.
 ## Features
 
 - Dark-Theme WPF-Oberflaeche, 1320x840
-- Top-Bar mit aktueller KW, Datum, letztem Sonntag, Refresh-Button
+- Top-Bar mit aktuellem Datum und letztem Sonntag sowie einer ComboBox
+  zur Auswahl der bearbeiteten Kalenderwoche (letzte 4 KWs, Default = vergangene Woche)
 - Linke Sidebar mit 5 Schritten (aktiver Schritt visuell hervorgehoben)
 - Hauptbereich wechselt per `Visibility` zwischen den Step-Pages
 - Rechtes Panel mit globalen Parametern (KW, Jahr, Bezeichnungs-Vorschau,
   Ordnernamens-Vorschau)
 - Log-Fenster unten (RichTextBox), farbig nach Level
   (Info / Success / Warning / Error / Debug) plus Tageslogdatei
-- Automatische Berechnung beim Start und per Button:
+- Automatische Berechnung beim Start; alle Werte basieren auf der
+  ausgewaehlten KW (Default = vergangene Woche):
   - ISO-Kalenderwoche (Montag = Wochenbeginn)
   - ISO-Jahr (korrekt am Jahreswechsel)
-  - Letzter Sonntag
+  - Letzter Sonntag der Zielwoche (= Faelligkeit)
   - Bezeichnung `Viafintech vom XX.KW YY`
   - Task-Ordnername `YY_MM_DD Fuer XX.KW`
 

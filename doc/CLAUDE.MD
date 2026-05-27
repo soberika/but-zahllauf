@@ -40,7 +40,7 @@ Du antwortest **immer** in folgender Reihenfolge:
 
 ---
 
-## Aktueller Stand (Stand 2026-05-26)
+## Aktueller Stand (Stand 2026-05-27)
 
 - **Phase 1 (Skeleton):** fertig — WPF-GUI, Sidebar, Dark Theme, RichTextBox-Log, ISO-KW, 5 Schritte als Pages.
 - **Phase 2 (Skript-Integration):** fertig — Originalskripte laufen via `Start-RunspaceJob`:
@@ -52,6 +52,7 @@ Du antwortest **immer** in folgender Reihenfolge:
   - `Invoke-Step5Finish` raeumt auf: `.msg`-Dateien + `extracted_Attachements` loeschen, Tageslog nach `\\VJC\GB1_Systembetreuung\Taskplaner\<Bezeichnung>_<yyyyMMdd_HHmmss>_<guid8>.log` sichern. Gesteuert ueber `Behavior.SimulateCleanup` (Default `true`).
 - **Simulation-Toggle:** CheckBox in den Einstellungen (`ChkSetSimulate`) -> `Config.Behavior.SimulateCleanup`. Bei `true` wird das Loeschen nur protokolliert, nicht ausgefuehrt.
 - **Stabilisierung:** fertig — Modul-Scope (`global:`), Cmdlet-Lookup-Verlust nach Runspace-Disposal, Dispatcher.Invoke-Overload, Scriptblock-SessionState-Affinitaet behoben.
+- **KW-Auswahl:** fertig — `Get-ZahllaufContext` rechnet mit einem Stichtag (`-RefDate`, Default = letzter Sonntag der vergangenen Woche). Neuer Helfer `Get-RecentWeeks` liefert die letzten 4 Wochen. Top-Bar zeigt statt eines Refresh-Buttons eine ComboBox `CmbWeek`; Auswahl loest `Update-Context` aus. Button "Werte neu berechnen" entfernt.
 - **Getestet OK (lokal vom Maintainer):** Schritt 1, Schritt 3, Einstellungen, Fehler-Log, Schritt 5 Mail-Vorlage.
 - **Offen:** Schritt 2/4/5 End-to-End final, Persistenz ueber App-Neustart final bestaetigen.
 
@@ -69,6 +70,7 @@ Detail-Log: siehe `Changes/AktuellerStand.md`.
 - **Dispatcher.Invoke:** Immer `GetNewClosure()` + `[void]$dispatcher.Invoke([Action]$closure)` ohne Args-Array, sonst kollidiert PS5.1 mit der `DispatcherPriority`-Overload.
 - **.NET statt Cmdlet:** In kritischen Pfaden (Logging, Process-Start, File-Existenz, Clipboard) reines .NET (`[System.IO.File]::AppendAllText`, `[System.Diagnostics.Process]::Start`, `[System.IO.Directory]::Exists`, `[System.Windows.Clipboard]::SetText`, `[DateTime]::Now`).
 - **Encoding-Falle (STRIKT):** `.ps1`-Dateien **ohne BOM** (z. B. `RechnungenausMailinExcel.ps1`) liest PS5.1 als CP1252. Multibyte-UTF-8 in **String-Literalen** kann den Parser zerschiessen — En-Dash `–`/Em-Dash `—` enden auf Byte `0x93`/`0x94` = typografische Anfuehrungszeichen, die PowerShell als String-Delimiter behandelt. Regel: in BOM-losen Dateien **nur ASCII** in Code/Strings (Umlaute als `ue`/`ae`/`oe`, normaler Bindestrich statt En-Dash). Box-Zeichen in **Kommentaren** sind harmlos. Dateien **mit** BOM (`viafintech_Task_Skript.ps1`, `MailanHaushalt.ps1`) vertragen UTF-8.
+- **KW-Logik:** Abgerechnet wird die vergangene Woche. `Get-ZahllaufContext -RefDate <Sonntag>` leitet KW, Jahr, Bezeichnung, OrdnerName und Faelligkeit aus dem Stichtag ab; `Now/Date/Weekday` zeigen weiterhin das Tagesdatum. `Get-RecentWeeks -Count 4` baut die ComboBox-Liste (Sonntage der letzten 4 Wochen). Die Liste wird nur beim App-Start befuellt; nach einem Tageswechsel ist ein Neustart noetig.
 - **Funktions-Sichtbarkeit aus Modulen:** Module sehen nur globalen Scope. Dot-gesourcte Helfer wie `Get-ZahllaufContext` (nur `Get-IsoCalendarWeek` ist `global:`) sind aus `.psm1` **nicht** erreichbar — berechnete Werte daher in `Main.ps1` ermitteln und als Parameter uebergeben.
 - **Originalskripte in `Scripts/`** bekommen primaer einen Param-Block; punktuelle Anpassungen (interaktive Prompts -> nicht-interaktiv, `Confirm-Dialog`) sind erlaubt, Body sonst unveraendert.
 - **Skript-Pfade** kommen aus `Config/default.json` (`Paths.ScriptRechnungen`, `Paths.ScriptTask`, `Paths.ScriptMail`); Arbeits-Pfade (`MsgFolder`, `TaskFolder`, `ZahllaufFolder`) und `Behavior.SimulateCleanup` ebenfalls dort und ueber GUI editierbar.
