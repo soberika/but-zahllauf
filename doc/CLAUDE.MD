@@ -40,7 +40,7 @@ Du antwortest **immer** in folgender Reihenfolge:
 
 ---
 
-## Aktueller Stand (Stand 2026-05-27)
+## Aktueller Stand (Stand 2026-05-28)
 
 - **Phase 1 (Skeleton):** fertig — WPF-GUI, Sidebar, Dark Theme, RichTextBox-Log, ISO-KW, 5 Schritte als Pages.
 - **Phase 2 (Skript-Integration):** fertig — Originalskripte laufen via `Start-RunspaceJob`:
@@ -60,6 +60,7 @@ Du antwortest **immer** in folgender Reihenfolge:
   - Schritt 3: Checkliste verdrahtet (`Chk3Done0..3`) und **pro KW** in `Config.Checklist[<OrdnerName>]` persistiert. `Sync-Step3Checklist` laedt beim KW-Wechsel, `Save-Step3Checklist` speichert pro Klick; Zaehler `Txt3Checklist` ("x/4 erledigt", gruen bei vollstaendig).
   - Schritt 4: Platzhalter-Button "Letzte Korrektur pruefen" (`Btn4Check`) + Funktion `Invoke-Step4CheckCorrection` ersatzlos entfernt (war ein reiner Log-No-op).
   - **Bebilderte Hinweise (Galerie):** pro Step ein `Expander` "Bebilderte Hinweise" mit `WrapPanel` (`Sp1Hints..Sp5Hints`), datengetrieben aus `Config.Hints.Step1..Step5` (`{ Image, Caption }`). `Initialize-HintGalleries` baut Thumbnail-Kacheln; fehlt die Bilddatei, erscheint eine Platzhalter-Kachel ("Bild folgt"). Klick oeffnet die Grossansicht via `global:Show-HintImage` (modal). Closure-Werte (Pfad/Caption/Owner) **vor** `GetNewClosure()` in lokale Variablen gehoben (siehe Closure-Scope-Note). Bilder liegen unter `Assets/hints/` und sind **gitignored** (Screenshots interner Systeme nicht committen).
+- **UI-Texte ausgelagert (2026-05-28):** Statische GUI-Texte liegen zentral und editierbar in `Config/strings.de.json` (UTF-8, echte Umlaute erlaubt). Neue `Functions/Strings.ps1` mit `Import-AppStrings` (analog `Import-AppConfig`), Mapping-Tabelle `$Script:StringMap` (Element-`x:Name` -> Property `Text`/`Content`/`Header` -> Schluessel) und `Apply-Strings`; Aufruf in `Add_Loaded` **vor** `Initialize-WeekPicker`/`Update-Context`. Bisher unbenannte In-Scope-Textelemente im XAML haben ein `x:Name` erhalten; bestehende Namen unveraendert. Fehlt ein Schluessel/Element, bleibt der XAML-Wert stehen + Warnung im Log. Dynamische Laufzeit-Texte (KW/Datum/Bezeichnung/Ordner/Status/Counter) bleiben **out of scope** in `Update-Context`/`OnComplete`; Task-Labels und Hinweis-Captions kommen weiter aus `Config/default.json`. Bearbeiter-Doku: `doc/TEXTE_BEARBEITEN.md`.
 - **Getestet OK (lokal vom Maintainer):** Schritt 1, Schritt 3, Einstellungen, Fehler-Log, Schritt 5 Mail-Vorlage.
 - **Offen:** Schritt 2/4/5 End-to-End final, Persistenz ueber App-Neustart final bestaetigen.
 
@@ -87,17 +88,20 @@ Detail-Log: siehe `Changes/AktuellerStand.md`.
 ## Datei-Layout
 
 ```
-Main.ps1                          # Einstieg, XAML, Event-Handler, Settings, $global:-Mirror, Hint-Galerie, Step3-Checkliste
+Main.ps1                          # Einstieg, XAML, Event-Handler, Settings, $global:-Mirror, Hint-Galerie, Step3-Checkliste, Apply-Strings-Aufruf
 Assets/hints/                     # Hinweisbilder (gitignored, .gitkeep). Pfade aus Config.Hints
 Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder + Skriptnamen, Behavior.SimulateCleanup, ScheduledTasks[], Hints{}, Checklist{}, UI-Defaults
+Config/strings.de.json            # statische UI-Texte (UTF-8) -> doc/TEXTE_BEARBEITEN.md
 Changes/AktuellerStand.md         # Detailliertes Stand- und Bug-Log
 doc/CLAUDE.MD                     # diese Datei
+doc/TEXTE_BEARBEITEN.md           # Bearbeiter-Anleitung fuer die UI-Texte (Mapping-Tabelle)
 doc/prompt.md
 Functions/
   ConfigLoader.ps1                # Import-AppConfig, Save-AppConfig
   DateHelpers.ps1                 # global:Get-IsoCalendarWeek + Get-ZahllaufContext (script-scope)
   Logging.ps1                     # global:Write-Log, global:Clear-Log
   RunspaceHelpers.ps1             # global:Start-RunspaceJob + Inner-Proxies (inkl. Confirm-Dialog)
+  Strings.ps1                     # Import-AppStrings, Apply-Strings, $Script:StringMap (-> strings.de.json)
 Modules/
   Step1_Mail.psm1                 # Invoke-Step1OpenPath, Invoke-Step1MarkDone
   Step2_Rechnungen.psm1           # Invoke-ExtractRechnungen, Invoke-Step2Run, Invoke-Step2OpenPath

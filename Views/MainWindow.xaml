@@ -226,11 +226,13 @@
                                    Foreground="White"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
+                    <!-- Statische Texte werden beim Start aus Config\strings.de.json
+                         ueberschrieben (Apply-Strings). Siehe doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="viafintech Zahllauf"
+                        <TextBlock x:Name="TxtBrandTitle" Text="viafintech Zahllauf"
                                    FontSize="16" FontWeight="SemiBold"
                                    Foreground="{StaticResource TextPrimary}"/>
-                        <TextBlock Text="Dashboard v1.0"
+                        <TextBlock x:Name="TxtBrandSubtitle" Text="Dashboard v1.0"
                                    Style="{StaticResource Muted}"/>
                     </StackPanel>
                 </StackPanel>
@@ -239,21 +241,21 @@
                             VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
                         <StackPanel>
-                            <TextBlock Text="Kalenderwoche" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="LblTopKW" Text="Kalenderwoche" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtKW" Text="--"
                                        FontSize="18" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
                         <StackPanel>
-                            <TextBlock Text="Heute" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="LblTopToday" Text="Heute" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtDate" Text="--"
                                        FontSize="18" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
                         <StackPanel>
-                            <TextBlock Text="Letzter Sonntag" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="LblTopSunday" Text="Letzter Sonntag" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtSunday" Text="--"
                                        FontSize="18" FontWeight="SemiBold"/>
                         </StackPanel>
@@ -261,7 +263,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,20,0">
-                    <TextBlock Text="Bearbeitete KW" Style="{StaticResource Muted}"/>
+                    <TextBlock x:Name="LblTopWeekSelect" Text="Bearbeitete KW" Style="{StaticResource Muted}"/>
                     <ComboBox x:Name="CmbWeek" Width="250" Height="30"
                               VerticalContentAlignment="Center"/>
                 </StackPanel>
@@ -279,8 +281,10 @@
             <!-- =========== Sidebar =========== -->
             <Border Grid.Column="0" Background="{StaticResource BgSecondary}"
                     BorderBrush="{StaticResource Border}" BorderThickness="0,0,1,0">
+                <!-- Button-/Label-Texte werden aus Config\strings.de.json gesetzt
+                     (Apply-Strings). Siehe doc\TEXTE_BEARBEITEN.md -->
                 <StackPanel>
-                    <TextBlock Text="ABLAUF"
+                    <TextBlock x:Name="LblSidebarSection" Text="ABLAUF"
                                Foreground="{StaticResource TextMuted}"
                                FontSize="11" FontWeight="Bold"
                                Margin="22,22,0,10"/>
@@ -307,23 +311,22 @@
                           Padding="30,24,30,24">
                 <Grid>
                     <!-- ============ SCHRITT 1 - MAIL ============ -->
+                    <!-- Statische Texte (Titel, Anleitung, Buttons) kommen aus
+                         Config\strings.de.json (Apply-Strings). doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageStep1" Visibility="Visible">
-                        <TextBlock Text="Schritt 1 - Mail" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Wochenmail von viafintech prüfen und .msg-Dateien im _Temp-Ordner ablegen."
+                        <TextBlock x:Name="Txt1Title" Text="Schritt 1 - Mail" Style="{StaticResource H1}"/>
+                        <TextBlock x:Name="Txt1Desc" Text="Wochenmail von viafintech prüfen und .msg-Dateien im _Temp-Ordner ablegen."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Anleitung" Style="{StaticResource H2}"/>
-                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                                    1. Outlook öffnen und die Wochenmail mit den Rechnungen suchen.
-                                </TextBlock>
-                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                                    2. Alle relevanten .msg-Dateien in den _Temp-Ordner ziehen.
-                                </TextBlock>
-                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,16">
-                                    3. Unten "Pfad öffnen" klicken, um den Ordner zu prüfen.
-                                </TextBlock>
+                                <TextBlock x:Name="Txt1AnleitungTitle" Text="Anleitung" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt1Anleitung1" TextWrapping="Wrap" Margin="0,0,0,10"
+                                           Text="1. Outlook öffnen und die Wochenmail mit den Rechnungen suchen."/>
+                                <TextBlock x:Name="Txt1Anleitung2" TextWrapping="Wrap" Margin="0,0,0,10"
+                                           Text="2. Alle relevanten .msg-Dateien in den _Temp-Ordner ziehen."/>
+                                <TextBlock x:Name="Txt1Anleitung3" TextWrapping="Wrap" Margin="0,0,0,16"
+                                           Text="3. Unten &quot;Pfad öffnen&quot; klicken, um den Ordner zu prüfen."/>
                                 <StackPanel Orientation="Horizontal">
                                     <Button x:Name="Btn1OpenPath"  Style="{StaticResource BtnBase}"
                                             Content="Pfad öffnen" Margin="0,0,10,0"/>
@@ -333,27 +336,29 @@
                             </StackPanel>
                         </Border>
 
-                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                        <Expander x:Name="Exp1Hints" Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
                             <WrapPanel x:Name="Sp1Hints" Margin="0,10,0,0"/>
                         </Expander>
                     </StackPanel>
 
                     <!-- ============ SCHRITT 2 - RECHNUNGEN ============ -->
+                    <!-- Statische Texte aus Config\strings.de.json (Apply-Strings).
+                         Dynamisch bleiben Txt2Preview/Txt2LastRun. doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageStep2" Visibility="Collapsed">
-                        <TextBlock Text="Schritt 2 - Rechnungen extrahieren" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Verarbeitet die .msg-Dateien und erstellt die Excel-Sammeldatei (alleRechnungen.xlsx)."
+                        <TextBlock x:Name="Txt2Title" Text="Schritt 2 - Rechnungen extrahieren" Style="{StaticResource H1}"/>
+                        <TextBlock x:Name="Txt2Desc" Text="Verarbeitet die .msg-Dateien und erstellt die Excel-Sammeldatei (alleRechnungen.xlsx)."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Optionen" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt2OptionenTitle" Text="Optionen" Style="{StaticResource H2}"/>
                                 <CheckBox x:Name="Chk2NurExcel"
                                           Content="Nur Excel erstellen (CSV-Dateien liegen bereits vor)"/>
 
-                                <TextBlock Text="Vorschau Excel-Bezeichnung" Style="{StaticResource H2}" Margin="0,16,0,4"/>
+                                <TextBlock x:Name="Txt2PreviewTitle" Text="Vorschau Excel-Bezeichnung" Style="{StaticResource H2}" Margin="0,16,0,4"/>
                                 <TextBox x:Name="Txt2Preview" IsReadOnly="True" Text="--"/>
 
-                                <TextBlock Text="Letzter Lauf" Style="{StaticResource H2}" Margin="0,16,0,4"/>
+                                <TextBlock x:Name="Txt2LastRunTitle" Text="Letzter Lauf" Style="{StaticResource H2}" Margin="0,16,0,4"/>
                                 <TextBlock x:Name="Txt2LastRun" Style="{StaticResource Muted}" Text="noch nicht ausgeführt"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
@@ -365,23 +370,25 @@
                             </StackPanel>
                         </Border>
 
-                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                        <Expander x:Name="Exp2Hints" Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
                             <WrapPanel x:Name="Sp2Hints" Margin="0,10,0,0"/>
                         </Expander>
                     </StackPanel>
 
                     <!-- ============ SCHRITT 3 - PRUFLAUF ============ -->
+                    <!-- Statische Texte aus Config\strings.de.json (Apply-Strings).
+                         Dynamisch bleiben Txt3Bezeichnung/Txt3Checklist. doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageStep3" Visibility="Collapsed">
-                        <TextBlock Text="Schritt 3 - Prüflauf in Prosos" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Bezeichnung und Fälligkeit für den Prüflauf festlegen."
+                        <TextBlock x:Name="Txt3Title" Text="Schritt 3 - Prüflauf in Prosos" Style="{StaticResource H1}"/>
+                        <TextBlock x:Name="Txt3Desc" Text="Bezeichnung und Fälligkeit für den Prüflauf festlegen."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Bezeichnung" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt3BezeichnungTitle" Text="Bezeichnung" Style="{StaticResource H2}"/>
                                 <TextBox x:Name="Txt3Bezeichnung" Text="--"/>
 
-                                <TextBlock Text="Fälligkeit (letzter Sonntag)" Style="{StaticResource H2}" Margin="0,14,0,4"/>
+                                <TextBlock x:Name="Txt3FaelligkeitTitle" Text="Fälligkeit (letzter Sonntag)" Style="{StaticResource H2}" Margin="0,14,0,4"/>
                                 <DatePicker x:Name="Dp3Faelligkeit" Width="200" HorizontalAlignment="Left"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
@@ -396,7 +403,7 @@
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
                                 <Grid Margin="0,0,0,4">
-                                    <TextBlock Text="Checkliste" Style="{StaticResource H2}"
+                                    <TextBlock x:Name="Txt3ChecklistTitle" Text="Checkliste" Style="{StaticResource H2}"
                                                VerticalAlignment="Center"/>
                                     <TextBlock x:Name="Txt3Checklist" Style="{StaticResource Muted}"
                                                HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -409,22 +416,24 @@
                             </StackPanel>
                         </Border>
 
-                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                        <Expander x:Name="Exp3Hints" Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
                             <WrapPanel x:Name="Sp3Hints" Margin="0,10,0,0"/>
                         </Expander>
                     </StackPanel>
 
                     <!-- ============ SCHRITT 4 - AUSZAHLUNG ============ -->
+                    <!-- Statische Texte aus Config\strings.de.json (Apply-Strings).
+                         Dynamisch bleiben Txt4TaskStatus/Txt4Ordner/Txt4Status. doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageStep4" Visibility="Collapsed">
-                        <TextBlock Text="Schritt 4 - Auszahlungslauf" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Baut den Task-Ordner und verschiebt die Dateien in den Zahllauf-Ordner."
+                        <TextBlock x:Name="Txt4Title" Text="Schritt 4 - Auszahlungslauf" Style="{StaticResource H1}"/>
+                        <TextBlock x:Name="Txt4Desc" Text="Baut den Task-Ordner und verschiebt die Dateien in den Zahllauf-Ordner."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <!-- Aufgabenplanung: Windows-Tasks on demand starten -->
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Aufgabenplanung" Style="{StaticResource H2}"/>
-                                <TextBlock Text="Startet einen registrierten Windows-Task und meldet den Ausführungsstatus."
+                                <TextBlock x:Name="Txt4AufgabenTitle" Text="Aufgabenplanung" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt4AufgabenDesc" Text="Startet einen registrierten Windows-Task und meldet den Ausführungsstatus."
                                            Style="{StaticResource Muted}" Margin="0,0,0,12" TextWrapping="Wrap"/>
                                 <StackPanel x:Name="Sp4Tasks" Orientation="Horizontal" Margin="0,0,0,10"/>
                                 <TextBlock x:Name="Txt4TaskStatus" Style="{StaticResource Muted}" Text="nicht gestartet"/>
@@ -433,10 +442,10 @@
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Vorschau Ordnername" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt4OrdnerTitle" Text="Vorschau Ordnername" Style="{StaticResource H2}"/>
                                 <TextBox x:Name="Txt4Ordner" IsReadOnly="True" Text="--"/>
 
-                                <TextBlock Text="Task-Ordner Status" Style="{StaticResource H2}" Margin="0,14,0,4"/>
+                                <TextBlock x:Name="Txt4StatusTitle" Text="Task-Ordner Status" Style="{StaticResource H2}" Margin="0,14,0,4"/>
                                 <TextBlock x:Name="Txt4Status" Style="{StaticResource Muted}" Text="nicht geprüft"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
@@ -448,23 +457,25 @@
                             </StackPanel>
                         </Border>
 
-                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                        <Expander x:Name="Exp4Hints" Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
                             <WrapPanel x:Name="Sp4Hints" Margin="0,10,0,0"/>
                         </Expander>
                     </StackPanel>
 
                     <!-- ============ SCHRITT 5 - ABSCHLUSS ============ -->
+                    <!-- Statische Texte aus Config\strings.de.json (Apply-Strings).
+                         doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageStep5" Visibility="Collapsed">
-                        <TextBlock Text="Schritt 5 - Abschluss" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Mail an Buchhaltung versenden und Lauf abschließen."
+                        <TextBlock x:Name="Txt5Title" Text="Schritt 5 - Abschluss" Style="{StaticResource H1}"/>
+                        <TextBlock x:Name="Txt5Desc" Text="Mail an Buchhaltung versenden und Lauf abschließen."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Letzte Schritte" Style="{StaticResource H2}"/>
-                                <CheckBox Content="Zahlungsdatei in Zahllauf-Ordner kopiert"/>
-                                <CheckBox Content="Bestätigung von Buchhaltung erhalten"/>
-                                <CheckBox Content="Backup gesichert"/>
+                                <TextBlock x:Name="Txt5LetzteTitle" Text="Letzte Schritte" Style="{StaticResource H2}"/>
+                                <CheckBox x:Name="Chk5Done0" Content="Zahlungsdatei in Zahllauf-Ordner kopiert"/>
+                                <CheckBox x:Name="Chk5Done1" Content="Bestätigung von Buchhaltung erhalten"/>
+                                <CheckBox x:Name="Chk5Done2" Content="Backup gesichert"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
                                     <Button x:Name="Btn5MailTemplate" Style="{StaticResource BtnBase}"
@@ -475,20 +486,22 @@
                             </StackPanel>
                         </Border>
 
-                        <Expander Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
+                        <Expander x:Name="Exp5Hints" Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
                             <WrapPanel x:Name="Sp5Hints" Margin="0,10,0,0"/>
                         </Expander>
                     </StackPanel>
 
                     <!-- ============ SETTINGS ============ -->
+                    <!-- Statische Texte aus Config\strings.de.json (Apply-Strings).
+                         Dynamisch bleibt TxtSetStatus. doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageSettings" Visibility="Collapsed">
-                        <TextBlock Text="Einstellungen - Pfade" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Zentrale Ordner fuer Msg-Eingang, Task-Bearbeitung und Zahllauf-Ziel."
+                        <TextBlock x:Name="TxtSetTitle" Text="Einstellungen - Pfade" Style="{StaticResource H1}"/>
+                        <TextBlock x:Name="TxtSetDesc" Text="Zentrale Ordner fuer Msg-Eingang, Task-Bearbeitung und Zahllauf-Ziel."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Msg-Ordner (.msg-Dateien)" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="TxtSetMsgTitle" Text="Msg-Ordner (.msg-Dateien)" Style="{StaticResource H2}"/>
                                 <Grid Margin="0,0,0,14">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -500,7 +513,7 @@
                                             Content="Ordner auswählen" Margin="10,0,0,0"/>
                                 </Grid>
 
-                                <TextBlock Text="Task-Ordner (alleRechnungen.xlsx + Task-Skript-Arbeitsbereich)"
+                                <TextBlock x:Name="TxtSetTaskTitle" Text="Task-Ordner (alleRechnungen.xlsx + Task-Skript-Arbeitsbereich)"
                                            Style="{StaticResource H2}"/>
                                 <Grid Margin="0,0,0,14">
                                     <Grid.ColumnDefinitions>
@@ -513,7 +526,7 @@
                                             Content="Ordner auswählen" Margin="10,0,0,0"/>
                                 </Grid>
 
-                                <TextBlock Text="Zahllauf-Ordner (Zielordner)" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="TxtSetZahllaufTitle" Text="Zahllauf-Ordner (Zielordner)" Style="{StaticResource H2}"/>
                                 <Grid Margin="0,0,0,14">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -536,10 +549,10 @@
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Abschluss-Optionen" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="TxtSetBehaviorTitle" Text="Abschluss-Optionen" Style="{StaticResource H2}"/>
                                 <CheckBox x:Name="ChkSetSimulate"
                                           Content="Cleanup simulieren (kein echtes Löschen)"/>
-                                <TextBlock Text="Wenn aktiv: .msg-Dateien und Anhänge werden nur im Log aufgelistet, nicht gelöscht."
+                                <TextBlock x:Name="TxtSetSimulateDesc" Text="Wenn aktiv: .msg-Dateien und Anhänge werden nur im Log aufgelistet, nicht gelöscht."
                                            Style="{StaticResource Muted}" TextWrapping="Wrap"
                                            Margin="22,4,0,0"/>
                             </StackPanel>
@@ -551,26 +564,28 @@
             <!-- =========== Right Panel =========== -->
             <Border Grid.Column="2" Background="{StaticResource BgSecondary}"
                     BorderBrush="{StaticResource Border}" BorderThickness="1,0,0,0">
+                <!-- Label-Texte aus Config\strings.de.json (Apply-Strings); die
+                     Werte (Txt*Right) bleiben dynamisch. doc\TEXTE_BEARBEITEN.md -->
                 <StackPanel Margin="18,22,18,18">
-                    <TextBlock Text="GLOBALE PARAMETER"
+                    <TextBlock x:Name="LblRightSection" Text="GLOBALE PARAMETER"
                                Foreground="{StaticResource TextMuted}"
                                FontSize="11" FontWeight="Bold" Margin="0,0,0,14"/>
 
                     <Border Style="{StaticResource Card}" Margin="0,0,0,10" Padding="14">
                         <StackPanel>
-                            <TextBlock Text="KW" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="LblRightKW" Text="KW" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtKWRight" Text="--" FontSize="16" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource Card}" Margin="0,0,0,10" Padding="14">
                         <StackPanel>
-                            <TextBlock Text="Jahr" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="LblRightYear" Text="Jahr" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtYearRight" Text="--" FontSize="16" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource Card}" Margin="0,0,0,10" Padding="14">
                         <StackPanel>
-                            <TextBlock Text="Bezeichnung-Vorschau" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="LblRightBez" Text="Bezeichnung-Vorschau" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtBezRight" Text="--"
                                        FontSize="13" FontWeight="SemiBold"
                                        TextWrapping="Wrap"/>
@@ -578,7 +593,7 @@
                     </Border>
                     <Border Style="{StaticResource Card}" Margin="0,0,0,10" Padding="14">
                         <StackPanel>
-                            <TextBlock Text="Ordnername-Vorschau" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="LblRightOrd" Text="Ordnername-Vorschau" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtOrdRight" Text="--"
                                        FontSize="13" FontWeight="SemiBold"
                                        TextWrapping="Wrap"/>
@@ -597,7 +612,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0,0,0,8">
-                    <TextBlock Text="LOG" Foreground="{StaticResource TextMuted}"
+                    <TextBlock x:Name="LblLogSection" Text="LOG" Foreground="{StaticResource TextMuted}"
                                FontSize="11" FontWeight="Bold"
                                VerticalAlignment="Center"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

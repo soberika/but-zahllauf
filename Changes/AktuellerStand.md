@@ -13,6 +13,8 @@ Letzter Commit: `43176c9 fix: Dispatcher.Invoke-Overload + Runspace-Scriptblock-
 - **Phase 3 — Config-GUI fuer Pfade:** fertig.
   `MsgFolder`, `TaskFolder`, `ZahllaufFolder` werden in der GUI per FolderBrowserDialog gepflegt und in `Config/default.json` gespeichert. Wrapper geben die Pfade an die unveraenderten Originalskripte (nur Param-Block ergaenzt) weiter.
 - **Stabilisierung:** fertig (Commits `f84a89e`, `2b074f0`, `caf5c71`, `43176c9`).
+- **UI-Texte ausgelagert (2026-05-28):** fertig.
+  Statische GUI-Texte (H1/H2, Anleitungen, Button-/CheckBox-Labels, Sektions-Labels, `Window.Title`, Expander-Header) liegen jetzt zentral und editierbar in `Config/strings.de.json` (UTF-8). Neue `Functions/Strings.ps1` mit `Import-AppStrings` + Mapping-Tabelle `$Script:StringMap` + `Apply-Strings`; Aufruf in `Add_Loaded` VOR `Update-Context`. Bisher unbenannte Textelemente im XAML haben ein `x:Name` bekommen. Dynamische Laufzeit-Texte (KW/Datum/Bezeichnung/Ordner/Status/Counter) bleiben unveraendert in `Update-Context`/`OnComplete`. Bearbeiter-Doku: `doc/TEXTE_BEARBEITEN.md`.
 
 ## Funktional getestet
 
@@ -55,11 +57,14 @@ Config/default.json
 Changes/AktuellerStand.md          <-- diese Datei
 doc/CLAUDE.MD
 doc/prompt.md
+Config/strings.de.json             # statische UI-Texte (UTF-8) -> doc/TEXTE_BEARBEITEN.md
+doc/TEXTE_BEARBEITEN.md            # Bearbeiter-Anleitung fuer die UI-Texte
 Functions/
   ConfigLoader.ps1                 # Import-AppConfig, Save-AppConfig
   DateHelpers.ps1                  # global:Get-IsoCalendarWeek
   Logging.ps1                      # global:Write-Log, global:Clear-Log
   RunspaceHelpers.ps1              # global:Start-RunspaceJob
+  Strings.ps1                      # Import-AppStrings, Apply-Strings, $Script:StringMap
 Modules/
   Step1_Mail.psm1
   Step2_Rechnungen.psm1            # Invoke-ExtractRechnungen, Invoke-Step2Run

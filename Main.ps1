@@ -41,6 +41,7 @@ Add-Type -AssemblyName System.Windows.Forms   # nur fuer Set-Clipboard-Fallback
 . (Join-Path $Script:AppRoot 'Functions\Logging.ps1')
 . (Join-Path $Script:AppRoot 'Functions\ConfigLoader.ps1')
 . (Join-Path $Script:AppRoot 'Functions\RunspaceHelpers.ps1')
+. (Join-Path $Script:AppRoot 'Functions\Strings.ps1')
 
 # -- Module laden --------------------------------------------------------------
 Get-ChildItem -Path (Join-Path $Script:AppRoot 'Modules') -Filter '*.psm1' |
@@ -49,6 +50,10 @@ Get-ChildItem -Path (Join-Path $Script:AppRoot 'Modules') -Filter '*.psm1' |
 # -- Config laden --------------------------------------------------------------
 $Script:Config = Import-AppConfig
 $global:Config = $Script:Config
+
+# -- Statische UI-Texte laden (siehe doc\TEXTE_BEARBEITEN.md) -------------------
+$Script:Strings = Import-AppStrings
+$global:Strings = $Script:Strings
 
 # =============================================================================
 #  XAML laden
@@ -559,6 +564,7 @@ $Script:Window.Add_Loaded({
         $PSVersionTable.PSVersion, `
         [System.Environment]::OSVersion.VersionString, `
         $Script:LogFile) -Level Debug
+    Apply-Strings   # statische UI-Texte VOR Update-Context setzen
     Initialize-WeekPicker
     Initialize-ScheduledTaskButtons
     Initialize-HintGalleries
