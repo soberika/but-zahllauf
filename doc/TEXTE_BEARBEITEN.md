@@ -111,11 +111,8 @@ Wichtig:
 | `Settings.BehaviorTitle` | Einstellungen, Karten-Ueberschrift (H2) | Abschluss-Optionen |
 | `Chk.Settings.Simulate` | Einstellungen, CheckBox | Cleanup simulieren (kein echtes Löschen) |
 | `Settings.SimulateDesc` | Einstellungen, Hinweis unter der CheckBox | Wenn aktiv: .msg-Dateien ... |
-| `Right.Section` | Rechtes Panel, Ueberschrift | GLOBALE PARAMETER |
-| `Right.KW` | Rechtes Panel, Label "KW" | KW |
-| `Right.Year` | Rechtes Panel, Label "Jahr" | Jahr |
-| `Right.Bez` | Rechtes Panel, Label | Bezeichnung-Vorschau |
-| `Right.Ord` | Rechtes Panel, Label | Ordnername-Vorschau |
+| `Right.Section` | Rechtes Panel, Ueberschrift | STATUS |
+| `Right.Progress` | Rechtes Panel, Label Fortschritt | Fortschritt |
 | `Log.Section` | Log-Bereich unten, Ueberschrift | LOG |
 | `Btn.Log.Open` | Log-Bereich, Button | Log-Datei öffnen |
 | `Btn.Log.Clear` | Log-Bereich, Button | Log löschen |

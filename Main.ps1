@@ -79,11 +79,13 @@ $ui = @{
     TxtSunday        = Find-Element 'TxtSunday'
     CmbWeek          = Find-Element 'CmbWeek'
 
-    # Right panel
-    TxtKWRight       = Find-Element 'TxtKWRight'
-    TxtYearRight     = Find-Element 'TxtYearRight'
-    TxtBezRight      = Find-Element 'TxtBezRight'
-    TxtOrdRight      = Find-Element 'TxtOrdRight'
+    # Right panel (Status/Fortschritt)
+    TxtStatusKW       = Find-Element 'TxtStatusKW'
+    TxtStatusProgress = Find-Element 'TxtStatusProgress'
+    TxtStatus0        = Find-Element 'TxtStatus0'
+    TxtStatus1        = Find-Element 'TxtStatus1'
+    TxtStatus2        = Find-Element 'TxtStatus2'
+    TxtStatus3        = Find-Element 'TxtStatus3'
 
     # Sidebar
     BtnStep1         = Find-Element 'BtnStep1'
@@ -223,11 +225,8 @@ function Update-Context {
     $ui.TxtDate.Text   = "$($ctx.Date) ($($ctx.Weekday))"
     $ui.TxtSunday.Text = $ctx.LastSundayStr
 
-    # Right panel
-    $ui.TxtKWRight.Text   = "KW $($ctx.KW)"
-    $ui.TxtYearRight.Text = "$($ctx.Year)"
-    $ui.TxtBezRight.Text  = $ctx.Bezeichnung
-    $ui.TxtOrdRight.Text  = $ctx.OrdnerName
+    # Right panel (Status)
+    $ui.TxtStatusKW.Text = "KW $($ctx.KW) / $($ctx.Year)"
 
     # Step 2
     $ui.Txt2Preview.Text  = $ctx.Bezeichnung
@@ -417,6 +416,31 @@ function Update-ChecklistCounter {
     $done  = @($boxes | Where-Object { $_.IsChecked }).Count
     $ui.Txt3Checklist.Text = "$done/$($boxes.Count) erledigt"
     $ui.Txt3Checklist.Foreground = if ($done -eq $boxes.Count) {
+        $Script:Window.Resources['Success']
+    } else {
+        $Script:Window.Resources['TextMuted']
+    }
+    Update-StatusPanel
+}
+
+# Spiegelt den Checklisten-Zustand der aktuellen KW in das rechte Status-Panel.
+function Update-StatusPanel {
+    $boxes = Get-ChecklistBoxes
+    $rows  = @($ui.TxtStatus0, $ui.TxtStatus1, $ui.TxtStatus2, $ui.TxtStatus3)
+    $done  = 0
+    for ($i = 0; $i -lt $boxes.Count; $i++) {
+        $isDone = [bool]$boxes[$i].IsChecked
+        if ($isDone) { $done++ }
+        $mark = if ($isDone) { '[OK] ' } else { '[--] ' }
+        $rows[$i].Text = $mark + [string]$boxes[$i].Content
+        $rows[$i].Foreground = if ($isDone) {
+            $Script:Window.Resources['Success']
+        } else {
+            $Script:Window.Resources['TextMuted']
+        }
+    }
+    $ui.TxtStatusProgress.Text = "$done/$($boxes.Count) erledigt"
+    $ui.TxtStatusProgress.Foreground = if ($done -eq $boxes.Count -and $boxes.Count -gt 0) {
         $Script:Window.Resources['Success']
     } else {
         $Script:Window.Resources['TextMuted']

@@ -117,12 +117,9 @@ $Script:StringMap = @(
     @{ N = 'ChkSetSimulate';       P = 'Content'; K = 'Chk.Settings.Simulate' }
     @{ N = 'TxtSetSimulateDesc';   P = 'Text';    K = 'Settings.SimulateDesc' }
 
-    # Rechtes Panel
+    # Rechtes Panel (Status)
     @{ N = 'LblRightSection';      P = 'Text';    K = 'Right.Section' }
-    @{ N = 'LblRightKW';           P = 'Text';    K = 'Right.KW' }
-    @{ N = 'LblRightYear';         P = 'Text';    K = 'Right.Year' }
-    @{ N = 'LblRightBez';          P = 'Text';    K = 'Right.Bez' }
-    @{ N = 'LblRightOrd';          P = 'Text';    K = 'Right.Ord' }
+    @{ N = 'LblRightProgress';     P = 'Text';    K = 'Right.Progress' }
 
     # Log
     @{ N = 'LblLogSection';        P = 'Text';    K = 'Log.Section' }

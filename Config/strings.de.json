@@ -75,11 +75,8 @@
     "Chk.Settings.Simulate": "Cleanup simulieren (kein echtes Löschen)",
     "Settings.SimulateDesc": "Wenn aktiv: .msg-Dateien und Anhänge werden nur im Log aufgelistet, nicht gelöscht.",
 
-    "Right.Section": "GLOBALE PARAMETER",
-    "Right.KW": "KW",
-    "Right.Year": "Jahr",
-    "Right.Bez": "Bezeichnung-Vorschau",
-    "Right.Ord": "Ordnername-Vorschau",
+    "Right.Section": "STATUS",
+    "Right.Progress": "Fortschritt",
 
     "Log.Section": "LOG",
     "Btn.Log.Open": "Log-Datei öffnen",
