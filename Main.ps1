@@ -473,7 +473,7 @@ $ui.Btn5MailTemplate.Add_Click({
         -Summe        $summe `
         -ZielpfadLink $zielpfad
 })
-$ui.Btn5Finish.Add_Click({ Invoke-Step5Finish })
+$ui.Btn5Finish.Add_Click({ Invoke-Step5Finish -Bezeichnung $Script:Context.Bezeichnung })
 
 # Settings
 $ui.BtnSettings.Add_Click({ Show-Step 6 })

@@ -40,10 +40,11 @@ function Invoke-Step5MailTemplate {
 }
 
 function Invoke-Step5Finish {
+    param([string]$Bezeichnung = 'Zahllauf')
+
     $simulate = [bool]$global:Config.Behavior.SimulateCleanup
 
-    $ctx         = Get-ZahllaufContext
-    $bezeichnung = $ctx.Bezeichnung -replace '[\\/:*?"<>|]', '_'
+    $bezeichnung = $Bezeichnung -replace '[\\/:*?"<>|]', '_'
     $timestamp   = [DateTime]::Now.ToString('yyyyMMdd_HHmmss')
     $uniquePart  = [System.Guid]::NewGuid().ToString('N').Substring(0, 8)
 
