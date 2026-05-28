@@ -10,7 +10,9 @@ function Invoke-StartTaskScript {
         [string]$ZahllaufFolder = '',
         $StatusTextBlock,
         $BrushSuccess,
-        $BrushDanger
+        $BrushDanger,
+        $BtnOpenXlsx,
+        $BtnOpenPdf
     )
 
     $scriptName = $global:Config.Paths.ScriptTask
@@ -61,6 +63,9 @@ function Invoke-StartTaskScript {
                 $StatusTextBlock.Text = "Fertig: $finalPath"
                 if ($BrushSuccess) { $StatusTextBlock.Foreground = $BrushSuccess }
             }
+            # Abgleich-Buttons aktivieren und Zielordner an ihnen hinterlegen.
+            if ($BtnOpenXlsx) { $BtnOpenXlsx.Tag = $finalPath; $BtnOpenXlsx.IsEnabled = $true }
+            if ($BtnOpenPdf)  { $BtnOpenPdf.Tag  = $finalPath; $BtnOpenPdf.IsEnabled  = $true }
         } else {
             Write-Log "Schritt 4 beendet, aber Zielordner fehlt: $finalPath" -Level Warning
             if ($StatusTextBlock) {
@@ -87,14 +92,39 @@ function Invoke-Step4Run {
     param(
         $StatusTextBlock,
         $BrushSuccess,
-        $BrushDanger
+        $BrushDanger,
+        $BtnOpenXlsx,
+        $BtnOpenPdf
     )
     Invoke-StartTaskScript `
         -TaskFolder      $global:Config.Paths.TaskFolder `
         -ZahllaufFolder  $global:Config.Paths.ZahllaufFolder `
         -StatusTextBlock $StatusTextBlock `
         -BrushSuccess $BrushSuccess `
-        -BrushDanger $BrushDanger
+        -BrushDanger $BrushDanger `
+        -BtnOpenXlsx $BtnOpenXlsx `
+        -BtnOpenPdf $BtnOpenPdf
+}
+
+function Invoke-Step4OpenAbgleichFile {
+    param([string]$Folder, [string]$Pattern)
+
+    if ([string]::IsNullOrWhiteSpace($Folder) -or -not [System.IO.Directory]::Exists($Folder)) {
+        Write-Log "Abgleich: Zielordner nicht verfuegbar: $Folder" -Level Warning
+        return
+    }
+    $file = Get-ChildItem -Path $Folder -Filter $Pattern -File -ErrorAction SilentlyContinue |
+        Select-Object -First 1
+    if (-not $file) {
+        Write-Log "Abgleich: Keine Datei '$Pattern' in $Folder gefunden." -Level Warning
+        return
+    }
+    [System.Diagnostics.Process]::Start($file.FullName) | Out-Null
+    Write-Log "Abgleich: geoeffnet $($file.Name)" -Level Info
+}
+
+function Invoke-Step4MarkDone {
+    Write-Log "Schritt 4 wurde als erledigt markiert." -Level Success
 }
 
 function Invoke-Step4OpenTask {

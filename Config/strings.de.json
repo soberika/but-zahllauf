@@ -53,6 +53,11 @@
     "Step4.StatusTitle": "Task-Ordner Status",
     "Btn.Step4.Run": "Auszahlungslauf starten",
     "Btn.Step4.OpenTask": "Task-Ordner öffnen",
+    "Step4.AbgleichTitle": "Abgleich der Gesamtsummen",
+    "Step4.AbgleichDesc": "Nach dem Verschieben die beiden Zieldateien zur letzten Kontrolle öffnen.",
+    "Btn.Step4.OpenXlsx": "alleRechnungen.xlsx öffnen",
+    "Btn.Step4.OpenPdf": "Zahlliste-PDF öffnen",
+    "Btn.Step4.Done": "Schritt als erledigt markieren",
 
     "Step5.Title": "Schritt 5 - Abschluss",
     "Step5.Desc": "Mail an Buchhaltung versenden und Lauf abschließen.",

@@ -68,6 +68,11 @@
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="bd" Property="Background" Value="#4A4D7C"/>
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#2A2A3A"/>
+                                <Setter Property="Foreground" Value="#5A5D70"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -455,6 +460,22 @@
                                     <Button x:Name="Btn4OpenTask"   Style="{StaticResource BtnBase}"
                                             Content="Task-Ordner öffnen"/>
                                 </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock x:Name="Txt4AbgleichTitle" Text="Abgleich der Gesamtsummen" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt4AbgleichDesc" Style="{StaticResource Muted}" Margin="0,0,0,12" TextWrapping="Wrap"
+                                           Text="Nach dem Verschieben die beiden Zieldateien zur letzten Kontrolle öffnen."/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="Btn4OpenXlsx" Style="{StaticResource BtnBase}" IsEnabled="False"
+                                            Content="alleRechnungen.xlsx öffnen" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn4OpenPdf"  Style="{StaticResource BtnBase}" IsEnabled="False"
+                                            Content="Zahlliste-PDF öffnen"/>
+                                </StackPanel>
+                                <Button x:Name="Btn4Done" Style="{StaticResource BtnSuccess}" HorizontalAlignment="Left"
+                                        Content="Schritt als erledigt markieren" Margin="0,14,0,0"/>
                             </StackPanel>
                         </Border>
 

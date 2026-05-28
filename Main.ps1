@@ -128,6 +128,9 @@ $ui = @{
     Txt4Status       = Find-Element 'Txt4Status'
     Btn4Run          = Find-Element 'Btn4Run'
     Btn4OpenTask     = Find-Element 'Btn4OpenTask'
+    Btn4OpenXlsx     = Find-Element 'Btn4OpenXlsx'
+    Btn4OpenPdf      = Find-Element 'Btn4OpenPdf'
+    Btn4Done         = Find-Element 'Btn4Done'
     Sp4Tasks         = Find-Element 'Sp4Tasks'
     Txt4TaskStatus   = Find-Element 'Txt4TaskStatus'
     Sp4Hints         = Find-Element 'Sp4Hints'
@@ -449,9 +452,14 @@ $ui.Btn4Run.Add_Click({
     Invoke-Step4Run `
         -StatusTextBlock $ui.Txt4Status `
         -BrushSuccess $Script:Window.Resources['Success'] `
-        -BrushDanger  $Script:Window.Resources['Danger']
+        -BrushDanger  $Script:Window.Resources['Danger'] `
+        -BtnOpenXlsx $ui.Btn4OpenXlsx `
+        -BtnOpenPdf  $ui.Btn4OpenPdf
 })
 $ui.Btn4OpenTask.Add_Click({ Invoke-Step4OpenTask -Path $Script:Config.Paths.TaskFolder })
+$ui.Btn4OpenXlsx.Add_Click({ Invoke-Step4OpenAbgleichFile -Folder ([string]$ui.Btn4OpenXlsx.Tag) -Pattern '*alleRechnungen.xlsx' })
+$ui.Btn4OpenPdf.Add_Click({  Invoke-Step4OpenAbgleichFile -Folder ([string]$ui.Btn4OpenPdf.Tag)  -Pattern '*ZahllisteHHSTGesamtBetr.pdf' })
+$ui.Btn4Done.Add_Click({ Invoke-Step4MarkDone })
 
 # Step 5
 $ui.Btn5MailTemplate.Add_Click({ Invoke-Step5MailTemplate -Bezeichnung $Script:Context.Bezeichnung })
