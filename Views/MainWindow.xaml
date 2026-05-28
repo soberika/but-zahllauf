@@ -406,17 +406,14 @@
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <Grid Margin="0,0,0,4">
-                                    <TextBlock x:Name="Txt3ChecklistTitle" Text="Checkliste" Style="{StaticResource H2}"
-                                               VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="Txt3Checklist" Style="{StaticResource Muted}"
-                                               HorizontalAlignment="Right" VerticalAlignment="Center"
-                                               Text="0/4 erledigt"/>
-                                </Grid>
-                                <CheckBox x:Name="Chk3Done0" Content="Prüflauf in Prosos angelegt"/>
-                                <CheckBox x:Name="Chk3Done1" Content="Bezeichnung gesetzt"/>
-                                <CheckBox x:Name="Chk3Done2" Content="Fälligkeit auf letzten Sonntag gestellt"/>
-                                <CheckBox x:Name="Chk3Done3" Content="Prüflauf erfolgreich abgeschlossen"/>
+                                <TextBlock x:Name="Txt3SummeTitle" Text="Gesamtsumme" Style="{StaticResource H2}"/>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,8,0,0">
+                                    <Button x:Name="Btn3Summe" Style="{StaticResource BtnBase}"
+                                            Content="Gesamtsumme ermitteln" Margin="0,0,14,0"/>
+                                    <TextBlock x:Name="Txt3Summe" Style="{StaticResource Muted}"
+                                               VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold"
+                                               Text=""/>
+                                </StackPanel>
                             </StackPanel>
                         </Border>
 

@@ -119,11 +119,8 @@ $ui = @{
     Dp3Faelligkeit   = Find-Element 'Dp3Faelligkeit'
     Btn3Copy         = Find-Element 'Btn3Copy'
     Btn3Prosos       = Find-Element 'Btn3Prosos'
-    Chk3Done0        = Find-Element 'Chk3Done0'
-    Chk3Done1        = Find-Element 'Chk3Done1'
-    Chk3Done2        = Find-Element 'Chk3Done2'
-    Chk3Done3        = Find-Element 'Chk3Done3'
-    Txt3Checklist    = Find-Element 'Txt3Checklist'
+    Btn3Summe        = Find-Element 'Btn3Summe'
+    Txt3Summe        = Find-Element 'Txt3Summe'
     Sp3Hints         = Find-Element 'Sp3Hints'
 
     # Step 4
@@ -240,9 +237,6 @@ function Update-Context {
 
     # Step 4
     $ui.Txt4Ordner.Text = $ctx.OrdnerName
-
-    # Schritt-3-Checkliste fuer die gewaehlte KW laden
-    Sync-Step3Checklist
 
     Write-Log "Kontext aktualisiert: KW=$($ctx.KW), Bezeichnung='$($ctx.Bezeichnung)'" -Level Info
 }
@@ -408,65 +402,6 @@ function Initialize-HintGalleries {
 }
 
 # =============================================================================
-#  Schritt-3-Checkliste (pro KW persistiert)
-# =============================================================================
-function Get-ChecklistBoxes {
-    return @($ui.Chk3Done0, $ui.Chk3Done1, $ui.Chk3Done2, $ui.Chk3Done3)
-}
-
-function Update-ChecklistCounter {
-    $boxes = Get-ChecklistBoxes
-    $done  = @($boxes | Where-Object { $_.IsChecked }).Count
-    $ui.Txt3Checklist.Text = "$done/$($boxes.Count) erledigt"
-    $ui.Txt3Checklist.Foreground = if ($done -eq $boxes.Count) {
-        $Script:Window.Resources['Success']
-    } else {
-        $Script:Window.Resources['TextMuted']
-    }
-}
-
-# Laedt den gespeicherten Zustand fuer die aktuelle KW in die Checkboxen.
-function Sync-Step3Checklist {
-    $key   = if ($Script:Context) { [string]$Script:Context.OrdnerName } else { '' }
-    $boxes = Get-ChecklistBoxes
-
-    $node = $null
-    if ($key -and $Script:Config.Checklist.PSObject.Properties[$key]) {
-        $node = $Script:Config.Checklist.$key
-    }
-
-    for ($i = 0; $i -lt $boxes.Count; $i++) {
-        $val = $false
-        if ($node) {
-            $p = "c$i"
-            if ($node.PSObject.Properties[$p]) { $val = [bool]$node.$p }
-        }
-        $boxes[$i].IsChecked = $val
-    }
-    Update-ChecklistCounter
-}
-
-# Schreibt den aktuellen Checkbox-Zustand fuer die aktuelle KW in die Config.
-function Save-Step3Checklist {
-    $key = if ($Script:Context) { [string]$Script:Context.OrdnerName } else { '' }
-    if (-not $key) { return }
-
-    if (-not $Script:Config.Checklist.PSObject.Properties[$key]) {
-        $Script:Config.Checklist | Add-Member -NotePropertyName $key -NotePropertyValue ([pscustomobject]@{})
-    }
-    $node  = $Script:Config.Checklist.$key
-    $boxes = Get-ChecklistBoxes
-    for ($i = 0; $i -lt $boxes.Count; $i++) {
-        $p   = "c$i"
-        $val = [bool]$boxes[$i].IsChecked
-        if ($node.PSObject.Properties[$p]) { $node.$p = $val }
-        else { $node | Add-Member -NotePropertyName $p -NotePropertyValue $val }
-    }
-    Save-AppConfig
-    Update-ChecklistCounter
-}
-
-# =============================================================================
 #  Event-Handler
 # =============================================================================
 # Sidebar
@@ -501,10 +436,13 @@ $ui.Btn2Done.Add_Click({ Invoke-Step2MarkDone })
 # Step 3
 $ui.Btn3Copy.Add_Click({ Invoke-Step3Copy -Text $ui.Txt3Bezeichnung.Text })
 $ui.Btn3Prosos.Add_Click({ Invoke-Step3OpenProsos })
-$ui.Chk3Done0.Add_Click({ Save-Step3Checklist })
-$ui.Chk3Done1.Add_Click({ Save-Step3Checklist })
-$ui.Chk3Done2.Add_Click({ Save-Step3Checklist })
-$ui.Chk3Done3.Add_Click({ Save-Step3Checklist })
+$ui.Btn3Summe.Add_Click({
+    Invoke-Step3ReadSumme `
+        -TaskFolder     $Script:Config.Paths.TaskFolder `
+        -SummeTextBlock $ui.Txt3Summe `
+        -BrushSuccess   $Script:Window.Resources['Success'] `
+        -BrushDanger    $Script:Window.Resources['Danger']
+})
 
 # Step 4
 $ui.Btn4Run.Add_Click({

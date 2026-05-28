@@ -79,11 +79,8 @@ $Script:StringMap = @(
     @{ N = 'Txt3FaelligkeitTitle'; P = 'Text';    K = 'Step3.FaelligkeitTitle' }
     @{ N = 'Btn3Copy';             P = 'Content'; K = 'Btn.Step3.Copy' }
     @{ N = 'Btn3Prosos';           P = 'Content'; K = 'Btn.Step3.Prosos' }
-    @{ N = 'Txt3ChecklistTitle';   P = 'Text';    K = 'Step3.ChecklistTitle' }
-    @{ N = 'Chk3Done0';            P = 'Content'; K = 'Chk.Step3.Done0' }
-    @{ N = 'Chk3Done1';            P = 'Content'; K = 'Chk.Step3.Done1' }
-    @{ N = 'Chk3Done2';            P = 'Content'; K = 'Chk.Step3.Done2' }
-    @{ N = 'Chk3Done3';            P = 'Content'; K = 'Chk.Step3.Done3' }
+    @{ N = 'Txt3SummeTitle';       P = 'Text';    K = 'Step3.SummeTitle' }
+    @{ N = 'Btn3Summe';            P = 'Content'; K = 'Btn.Step3.Summe' }
 
     # Schritt 4
     @{ N = 'Txt4Title';            P = 'Text';    K = 'Step4.Title' }
