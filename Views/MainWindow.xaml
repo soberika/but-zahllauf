@@ -419,6 +419,8 @@
                                                VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold"
                                                Text=""/>
                                 </StackPanel>
+                                <Button x:Name="Btn3Done" Style="{StaticResource BtnSuccess}" HorizontalAlignment="Left"
+                                        Content="Schritt als erledigt markieren" Margin="0,14,0,0"/>
                             </StackPanel>
                         </Border>
 

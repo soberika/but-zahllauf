@@ -121,6 +121,7 @@ $ui = @{
     Btn3Prosos       = Find-Element 'Btn3Prosos'
     Btn3Summe        = Find-Element 'Btn3Summe'
     Txt3Summe        = Find-Element 'Txt3Summe'
+    Btn3Done         = Find-Element 'Btn3Done'
     Sp3Hints         = Find-Element 'Sp3Hints'
 
     # Step 4
@@ -439,6 +440,7 @@ $ui.Btn2Done.Add_Click({ Invoke-Step2MarkDone })
 # Step 3
 $ui.Btn3Copy.Add_Click({ Invoke-Step3Copy -Text $ui.Txt3Bezeichnung.Text })
 $ui.Btn3Prosos.Add_Click({ Invoke-Step3OpenProsos })
+$ui.Btn3Done.Add_Click({ Invoke-Step3MarkDone })
 $ui.Btn3Summe.Add_Click({
     Invoke-Step3ReadSumme `
         -TaskFolder     $Script:Config.Paths.TaskFolder `

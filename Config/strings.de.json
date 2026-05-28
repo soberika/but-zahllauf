@@ -44,6 +44,7 @@
     "Btn.Step3.Prosos": "Prosos öffnen",
     "Step3.SummeTitle": "Gesamtsumme prüfen",
     "Btn.Step3.Summe": "Gesamtsumme ermitteln",
+    "Btn.Step3.Done": "Schritt als erledigt markieren",
 
     "Step4.Title": "Schritt 4 - Auszahlungslauf",
     "Step4.Desc": "Baut den Task-Ordner und verschiebt die Dateien in den Zahllauf-Ordner.",

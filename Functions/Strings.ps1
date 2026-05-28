@@ -81,6 +81,7 @@ $Script:StringMap = @(
     @{ N = 'Btn3Prosos';           P = 'Content'; K = 'Btn.Step3.Prosos' }
     @{ N = 'Txt3SummeTitle';       P = 'Text';    K = 'Step3.SummeTitle' }
     @{ N = 'Btn3Summe';            P = 'Content'; K = 'Btn.Step3.Summe' }
+    @{ N = 'Btn3Done';             P = 'Content'; K = 'Btn.Step3.Done' }
 
     # Schritt 4
     @{ N = 'Txt4Title';            P = 'Text';    K = 'Step4.Title' }

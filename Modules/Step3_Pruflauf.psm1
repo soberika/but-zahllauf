@@ -96,6 +96,10 @@ function Invoke-Step3ReadSumme {
     } | Out-Null
 }
 
+function Invoke-Step3MarkDone {
+    Write-Log "Schritt 3 wurde als erledigt markiert." -Level Success
+}
+
 function Invoke-Step3OpenProsos {
     $exe = 'C:\Program Files (x86)\PROSOZ Herten\OPEN PROSOZ\Anwendungen\OpenStarter.exe'
 
