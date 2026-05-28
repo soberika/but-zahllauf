@@ -111,6 +111,7 @@ $ui = @{
     Txt2LastRun      = Find-Element 'Txt2LastRun'
     Btn2Run          = Find-Element 'Btn2Run'
     Btn2OpenPath     = Find-Element 'Btn2OpenPath'
+    Btn2Done         = Find-Element 'Btn2Done'
     Sp2Hints         = Find-Element 'Sp2Hints'
 
     # Step 3
@@ -495,6 +496,7 @@ $ui.Btn2Run.Add_Click({
         -BrushDanger  $Script:Window.Resources['Danger']
 })
 $ui.Btn2OpenPath.Add_Click({ Invoke-Step2OpenPath -Path $Script:Config.Paths.TempRoot })
+$ui.Btn2Done.Add_Click({ Invoke-Step2MarkDone })
 
 # Step 3
 $ui.Btn3Copy.Add_Click({ Invoke-Step3Copy -Text $ui.Txt3Bezeichnung.Text })

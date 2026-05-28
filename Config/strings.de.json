@@ -34,6 +34,7 @@
     "Step2.LastRunTitle": "Letzter Lauf",
     "Btn.Step2.Run": "Rechnungen extrahieren",
     "Btn.Step2.OpenPath": "Ergebnis-Ordner öffnen",
+    "Btn.Step2.Done": "Schritt als erledigt markieren",
 
     "Step3.Title": "Schritt 3 - Prüflauf in Prosos",
     "Step3.Desc": "Bezeichnung und Fälligkeit für den Prüflauf festlegen.",

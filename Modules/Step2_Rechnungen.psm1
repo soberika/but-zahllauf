@@ -100,6 +100,10 @@ function Invoke-Step2Run {
         -BrushDanger $BrushDanger
 }
 
+function Invoke-Step2MarkDone {
+    Write-Log "Schritt 2 wurde als erledigt markiert." -Level Success
+}
+
 function Invoke-Step2OpenPath {
     param([string]$Path)
 

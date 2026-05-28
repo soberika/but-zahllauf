@@ -367,7 +367,9 @@
                                     <Button x:Name="Btn2Run"      Style="{StaticResource BtnPrimary}"
                                             Content="Rechnungen extrahieren" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn2OpenPath" Style="{StaticResource BtnBase}"
-                                            Content="Ergebnis-Ordner öffnen"/>
+                                            Content="Ergebnis-Ordner öffnen" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn2Done"     Style="{StaticResource BtnSuccess}"
+                                            Content="Schritt als erledigt markieren"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
