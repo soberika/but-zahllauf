@@ -4,7 +4,11 @@
 # =============================================================================
 
 function Invoke-Step5MailTemplate {
-    param([string]$Bezeichnung)
+    param(
+        [string]$Bezeichnung,
+        [string]$Summe        = '',
+        [string]$ZielpfadLink = ''
+    )
 
     $scriptName = $global:Config.Paths.ScriptMail
     $scriptPath = Join-Path $global:AppRoot ("Scripts\" + $scriptName)
@@ -17,8 +21,10 @@ function Invoke-Step5MailTemplate {
     Write-Log "Oeffne Mail-Vorlage fuer: $Bezeichnung" -Level Info
 
     $params = @{
-        ScriptPath  = $scriptPath
-        Bezeichnung = $Bezeichnung
+        ScriptPath    = $scriptPath
+        Bezeichnung   = $Bezeichnung
+        Summe         = $Summe
+        ZielpfadLink  = $ZielpfadLink
     }
 
     Start-RunspaceJob -Parameters $params -OnComplete {
@@ -29,7 +35,7 @@ function Invoke-Step5MailTemplate {
             Write-Log "Mail-Vorlage geoeffnet." -Level Success
         }
     } -ScriptBlock {
-        & $ScriptPath -Bezeichnung $Bezeichnung
+        & $ScriptPath -Bezeichnung $Bezeichnung -Summe $Summe -ZielpfadLink $ZielpfadLink
     } | Out-Null
 }
 

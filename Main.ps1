@@ -462,7 +462,15 @@ $ui.Btn4OpenPdf.Add_Click({  Invoke-Step4OpenAbgleichFile -Folder ([string]$ui.B
 $ui.Btn4Done.Add_Click({ Invoke-Step4MarkDone })
 
 # Step 5
-$ui.Btn5MailTemplate.Add_Click({ Invoke-Step5MailTemplate -Bezeichnung $Script:Context.Bezeichnung })
+$ui.Btn5MailTemplate.Add_Click({
+    $summe = $ui.Txt3Summe.Text
+    if ([string]::IsNullOrWhiteSpace($summe) -or $summe -eq '...') { $summe = '(nicht ermittelt)' }
+    $zielpfad = Join-Path $Script:Config.Paths.ZahllaufFolder $Script:Context.OrdnerName
+    Invoke-Step5MailTemplate `
+        -Bezeichnung  $Script:Context.Bezeichnung `
+        -Summe        $summe `
+        -ZielpfadLink $zielpfad
+})
 $ui.Btn5Finish.Add_Click({ Invoke-Step5Finish })
 
 # Settings

@@ -5,7 +5,9 @@
 #>
 
 param(
-    [string]$Bezeichnung = 'Zahllauf'
+    [string]$Bezeichnung  = 'Zahllauf',
+    [string]$Summe        = '',
+    [string]$ZielpfadLink = ''
 )
 
 # Parameter / Konfiguration
@@ -37,7 +39,17 @@ try {
     # Grundeinstellungen
     $mail.To       = $recipient
     $mail.Subject  = $subject
-    $mail.HTMLBody = "<br><br>"      # Leerzeilen → Signatur kommt darunter
+    # Textbausteine aufbauen (nur wenn uebergeben)
+    $bodyContent = ''
+    if (-not [string]::IsNullOrWhiteSpace($Summe)) {
+        $bodyContent += "<p>Die Gesamtsumme der Rechnungen ist <b>$Summe</b>.</p>"
+    }
+    if (-not [string]::IsNullOrWhiteSpace($ZielpfadLink)) {
+        $rawUri  = 'file:////' + $ZielpfadLink.TrimStart('\').Replace('\', '/')
+        $hrefUri = [System.Uri]::EscapeUriString($rawUri)
+        $bodyContent += "<p>Zielordner: <a href=""$hrefUri"">$ZielpfadLink</a></p>"
+    }
+    $mail.HTMLBody = $bodyContent + "<br><br>"      # Leerzeilen → Signatur kommt darunter
 
     # Account finden (case-insensitive)
     Write-Host "Suche nach Account: $desiredFrom" -ForegroundColor Cyan
