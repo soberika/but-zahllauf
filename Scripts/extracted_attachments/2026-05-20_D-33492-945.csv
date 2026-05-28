@@ -1,0 +1,5 @@
+type,id,reference_id,currencycode,net_amount,vat_amount,gross_amount,settlement_reference_time,settlement_event
+viacash_transaction,115085450,26/10548,EUR,-253.00,0.00,-253.00,2026-05-19T07:48:09Z,created
+viacash_transaction,115114293,26/10549,EUR,-100.00,0.00,-100.00,2026-05-19T08:30:47Z,created
+viacash_transaction,115064160,26/10550,EUR,-23.59,0.00,-23.59,2026-05-19T12:32:20Z,created
+viacash_transaction,115110688,26/10551,EUR,-400.00,0.00,-400.00,2026-05-19T13:20:16Z,created

@@ -1,63 +1,117 @@
-{
-    "Paths": {
-        "MsgFolder":         "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp",
-        "TaskFolder":        "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp\\Task",
-        "ZahllaufFolder":    "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\Zahllauf",
-        "TempRoot":          "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp",
-        "ZahllaufRoot":      "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\Zahllauf",
-        "ScriptRechnungen":  "RechnungenausMailinExcel.ps1",
-        "ScriptTask":        "viafintech_Task_Skript.ps1",
-        "ScriptMail":        "MailanHaushalt.ps1"
-    },
-    "UI": {
-        "Title":          "viafintech Zahllauf Dashboard",
-        "Theme":          "Dark",
-        "WindowWidth":    1320,
-        "WindowHeight":   840
-    },
-    "Defaults": {
-        "BezeichnungFormat": "Viafintech vom {0}.KW {1}",
-        "OrdnerFormat":      "{0} Fuer {1}.KW"
-    },
-    "Behavior": {
-        "SimulateCleanup": true
-    },
-    "ScheduledTasks": [
-        {
-            "Id":         "viafin_zahllisten",
-            "Label":      "Erstellung der Zahllisten",
-            "TaskPath":   "\\Paul\\viafintech\\",
-            "TaskName":   "4_viafin_Zahllisten",
-            "ResultFile": "\\\\vjc\\GB1_Systembetreuung\\Taskplaner\\viafin_zahllisten.txt"
-        }
-    ],
-    "Steps": [
-        { "Id": 1, "Name": "Mail",           "Icon": "" },
-        { "Id": 2, "Name": "Rechnungen",     "Icon": "" },
-        { "Id": 3, "Name": "Pruflauf",       "Icon": "" },
-        { "Id": 4, "Name": "Auszahlung",     "Icon": "" },
-        { "Id": 5, "Name": "Abschluss",      "Icon": "" }
-    ],
-    "Hints": {
-        "Step1": [
-            { "Image": "Assets\\hints\\step1_outlook.png", "Caption": "Wochenmail in Outlook finden" },
-            { "Image": "Assets\\hints\\step1_drag.png",    "Caption": ".msg in den _Temp-Ordner ziehen" }
-        ],
-        "Step2": [
-            { "Image": "Assets\\hints\\step2_run.png",     "Caption": "Extraktion starten" },
-            { "Image": "Assets\\hints\\step2_excel.png",   "Caption": "Ergebnis: alleRechnungen.xlsx" }
-        ],
-        "Step3": [
-            { "Image": "Assets\\hints\\step3_prosos.png",  "Caption": "Pruflauf in Prosos anlegen" },
-            { "Image": "Assets\\hints\\step3_faellig.png", "Caption": "Faelligkeit auf letzten Sonntag" }
-        ],
-        "Step4": [
-            { "Image": "Assets\\hints\\step4_task.png",    "Caption": "Auszahlungslauf starten" },
-            { "Image": "Assets\\hints\\step4_folder.png",  "Caption": "Zielordner pruefen" }
-        ],
-        "Step5": [
-            { "Image": "Assets\\hints\\step5_mail.png",    "Caption": "Mail an Buchhaltung" }
-        ]
-    },
-    "Checklist": {}
+﻿{
+    "Paths":  {
+                  "MsgFolder":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp\\ViafintechMails",
+                  "TaskFolder":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp\\Task",
+                  "ZahllaufFolder":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\Zahllauf",
+                  "TempRoot":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp",
+                  "ZahllaufRoot":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\Zahllauf",
+                  "ScriptRechnungen":  "RechnungenausMailinExcel.ps1",
+                  "ScriptTask":  "viafintech_Task_Skript.ps1",
+                  "ScriptMail":  "MailanHaushalt.ps1"
+              },
+    "UI":  {
+               "Title":  "viafintech Zahllauf Dashboard",
+               "Theme":  "Dark",
+               "WindowWidth":  1320,
+               "WindowHeight":  840
+           },
+    "Defaults":  {
+                     "BezeichnungFormat":  "Viafintech vom {0}.KW {1}",
+                     "OrdnerFormat":  "{0} Fuer {1}.KW"
+                 },
+    "Behavior":  {
+                     "SimulateCleanup":  false
+                 },
+    "ScheduledTasks":  [
+                           {
+                               "Id":  "viafin_zahllisten",
+                               "Label":  "Erstellung der Zahllisten",
+                               "TaskPath":  "\\Paul\\viafintech\\",
+                               "TaskName":  "4_viafin_Zahllisten",
+                               "ResultFile":  "\\\\vjc\\GB1_Systembetreuung\\Taskplaner\\viafin_zahllisten.txt"
+                           }
+                       ],
+    "Steps":  [
+                  {
+                      "Id":  1,
+                      "Name":  "Mail",
+                      "Icon":  ""
+                  },
+                  {
+                      "Id":  2,
+                      "Name":  "Rechnungen",
+                      "Icon":  ""
+                  },
+                  {
+                      "Id":  3,
+                      "Name":  "Pruflauf",
+                      "Icon":  ""
+                  },
+                  {
+                      "Id":  4,
+                      "Name":  "Auszahlung",
+                      "Icon":  ""
+                  },
+                  {
+                      "Id":  5,
+                      "Name":  "Abschluss",
+                      "Icon":  ""
+                  }
+              ],
+    "Hints":  {
+                  "Step1":  [
+                                {
+                                    "Image":  "Assets\\hints\\step1_outlook.png",
+                                    "Caption":  "Wochenmail in Outlook finden"
+                                },
+                                {
+                                    "Image":  "Assets\\hints\\step1_drag.png",
+                                    "Caption":  ".msg in den _Temp-Ordner ziehen"
+                                }
+                            ],
+                  "Step2":  [
+                                {
+                                    "Image":  "Assets\\hints\\step2_run.png",
+                                    "Caption":  "Extraktion starten"
+                                },
+                                {
+                                    "Image":  "Assets\\hints\\step2_excel.png",
+                                    "Caption":  "Ergebnis: alleRechnungen.xlsx"
+                                }
+                            ],
+                  "Step3":  [
+                                {
+                                    "Image":  "Assets\\hints\\step3_prosos.png",
+                                    "Caption":  "Pruflauf in Prosos anlegen"
+                                },
+                                {
+                                    "Image":  "Assets\\hints\\step3_faellig.png",
+                                    "Caption":  "Faelligkeit auf letzten Sonntag"
+                                }
+                            ],
+                  "Step4":  [
+                                {
+                                    "Image":  "Assets\\hints\\step4_task.png",
+                                    "Caption":  "Auszahlungslauf starten"
+                                },
+                                {
+                                    "Image":  "Assets\\hints\\step4_folder.png",
+                                    "Caption":  "Zielordner pruefen"
+                                }
+                            ],
+                  "Step5":  [
+                                {
+                                    "Image":  "Assets\\hints\\step5_mail.png",
+                                    "Caption":  "Mail an Buchhaltung"
+                                }
+                            ]
+              },
+    "Checklist":  {
+                      "26_05_24 Fuer 21.KW":  {
+                                                  "c0":  false,
+                                                  "c1":  false,
+                                                  "c2":  true,
+                                                  "c3":  false
+                                              }
+                  }
 }
