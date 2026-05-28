@@ -101,6 +101,7 @@ $ui = @{
 
     # Step 1
     Btn1OpenPath     = Find-Element 'Btn1OpenPath'
+    Btn1CopyPath     = Find-Element 'Btn1CopyPath'
     Btn1Done         = Find-Element 'Btn1Done'
     Sp1Hints         = Find-Element 'Sp1Hints'
 
@@ -481,6 +482,7 @@ $ui.BtnOpenLog.Add_Click({ [System.Diagnostics.Process]::Start('notepad.exe', $S
 
 # Step 1
 $ui.Btn1OpenPath.Add_Click({ Invoke-Step1OpenPath -Path $Script:Config.Paths.TempRoot })
+$ui.Btn1CopyPath.Add_Click({ Invoke-Step1CopyPath -Path $Script:Config.Paths.TempRoot })
 $ui.Btn1Done.Add_Click({ Invoke-Step1MarkDone })
 
 # Step 2

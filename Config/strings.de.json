@@ -23,6 +23,7 @@
     "Step1.Anleitung.2": "2. Alle relevanten .msg-Dateien in den _Temp-Ordner ziehen.",
     "Step1.Anleitung.3": "3. Unten \"Pfad öffnen\" klicken, um den Ordner zu prüfen.",
     "Btn.Step1.OpenPath": "Pfad öffnen",
+    "Btn.Step1.CopyPath": "Pfad in Zwischenablage",
     "Btn.Step1.Done": "Schritt als erledigt markieren",
 
     "Step2.Title": "Schritt 2 - Rechnungen extrahieren",

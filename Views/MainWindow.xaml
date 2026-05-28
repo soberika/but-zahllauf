@@ -330,6 +330,8 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Button x:Name="Btn1OpenPath"  Style="{StaticResource BtnBase}"
                                             Content="Pfad öffnen" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn1CopyPath"  Style="{StaticResource BtnBase}"
+                                            Content="Pfad in Zwischenablage" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn1Done"      Style="{StaticResource BtnSuccess}"
                                             Content="Schritt als erledigt markieren"/>
                                 </StackPanel>

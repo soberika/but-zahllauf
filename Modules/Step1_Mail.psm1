@@ -14,6 +14,21 @@ function Invoke-Step1OpenPath {
     }
 }
 
+function Invoke-Step1CopyPath {
+    param([string]$Path)
+
+    if ([string]::IsNullOrWhiteSpace($Path)) {
+        Write-Log "Schritt 1: Kein Pfad zum Kopieren konfiguriert." -Level Warning
+        return
+    }
+    try {
+        [System.Windows.Clipboard]::SetText($Path)
+        Write-Log "Schritt 1: Pfad in Zwischenablage: $Path" -Level Success
+    } catch {
+        Write-Log "Schritt 1: Clipboard-Fehler: $($_.Exception.Message)" -Level Error
+    }
+}
+
 function Invoke-Step1MarkDone {
     Write-Log "Schritt 1 wurde als erledigt markiert." -Level Success
 }
