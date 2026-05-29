@@ -109,9 +109,20 @@ function Invoke-Step2OpenPath {
 
     if ([System.IO.Directory]::Exists($Path)) {
         [System.Diagnostics.Process]::Start('explorer.exe', $Path) | Out-Null
-        Write-Log "Ergebnis-Ordner geoeffnet: $Path" -Level Info
+        Write-Log "Ordner mit extrahierten Dateien geoeffnet: $Path" -Level Info
     } else {
         Write-Log "Pfad nicht erreichbar: $Path" -Level Warning
+    }
+}
+
+function Invoke-Step2OpenExcel {
+    param([string]$Path)
+
+    if ([System.IO.File]::Exists($Path)) {
+        [System.Diagnostics.Process]::Start($Path) | Out-Null
+        Write-Log "Excel geoeffnet: $Path" -Level Info
+    } else {
+        Write-Log "Excel nicht gefunden: $Path" -Level Warning
     }
 }
 

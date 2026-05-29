@@ -100,6 +100,7 @@ $ui = @{
     PageStep5        = Find-Element 'PageStep5'
 
     # Step 1
+    Btn1OpenOutlook  = Find-Element 'Btn1OpenOutlook'
     Btn1OpenPath     = Find-Element 'Btn1OpenPath'
     Btn1CopyPath     = Find-Element 'Btn1CopyPath'
     Btn1Done         = Find-Element 'Btn1Done'
@@ -110,6 +111,7 @@ $ui = @{
     Txt2Preview      = Find-Element 'Txt2Preview'
     Txt2LastRun      = Find-Element 'Txt2LastRun'
     Btn2Run          = Find-Element 'Btn2Run'
+    Btn2OpenExcel    = Find-Element 'Btn2OpenExcel'
     Btn2OpenPath     = Find-Element 'Btn2OpenPath'
     Btn2Done         = Find-Element 'Btn2Done'
     Sp2Hints         = Find-Element 'Sp2Hints'
@@ -421,6 +423,7 @@ $ui.BtnClearLog.Add_Click({ Clear-Log; Write-Log "Log geleert." -Level Debug })
 $ui.BtnOpenLog.Add_Click({ [System.Diagnostics.Process]::Start('notepad.exe', $Script:LogFile) | Out-Null })
 
 # Step 1
+$ui.Btn1OpenOutlook.Add_Click({ Invoke-Step1OpenOutlook })
 $ui.Btn1OpenPath.Add_Click({ Invoke-Step1OpenPath -Path $Script:Config.Paths.TempRoot })
 $ui.Btn1CopyPath.Add_Click({ Invoke-Step1CopyPath -Path $Script:Config.Paths.TempRoot })
 $ui.Btn1Done.Add_Click({ Invoke-Step1MarkDone })
@@ -434,7 +437,8 @@ $ui.Btn2Run.Add_Click({
         -BrushSuccess $Script:Window.Resources['Success'] `
         -BrushDanger  $Script:Window.Resources['Danger']
 })
-$ui.Btn2OpenPath.Add_Click({ Invoke-Step2OpenPath -Path $Script:Config.Paths.TempRoot })
+$ui.Btn2OpenExcel.Add_Click({ Invoke-Step2OpenExcel -Path (Join-Path $Script:Config.Paths.TaskFolder 'alleRechnungen.xlsx') })
+$ui.Btn2OpenPath.Add_Click({ Invoke-Step2OpenPath -Path $Script:Config.Paths.ExtractedFolder })
 $ui.Btn2Done.Add_Click({ Invoke-Step2MarkDone })
 
 # Step 3

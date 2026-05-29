@@ -319,27 +319,35 @@
                     <!-- Statische Texte (Titel, Anleitung, Buttons) kommen aus
                          Config\strings.de.json (Apply-Strings). doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageStep1" Visibility="Visible">
-                        <TextBlock x:Name="Txt1Title" Text="Schritt 1 - Mail" Style="{StaticResource H1}"/>
+                        <TextBlock x:Name="Txt1Title" Text="1. Rechnungen aus wöchtl. Mail abspeichern" Style="{StaticResource H1}"/>
                         <TextBlock x:Name="Txt1Desc" Text="Wochenmail von viafintech prüfen und .msg-Dateien im _Temp-Ordner ablegen."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
+                        <!-- Karte A: Outlook oeffnen -->
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock x:Name="Txt1AnleitungTitle" Text="Anleitung" Style="{StaticResource H2}"/>
-                                <TextBlock x:Name="Txt1Anleitung1" TextWrapping="Wrap" Margin="0,0,0,10"
-                                           Text="1. Outlook öffnen und die Wochenmail mit den Rechnungen suchen."/>
-                                <TextBlock x:Name="Txt1Anleitung2" TextWrapping="Wrap" Margin="0,0,0,10"
-                                           Text="2. Alle relevanten .msg-Dateien in den _Temp-Ordner ziehen."/>
-                                <TextBlock x:Name="Txt1Anleitung3" TextWrapping="Wrap" Margin="0,0,0,16"
-                                           Text="3. Unten &quot;Pfad öffnen&quot; klicken, um den Ordner zu prüfen."/>
+                                <TextBlock x:Name="Txt1OutlookTitle" Text="Outlook öffnen" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt1OutlookDesc" TextWrapping="Wrap" Margin="0,0,0,14"
+                                           Text="Outlook öffnen und die wöchentliche viafintech-Mail mit den Rechnungen heraussuchen. Über den Button startet Outlook direkt."/>
+                                <Button x:Name="Btn1OpenOutlook" Style="{StaticResource BtnPrimary}" HorizontalAlignment="Left"
+                                        Content="Outlook öffnen"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Karte B: Mail im temporaeren Ordner abspeichern -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock x:Name="Txt1SaveTitle" Text="Mail im temporären Ordner abspeichern" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt1SaveDesc" TextWrapping="Wrap" Margin="0,0,0,14"
+                                           Text="Die einzelnen Rechnungsmails per Maus in den temporären Ordner ziehen oder in Outlook über &quot;Alle Anlagen speichern&quot; dort ablegen."/>
                                 <StackPanel Orientation="Horizontal">
                                     <Button x:Name="Btn1OpenPath"  Style="{StaticResource BtnBase}"
-                                            Content="Pfad öffnen" Margin="0,0,10,0"/>
+                                            Content="Temporären Ordner öffnen" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn1CopyPath"  Style="{StaticResource BtnBase}"
-                                            Content="Pfad in Zwischenablage" Margin="0,0,10,0"/>
-                                    <Button x:Name="Btn1Done"      Style="{StaticResource BtnSuccess}"
-                                            Content="Schritt als erledigt markieren"/>
+                                            Content="Ordner Pfad in Zwischenablage"/>
                                 </StackPanel>
+                                <Button x:Name="Btn1Done" Style="{StaticResource BtnSuccess}" HorizontalAlignment="Left"
+                                        Content="Schritt als erledigt markieren" Margin="0,14,0,0"/>
                             </StackPanel>
                         </Border>
 
@@ -356,26 +364,38 @@
                         <TextBlock x:Name="Txt2Desc" Text="Verarbeitet die .msg-Dateien und erstellt die Excel-Sammeldatei (alleRechnungen.xlsx)."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
+                        <!-- Optionen (eigene Karte, oberhalb) -->
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
                                 <TextBlock x:Name="Txt2OptionenTitle" Text="Optionen" Style="{StaticResource H2}"/>
                                 <CheckBox x:Name="Chk2NurExcel"
                                           Content="Nur Excel erstellen (CSV-Dateien liegen bereits vor)"/>
+                            </StackPanel>
+                        </Border>
 
-                                <TextBlock x:Name="Txt2PreviewTitle" Text="Vorschau Excel-Bezeichnung" Style="{StaticResource H2}" Margin="0,16,0,4"/>
+                        <!-- Block 1: Zusammenfassung der Rechnungen -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock x:Name="Txt2SummaryTitle" Text="Zusammenfassung der Rechnungen" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt2SummaryDesc" TextWrapping="Wrap" Margin="0,0,0,14"
+                                           Text="Die gespeicherten Anlagen werden per Skript in eine Excel-Tabelle (alleRechnungen.xlsx) extrahiert und zusammengefasst."/>
+
+                                <TextBlock x:Name="Txt2PreviewTitle" Text="Vorschau der Excel-Bezeichnung" Style="{StaticResource H2}" Margin="0,0,0,4"/>
                                 <TextBox x:Name="Txt2Preview" IsReadOnly="True" Text="--"/>
 
-                                <TextBlock x:Name="Txt2LastRunTitle" Text="Letzter Lauf" Style="{StaticResource H2}" Margin="0,16,0,4"/>
+                                <TextBlock x:Name="Txt2LastRunTitle" Text="Automatische Umwandlung und Zusammenfassung" Style="{StaticResource H2}" Margin="0,16,0,4"/>
                                 <TextBlock x:Name="Txt2LastRun" Style="{StaticResource Muted}" Text="noch nicht ausgeführt"/>
 
-                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
-                                    <Button x:Name="Btn2Run"      Style="{StaticResource BtnPrimary}"
+                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                    <Button x:Name="Btn2Run"       Style="{StaticResource BtnPrimary}"
                                             Content="Rechnungen extrahieren" Margin="0,0,10,0"/>
-                                    <Button x:Name="Btn2OpenPath" Style="{StaticResource BtnBase}"
-                                            Content="Ergebnis-Ordner öffnen" Margin="0,0,10,0"/>
-                                    <Button x:Name="Btn2Done"     Style="{StaticResource BtnSuccess}"
-                                            Content="Schritt als erledigt markieren"/>
+                                    <Button x:Name="Btn2OpenExcel" Style="{StaticResource BtnBase}"
+                                            Content="Excel öffnen" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn2OpenPath"  Style="{StaticResource BtnBase}"
+                                            Content="Ordner mit Extrahierten .pdf und .csv öffnen"/>
                                 </StackPanel>
+                                <Button x:Name="Btn2Done" Style="{StaticResource BtnSuccess}" HorizontalAlignment="Left"
+                                        Content="Schritt als erledigt markieren" Margin="0,14,0,0"/>
                             </StackPanel>
                         </Border>
 

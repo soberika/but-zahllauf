@@ -4,6 +4,7 @@
                   "TaskFolder":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp\\Task",
                   "ZahllaufFolder":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\Zahllauf",
                   "TempRoot":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp",
+                  "ExtractedFolder":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\_Temp\\extracted_attachments",
                   "ZahllaufRoot":  "\\\\vjc\\GB1_Haushalt\\OPEN_Listen_ab_2010\\viafintech\\Zahllauf",
                   "ScriptRechnungen":  "RechnungenausMailinExcel.ps1",
                   "ScriptTask":  "viafintech_Task_Skript.ps1",

@@ -53,10 +53,11 @@ $Script:StringMap = @(
     # Schritt 1
     @{ N = 'Txt1Title';            P = 'Text';    K = 'Step1.Title' }
     @{ N = 'Txt1Desc';             P = 'Text';    K = 'Step1.Desc' }
-    @{ N = 'Txt1AnleitungTitle';   P = 'Text';    K = 'Step1.AnleitungTitle' }
-    @{ N = 'Txt1Anleitung1';       P = 'Text';    K = 'Step1.Anleitung.1' }
-    @{ N = 'Txt1Anleitung2';       P = 'Text';    K = 'Step1.Anleitung.2' }
-    @{ N = 'Txt1Anleitung3';       P = 'Text';    K = 'Step1.Anleitung.3' }
+    @{ N = 'Txt1OutlookTitle';     P = 'Text';    K = 'Step1.OutlookTitle' }
+    @{ N = 'Txt1OutlookDesc';      P = 'Text';    K = 'Step1.OutlookDesc' }
+    @{ N = 'Btn1OpenOutlook';      P = 'Content'; K = 'Btn.Step1.OpenOutlook' }
+    @{ N = 'Txt1SaveTitle';        P = 'Text';    K = 'Step1.SaveTitle' }
+    @{ N = 'Txt1SaveDesc';         P = 'Text';    K = 'Step1.SaveDesc' }
     @{ N = 'Btn1OpenPath';         P = 'Content'; K = 'Btn.Step1.OpenPath' }
     @{ N = 'Btn1CopyPath';         P = 'Content'; K = 'Btn.Step1.CopyPath' }
     @{ N = 'Btn1Done';             P = 'Content'; K = 'Btn.Step1.Done' }
@@ -66,9 +67,12 @@ $Script:StringMap = @(
     @{ N = 'Txt2Desc';             P = 'Text';    K = 'Step2.Desc' }
     @{ N = 'Txt2OptionenTitle';    P = 'Text';    K = 'Step2.OptionenTitle' }
     @{ N = 'Chk2NurExcel';         P = 'Content'; K = 'Chk.Step2.NurExcel' }
+    @{ N = 'Txt2SummaryTitle';     P = 'Text';    K = 'Step2.SummaryTitle' }
+    @{ N = 'Txt2SummaryDesc';      P = 'Text';    K = 'Step2.SummaryDesc' }
     @{ N = 'Txt2PreviewTitle';     P = 'Text';    K = 'Step2.PreviewTitle' }
     @{ N = 'Txt2LastRunTitle';     P = 'Text';    K = 'Step2.LastRunTitle' }
     @{ N = 'Btn2Run';              P = 'Content'; K = 'Btn.Step2.Run' }
+    @{ N = 'Btn2OpenExcel';        P = 'Content'; K = 'Btn.Step2.OpenExcel' }
     @{ N = 'Btn2OpenPath';         P = 'Content'; K = 'Btn.Step2.OpenPath' }
     @{ N = 'Btn2Done';             P = 'Content'; K = 'Btn.Step2.Done' }
 

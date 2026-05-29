@@ -3,6 +3,15 @@
 #  Schritt 1 - Mail. Platzhalter fuer Phase 1.
 # =============================================================================
 
+function Invoke-Step1OpenOutlook {
+    Write-Log "Schritt 1: Oeffne Outlook." -Level Info
+    try {
+        [System.Diagnostics.Process]::Start('outlook.exe') | Out-Null
+    } catch {
+        Write-Log "Schritt 1: Outlook konnte nicht gestartet werden: $($_.Exception.Message)" -Level Error
+    }
+}
+
 function Invoke-Step1OpenPath {
     param([string]$Path)
 
