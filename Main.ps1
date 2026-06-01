@@ -74,12 +74,6 @@ $ui = @{
     TxtSunday        = Find-Element 'TxtSunday'
     BtnRefresh       = Find-Element 'BtnRefresh'
 
-    # Right panel
-    TxtKWRight       = Find-Element 'TxtKWRight'
-    TxtYearRight     = Find-Element 'TxtYearRight'
-    TxtBezRight      = Find-Element 'TxtBezRight'
-    TxtOrdRight      = Find-Element 'TxtOrdRight'
-
     # Sidebar
     BtnStep1         = Find-Element 'BtnStep1'
     BtnStep2         = Find-Element 'BtnStep2'
@@ -194,12 +188,6 @@ function Update-Context {
     $ui.TxtKW.Text     = "KW $($ctx.KW)"
     $ui.TxtDate.Text   = "$($ctx.Date) ($($ctx.Weekday))"
     $ui.TxtSunday.Text = $ctx.LastSundayStr
-
-    # Right panel
-    $ui.TxtKWRight.Text   = "KW $($ctx.KW)"
-    $ui.TxtYearRight.Text = "$($ctx.Year)"
-    $ui.TxtBezRight.Text  = $ctx.Bezeichnung
-    $ui.TxtOrdRight.Text  = $ctx.OrdnerName
 
     # Step 2
     $ui.Txt2Preview.Text  = $ctx.Bezeichnung
