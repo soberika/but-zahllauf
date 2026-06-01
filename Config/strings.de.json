@@ -84,9 +84,9 @@
 
     "Settings.Title": "Einstellungen - Pfade",
     "Settings.Desc": "Zentrale Ordner fuer Msg-Eingang, Task-Bearbeitung und Zahllauf-Ziel.",
-    "Settings.MsgTitle": "Msg-Ordner (.msg-Dateien)",
-    "Settings.TaskTitle": "Task-Ordner (alleRechnungen.xlsx + Task-Skript-Arbeitsbereich)",
-    "Settings.ZahllaufTitle": "Zahllauf-Ordner (Zielordner)",
+    "Settings.MsgTitle": "Ordner für die einzelnen Viafintech-Rechnungsmails (.msg)",
+    "Settings.TaskTitle": "Task-Ordner (Sammelordner für die Umbenennung)",
+    "Settings.ZahllaufTitle": "Zahllauf-Ordner (Zielpfad für Übergabe)",
     "Btn.Settings.Browse": "Ordner auswählen",
     "Btn.Settings.Save": "Einstellungen speichern",
     "Settings.BehaviorTitle": "Abschluss-Optionen",

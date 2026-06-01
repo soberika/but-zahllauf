@@ -572,7 +572,7 @@
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock x:Name="TxtSetMsgTitle" Text="Msg-Ordner (.msg-Dateien)" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="TxtSetMsgTitle" Text="Ordner für die einzelnen Viafintech-Rechnungsmails (.msg)" Style="{StaticResource H2}"/>
                                 <Grid Margin="0,0,0,14">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -584,7 +584,7 @@
                                             Content="Ordner auswählen" Margin="10,0,0,0"/>
                                 </Grid>
 
-                                <TextBlock x:Name="TxtSetTaskTitle" Text="Task-Ordner (alleRechnungen.xlsx + Task-Skript-Arbeitsbereich)"
+                                <TextBlock x:Name="TxtSetTaskTitle" Text="Task-Ordner (Sammelordner für die Umbenennung)"
                                            Style="{StaticResource H2}"/>
                                 <Grid Margin="0,0,0,14">
                                     <Grid.ColumnDefinitions>
@@ -597,7 +597,7 @@
                                             Content="Ordner auswählen" Margin="10,0,0,0"/>
                                 </Grid>
 
-                                <TextBlock x:Name="TxtSetZahllaufTitle" Text="Zahllauf-Ordner (Zielordner)" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="TxtSetZahllaufTitle" Text="Zahllauf-Ordner (Zielpfad für Übergabe)" Style="{StaticResource H2}"/>
                                 <Grid Margin="0,0,0,14">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
