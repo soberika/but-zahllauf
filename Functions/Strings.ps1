@@ -36,10 +36,9 @@ $Script:StringMap = @(
     # Top-Bar
     @{ N = 'TxtBrandTitle';        P = 'Text';    K = 'Brand.Title' }
     @{ N = 'TxtBrandSubtitle';     P = 'Text';    K = 'Brand.Subtitle' }
-    @{ N = 'LblTopKW';             P = 'Text';    K = 'Top.KW' }
     @{ N = 'LblTopToday';          P = 'Text';    K = 'Top.Today' }
     @{ N = 'LblTopSunday';         P = 'Text';    K = 'Top.LastSunday' }
-    @{ N = 'LblTopYear';           P = 'Text';    K = 'Top.Year' }
+    @{ N = 'LblTopProgress';       P = 'Text';    K = 'Top.Progress' }
     @{ N = 'LblTopWeekSelect';     P = 'Text';    K = 'Top.WeekSelect' }
 
     # Sidebar

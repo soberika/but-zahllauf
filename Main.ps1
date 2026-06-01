@@ -42,6 +42,7 @@ Add-Type -AssemblyName System.Windows.Forms   # nur fuer Set-Clipboard-Fallback
 . (Join-Path $Script:AppRoot 'Functions\ConfigLoader.ps1')
 . (Join-Path $Script:AppRoot 'Functions\RunspaceHelpers.ps1')
 . (Join-Path $Script:AppRoot 'Functions\Strings.ps1')
+. (Join-Path $Script:AppRoot 'Functions\StepState.ps1')
 
 # -- Module laden --------------------------------------------------------------
 Get-ChildItem -Path (Join-Path $Script:AppRoot 'Modules') -Filter '*.psm1' |
@@ -75,10 +76,9 @@ function Find-Element {
 # =============================================================================
 $ui = @{
     # Top-Bar
-    TxtKW            = Find-Element 'TxtKW'
     TxtDate          = Find-Element 'TxtDate'
     TxtSunday        = Find-Element 'TxtSunday'
-    TxtYear          = Find-Element 'TxtYear'
+    TxtProgress      = Find-Element 'TxtProgress'
     CmbWeek          = Find-Element 'CmbWeek'
 
     # Sidebar
@@ -201,6 +201,7 @@ function Show-Step {
     }
 
     $Script:CurrentStep = $Id
+    Update-StepProgress
     Write-Log "Navigation -> Schritt $Id" -Level Debug
 }
 
@@ -225,10 +226,8 @@ function Update-Context {
     $Script:Context = $ctx
 
     # Top-Bar
-    $ui.TxtKW.Text     = "KW $($ctx.KW)"
     $ui.TxtDate.Text   = "$($ctx.Date) ($($ctx.Weekday))"
     $ui.TxtSunday.Text = $ctx.LastSundayStr
-    $ui.TxtYear.Text   = "$($ctx.Year)"
 
     # Step 2
     $ui.Txt2Preview.Text  = $ctx.Bezeichnung
@@ -241,6 +240,8 @@ function Update-Context {
     $ui.Txt4Ordner.Text = $ctx.OrdnerName
 
     Write-Log "Kontext aktualisiert: KW=$($ctx.KW), Bezeichnung='$($ctx.Bezeichnung)'" -Level Info
+
+    Load-StepDone   # Erledigt-Status der gewaehlten KW laden + Anzeige aktualisieren
 }
 
 # Erzeugt pro Config.ScheduledTasks-Eintrag einen Button in Sp4Tasks
@@ -274,6 +275,59 @@ function Initialize-ScheduledTaskButtons {
         [void]$ui.Sp4Tasks.Children.Add($btn)
     }
     Write-Log "Aufgabenplanung: $(@($tasks).Count) Task(s) geladen." -Level Debug
+}
+
+# =============================================================================
+#  Schritt-Fortschritt (Sidebar-Faerbung + Zaehler + Persistenz pro KW)
+# =============================================================================
+# Faerbt die Sidebar (erledigt = gruen, offen = gedaempft, aktiv = hell) und
+# aktualisiert den Zaehler "x / 5 erledigt" in der Top-Bar.
+function Update-StepProgress {
+    if (-not $Script:StepDone) { return }
+    $brushDone   = $Script:Window.Resources['Success']
+    $brushNormal = $Script:Window.Resources['TextMuted']
+    $brushActive = $Script:Window.Resources['TextPrimary']
+    $done = 0
+    foreach ($id in 1..5) {
+        $btn = $Script:SideButtons[$id]
+        if (-not $btn) { continue }
+        if ($Script:StepDone[$id]) { $done++ }
+        if ($id -eq $Script:CurrentStep) {
+            $btn.Foreground = $brushActive
+        } elseif ($Script:StepDone[$id]) {
+            $btn.Foreground = $brushDone
+        } else {
+            $btn.Foreground = $brushNormal
+        }
+    }
+    if ($ui.TxtProgress) { $ui.TxtProgress.Text = "$done / 5 erledigt" }
+}
+
+# Laedt den gespeicherten Erledigt-Status fuer die aktuell gewaehlte KW.
+function Load-StepDone {
+    $Script:StepDone = @{ 1 = $false; 2 = $false; 3 = $false; 4 = $false; 5 = $false }
+    $key = if ($Script:Context) { [string]$Script:Context.OrdnerName } else { '' }
+    if ($key -and $Script:StepState -and $Script:StepState.ContainsKey($key)) {
+        $arr = @($Script:StepState[$key])
+        for ($i = 0; $i -lt 5 -and $i -lt $arr.Count; $i++) {
+            $Script:StepDone[$i + 1] = [bool]$arr[$i]
+        }
+    }
+    Update-StepProgress
+}
+
+# Markiert einen Schritt als erledigt, speichert pro KW und fuehrt zum naechsten.
+function Set-StepDone {
+    param([int]$Id)
+    if (-not $Script:StepDone) { return }
+    $Script:StepDone[$Id] = $true
+    $key = if ($Script:Context) { [string]$Script:Context.OrdnerName } else { '' }
+    if ($key) {
+        $Script:StepState[$key] = @(1..5 | ForEach-Object { [bool]$Script:StepDone[$_] })
+        Save-StepState -State $Script:StepState
+    }
+    Update-StepProgress
+    if ($Id -lt 5) { Show-Step ($Id + 1) }
 }
 
 # =============================================================================
@@ -423,7 +477,7 @@ $ui.Btn1OpenOutlook.Add_Click({ Invoke-Step1OpenOutlook })
 $ui.Btn1OpenTask.Add_Click({ Invoke-Step1OpenPath -Path $Script:Config.Paths.TaskFolder })
 $ui.Btn1OpenPath.Add_Click({ Invoke-Step1OpenPath -Path $Script:Config.Paths.MsgFolder })
 $ui.Btn1CopyPath.Add_Click({ Invoke-Step1CopyPath -Path $Script:Config.Paths.MsgFolder })
-$ui.Btn1Done.Add_Click({ Invoke-Step1MarkDone })
+$ui.Btn1Done.Add_Click({ Invoke-Step1MarkDone; Set-StepDone 1 })
 
 # Step 2
 $ui.Btn2Run.Add_Click({
@@ -444,12 +498,12 @@ $ui.Btn2MergePdf.Add_Click({
         -BrushDanger  $Script:Window.Resources['Danger']
 })
 $ui.Btn2OpenMergedPdf.Add_Click({ Invoke-Step2OpenMergedPdf -Path (Join-Path $Script:Config.Paths.TaskFolder 'alleRechnungen_Anhaenge.pdf') })
-$ui.Btn2Done.Add_Click({ Invoke-Step2MarkDone })
+$ui.Btn2Done.Add_Click({ Invoke-Step2MarkDone; Set-StepDone 2 })
 
 # Step 3
 $ui.Btn3Copy.Add_Click({ Invoke-Step3Copy -Text $ui.Txt3Bezeichnung.Text })
 $ui.Btn3Prosos.Add_Click({ Invoke-Step3OpenProsos })
-$ui.Btn3Done.Add_Click({ Invoke-Step3MarkDone })
+$ui.Btn3Done.Add_Click({ Invoke-Step3MarkDone; Set-StepDone 3 })
 $ui.Btn3Summe.Add_Click({
     Invoke-Step3ReadSumme `
         -TaskFolder     $Script:Config.Paths.TaskFolder `
@@ -470,7 +524,7 @@ $ui.Btn4Run.Add_Click({
 $ui.Btn4OpenTask.Add_Click({ Invoke-Step4OpenTask -Path $Script:Config.Paths.TaskFolder })
 $ui.Btn4OpenXlsx.Add_Click({ Invoke-Step4OpenAbgleichFile -Folder ([string]$ui.Btn4OpenXlsx.Tag) -Pattern '*alleRechnungen.xlsx' })
 $ui.Btn4OpenPdf.Add_Click({  Invoke-Step4OpenAbgleichFile -Folder ([string]$ui.Btn4OpenPdf.Tag)  -Pattern '*ZahllisteHHSTGesamtBetr.pdf' })
-$ui.Btn4Done.Add_Click({ Invoke-Step4MarkDone })
+$ui.Btn4Done.Add_Click({ Invoke-Step4MarkDone; Set-StepDone 4 })
 
 # Step 5
 $ui.Btn5MailTemplate.Add_Click({
@@ -483,7 +537,7 @@ $ui.Btn5MailTemplate.Add_Click({
         -ZielpfadLink $zielpfad
 })
 $ui.Btn5DeleteTemp.Add_Click({ Invoke-Step5DeleteTemp })
-$ui.Btn5Finish.Add_Click({ Invoke-Step5Finish -Bezeichnung $Script:Context.Bezeichnung })
+$ui.Btn5Finish.Add_Click({ Invoke-Step5Finish -Bezeichnung $Script:Context.Bezeichnung; Set-StepDone 5 })
 
 # Settings
 $ui.BtnSettings.Add_Click({ Show-Step 6 })
@@ -536,6 +590,7 @@ $Script:Window.Add_Loaded({
         [System.Environment]::OSVersion.VersionString, `
         $Script:LogFile) -Level Debug
     Apply-Strings   # statische UI-Texte VOR Update-Context setzen
+    $Script:StepState = Import-StepState   # Erledigt-Status (Config\state.json)
     Initialize-WeekPicker
     Initialize-ScheduledTaskButtons
     Initialize-HintGalleries

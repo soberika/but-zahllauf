@@ -4,6 +4,7 @@ Logs/*.log
 .vs/
 .idea/
 *.local.json
+Config/state.json
 Assets/hints/*
 !Assets/hints/.gitkeep
 Assets/lib/*

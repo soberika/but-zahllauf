@@ -246,13 +246,6 @@
                             VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
                         <StackPanel>
-                            <TextBlock x:Name="LblTopKW" Text="Kalenderwoche" Style="{StaticResource Muted}"/>
-                            <TextBlock x:Name="TxtKW" Text="--"
-                                       FontSize="18" FontWeight="SemiBold"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
-                        <StackPanel>
                             <TextBlock x:Name="LblTopToday" Text="Heute" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtDate" Text="--"
                                        FontSize="18" FontWeight="SemiBold"/>
@@ -267,8 +260,8 @@
                     </Border>
                     <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
                         <StackPanel>
-                            <TextBlock x:Name="LblTopYear" Text="Jahr" Style="{StaticResource Muted}"/>
-                            <TextBlock x:Name="TxtYear" Text="--"
+                            <TextBlock x:Name="LblTopProgress" Text="Fortschritt" Style="{StaticResource Muted}"/>
+                            <TextBlock x:Name="TxtProgress" Text="0 / 5 erledigt"
                                        FontSize="18" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Border>
