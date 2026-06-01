@@ -105,7 +105,7 @@ function Invoke-Step3OpenProsos {
 
     if ([System.IO.File]::Exists($exe)) {
         [System.Diagnostics.Process]::Start($exe, '/app OpenClient.exe') | Out-Null
-        Write-Log "Prosos gestartet." -Level Info
+        Write-Log "OPEN/Prosoz wird gestartet" -Level Info
     } else {
         Write-Log "Prosos-Exe nicht gefunden: $exe" -Level Warning
     }
