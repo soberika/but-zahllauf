@@ -86,6 +86,8 @@ $Script:StringMap = @(
     # Schritt 3
     @{ N = 'Txt3Title';            P = 'Text';    K = 'Step3.Title' }
     @{ N = 'Txt3Desc';             P = 'Text';    K = 'Step3.Desc' }
+    @{ N = 'Txt3ProsozTitle';      P = 'Text';    K = 'Step3.ProsozTitle' }
+    @{ N = 'Txt3ProsozDesc';       P = 'Text';    K = 'Step3.ProsozDesc' }
     @{ N = 'Txt3BezeichnungTitle'; P = 'Text';    K = 'Step3.BezeichnungTitle' }
     @{ N = 'Txt3FaelligkeitTitle'; P = 'Text';    K = 'Step3.FaelligkeitTitle' }
     @{ N = 'Btn3Copy';             P = 'Content'; K = 'Btn.Step3.Copy' }

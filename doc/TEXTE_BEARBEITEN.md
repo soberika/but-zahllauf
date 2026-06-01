@@ -76,15 +76,15 @@ Wichtig:
 | `Btn.Step2.OpenPath` | Schritt 2, Button | Ergebnis-Ordner öffnen |
 | `Step3.Title` | Schritt 3, Ueberschrift (H1) | Schritt 3 - Prüflauf in Prosos |
 | `Step3.Desc` | Schritt 3, Beschreibung unter Titel | Bezeichnung und Fälligkeit ... |
+| `Step3.ProsozTitle` | Schritt 3, Karten-Ueberschrift (H2) | OPEN/Prosoz öffnen |
+| `Step3.ProsozDesc` | Schritt 3, Hinweistext unter dem Titel | Prosoz öffnen und unter Zahlbarmachung "Prüflauf erstellen" auswählen. |
+| `Btn.Step3.Prosos` | Schritt 3, Button | OPEN/Prosoz öffnen |
 | `Step3.BezeichnungTitle` | Schritt 3, Ueberschrift (H2) | Bezeichnung |
 | `Step3.FaelligkeitTitle` | Schritt 3, Ueberschrift (H2) | Fälligkeit (letzter Sonntag) |
 | `Btn.Step3.Copy` | Schritt 3, Button | Bezeichnung in Zwischenablage |
-| `Btn.Step3.Prosos` | Schritt 3, Button | Prosos öffnen |
-| `Step3.ChecklistTitle` | Schritt 3, Karten-Ueberschrift (H2) | Checkliste |
-| `Chk.Step3.Done0` | Schritt 3, CheckBox 1 | Prüflauf in Prosos angelegt |
-| `Chk.Step3.Done1` | Schritt 3, CheckBox 2 | Bezeichnung gesetzt |
-| `Chk.Step3.Done2` | Schritt 3, CheckBox 3 | Fälligkeit auf letzten Sonntag gestellt |
-| `Chk.Step3.Done3` | Schritt 3, CheckBox 4 | Prüflauf erfolgreich abgeschlossen |
+| `Step3.SummeTitle` | Schritt 3, Karten-Ueberschrift (H2) | Gesamtsumme prüfen |
+| `Btn.Step3.Summe` | Schritt 3, Button | Gesamtsumme ermitteln |
+| `Btn.Step3.Done` | Schritt 3, Button | Schritt als erledigt markieren |
 | `Step4.Title` | Schritt 4, Ueberschrift (H1) | Schritt 4 - Auszahlungslauf |
 | `Step4.Desc` | Schritt 4, Beschreibung unter Titel | Baut den Task-Ordner ... |
 | `Step4.AufgabenTitle` | Schritt 4, Karte "Aufgabenplanung" (H2) | Aufgabenplanung |
@@ -165,7 +165,7 @@ im Code gesetzt:
 | Vorschau Excel-Bezeichnung (`Txt2Preview`) | `Main.ps1`, `Update-Context` |
 | Bezeichnung Schritt 3 (`Txt3Bezeichnung`) | `Main.ps1`, `Update-Context` |
 | Vorschau Ordnername Schritt 4 (`Txt4Ordner`) | `Main.ps1`, `Update-Context` |
-| Checklisten-Zaehler "x/4 erledigt" (`Txt3Checklist`) | `Main.ps1`, `Update-ChecklistCounter` |
+| Gesamtsumme Schritt 3 (`Txt3Summe`) | `Main.ps1` (Btn3Summe) + `Modules/Step3_Pruflauf.psm1` (OnComplete) |
 | "Letzter Lauf"-Status (`Txt2LastRun`) | `Main.ps1` (Btn2Run) + `Modules/Step2_Rechnungen.psm1` (OnComplete) |
 | Task-Status (`Txt4Status`, `Txt4TaskStatus`) | `Modules/Step4_*.psm1` (OnComplete) |
 | Einstellungen-Status (`TxtSetStatus`) | `Main.ps1` (BtnSetSave) |

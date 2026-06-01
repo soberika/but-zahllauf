@@ -427,11 +427,21 @@
 
                     <!-- ============ SCHRITT 3 - PRUFLAUF ============ -->
                     <!-- Statische Texte aus Config\strings.de.json (Apply-Strings).
-                         Dynamisch bleiben Txt3Bezeichnung/Txt3Checklist. doc\TEXTE_BEARBEITEN.md -->
+                         Dynamisch bleiben Txt3Bezeichnung/Txt3Summe. doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageStep3" Visibility="Collapsed">
                         <TextBlock x:Name="Txt3Title" Text="Schritt 3 - Prüflauf in Prosos" Style="{StaticResource H1}"/>
                         <TextBlock x:Name="Txt3Desc" Text="Bezeichnung und Fälligkeit für den Prüflauf festlegen."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock x:Name="Txt3ProsozTitle" Text="OPEN/Prosoz öffnen" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt3ProsozDesc" Text="Prosoz öffnen und unter Zahlbarmachung &quot;Prüflauf erstellen&quot; auswählen."
+                                           Style="{StaticResource Muted}" Margin="0,4,0,0"/>
+                                <Button x:Name="Btn3Prosos" Style="{StaticResource BtnPrimary}" HorizontalAlignment="Left"
+                                        Content="OPEN/Prosoz öffnen" Margin="0,14,0,0"/>
+                            </StackPanel>
+                        </Border>
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
@@ -443,9 +453,7 @@
 
                                 <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
                                     <Button x:Name="Btn3Copy"   Style="{StaticResource BtnPrimary}"
-                                            Content="Bezeichnung in Zwischenablage" Margin="0,0,10,0"/>
-                                    <Button x:Name="Btn3Prosos" Style="{StaticResource BtnBase}"
-                                            Content="Prosos öffnen"/>
+                                            Content="Bezeichnung in Zwischenablage"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
