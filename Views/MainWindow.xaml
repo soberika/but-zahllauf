@@ -567,7 +567,7 @@
                          Dynamisch bleibt TxtSetStatus. doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageSettings" Visibility="Collapsed">
                         <TextBlock x:Name="TxtSetTitle" Text="Einstellungen - Pfade" Style="{StaticResource H1}"/>
-                        <TextBlock x:Name="TxtSetDesc" Text="Zentrale Ordner fuer Msg-Eingang, Task-Bearbeitung und Zahllauf-Ziel."
+                        <TextBlock x:Name="TxtSetDesc" Text="Zentrale Ordner für Rechnungsmails (.msg), Umbenennung und Übergabe."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
                         <Border Style="{StaticResource Card}">

@@ -83,7 +83,7 @@
     "Btn.Step5.Finish": "Zahllauf abgeschlossen",
 
     "Settings.Title": "Einstellungen - Pfade",
-    "Settings.Desc": "Zentrale Ordner fuer Msg-Eingang, Task-Bearbeitung und Zahllauf-Ziel.",
+    "Settings.Desc": "Zentrale Ordner für Rechnungsmails (.msg), Umbenennung und Übergabe.",
     "Settings.MsgTitle": "Ordner für die einzelnen Viafintech-Rechnungsmails (.msg)",
     "Settings.TaskTitle": "Task-Ordner (Sammelordner für die Umbenennung)",
     "Settings.ZahllaufTitle": "Zahllauf-Ordner (Zielpfad für Übergabe)",
