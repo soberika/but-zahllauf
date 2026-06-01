@@ -49,6 +49,7 @@ Get-ChildItem -Path (Join-Path $Script:AppRoot 'Modules') -Filter '*.psm1' |
 
 # -- Config laden --------------------------------------------------------------
 $Script:Config = Import-AppConfig
+Resolve-DerivedPaths $Script:Config   # TempRoot/ExtractedFolder aus MsgFolder ableiten
 $global:Config = $Script:Config
 
 # -- Statische UI-Texte laden (siehe doc\TEXTE_BEARBEITEN.md) -------------------
@@ -518,6 +519,7 @@ $ui.BtnSetSave.Add_Click({
     $Script:Config.Paths.TaskFolder          = $ui.TxtSetTask.Text
     $Script:Config.Paths.ZahllaufFolder      = $ui.TxtSetZahllauf.Text
     $Script:Config.Behavior.SimulateCleanup  = [bool]$ui.ChkSetSimulate.IsChecked
+    Resolve-DerivedPaths $Script:Config   # abgeleitete Pfade an neuen MsgFolder anpassen
     Save-AppConfig
     $ui.TxtSetStatus.Text = "Einstellungen gespeichert ($((Get-Date).ToString('HH:mm:ss')))."
     $ui.TxtSetStatus.Foreground = $Script:Window.Resources['Success']
