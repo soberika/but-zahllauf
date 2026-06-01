@@ -338,16 +338,25 @@
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
                                 <TextBlock x:Name="Txt1SaveTitle" Text="Mail im temporären Ordner abspeichern" Style="{StaticResource H2}"/>
-                                <TextBlock x:Name="Txt1SaveDesc" TextWrapping="Wrap" Margin="0,0,0,14"
-                                           Text="Die einzelnen Rechnungsmails per Maus in den temporären Ordner ziehen oder in Outlook über &quot;Alle Anlagen speichern&quot; dort ablegen."/>
-                                <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="Txt1SaveDesc" TextWrapping="Wrap" Margin="0,0,0,12"
+                                           Text="Die Mails an die jeweils passende Stelle ablegen - per Maus hineinziehen oder in Outlook über &quot;Alle Anlagen speichern&quot;."/>
+
+                                <!-- 1. Haushalt-Mail in den Task-Ordner -->
+                                <CheckBox x:Name="Chk1Task" Content="Mail vom Haushalt in &quot;Task&quot;-Ordner ziehen"/>
+                                <Button x:Name="Btn1OpenTask" Style="{StaticResource BtnBase}" HorizontalAlignment="Left"
+                                        Content="&quot;Task&quot;-Ordner öffnen" Margin="22,6,0,0"/>
+
+                                <!-- 2. Rechnungsmails in den ViafintechMails-Ordner -->
+                                <CheckBox x:Name="Chk1Mails" Content="Rechnungsmails in &quot;ViafintechMails&quot; ziehen" Margin="0,18,0,0"/>
+                                <StackPanel Orientation="Horizontal" Margin="22,6,0,0">
                                     <Button x:Name="Btn1OpenPath"  Style="{StaticResource BtnBase}"
-                                            Content="Temporären Ordner öffnen" Margin="0,0,10,0"/>
+                                            Content="&quot;ViafintechMails&quot;-Ordner öffnen" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn1CopyPath"  Style="{StaticResource BtnBase}"
                                             Content="Ordner Pfad in Zwischenablage"/>
                                 </StackPanel>
+
                                 <Button x:Name="Btn1Done" Style="{StaticResource BtnSuccess}" HorizontalAlignment="Left"
-                                        Content="Schritt als erledigt markieren" Margin="0,14,0,0"/>
+                                        Content="Schritt als erledigt markieren" Margin="0,18,0,0"/>
                             </StackPanel>
                         </Border>
 

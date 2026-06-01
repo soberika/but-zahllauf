@@ -58,6 +58,9 @@ $Script:StringMap = @(
     @{ N = 'Btn1OpenOutlook';      P = 'Content'; K = 'Btn.Step1.OpenOutlook' }
     @{ N = 'Txt1SaveTitle';        P = 'Text';    K = 'Step1.SaveTitle' }
     @{ N = 'Txt1SaveDesc';         P = 'Text';    K = 'Step1.SaveDesc' }
+    @{ N = 'Chk1Task';             P = 'Content'; K = 'Chk.Step1.Task' }
+    @{ N = 'Btn1OpenTask';         P = 'Content'; K = 'Btn.Step1.OpenTask' }
+    @{ N = 'Chk1Mails';            P = 'Content'; K = 'Chk.Step1.Mails' }
     @{ N = 'Btn1OpenPath';         P = 'Content'; K = 'Btn.Step1.OpenPath' }
     @{ N = 'Btn1CopyPath';         P = 'Content'; K = 'Btn.Step1.CopyPath' }
     @{ N = 'Btn1Done';             P = 'Content'; K = 'Btn.Step1.Done' }

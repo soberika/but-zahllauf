@@ -22,8 +22,11 @@
     "Step1.OutlookDesc": "Outlook öffnen und die wöchentliche viafintech-Mail mit den Rechnungen heraussuchen. Über den Button startet Outlook direkt.",
     "Btn.Step1.OpenOutlook": "Outlook öffnen",
     "Step1.SaveTitle": "Mail im temporären Ordner abspeichern",
-    "Step1.SaveDesc": "Die einzelnen Rechnungsmails per Maus in den temporären Ordner ziehen oder in Outlook über \"Alle Anlagen speichern\" dort ablegen.",
-    "Btn.Step1.OpenPath": "Temporären Ordner öffnen",
+    "Step1.SaveDesc": "Die Mails an die jeweils passende Stelle ablegen - per Maus hineinziehen oder in Outlook über \"Alle Anlagen speichern\".",
+    "Chk.Step1.Task": "Mail vom Haushalt in \"Task\"-Ordner ziehen",
+    "Btn.Step1.OpenTask": "\"Task\"-Ordner öffnen",
+    "Chk.Step1.Mails": "Rechnungsmails in \"ViafintechMails\" ziehen",
+    "Btn.Step1.OpenPath": "\"ViafintechMails\"-Ordner öffnen",
     "Btn.Step1.CopyPath": "Ordner Pfad in Zwischenablage",
     "Btn.Step1.Done": "Schritt als erledigt markieren",
 
