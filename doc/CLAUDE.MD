@@ -40,7 +40,7 @@ Du antwortest **immer** in folgender Reihenfolge:
 
 ---
 
-## Aktueller Stand (Stand 2026-05-28)
+## Aktueller Stand (Stand 2026-06-01)
 
 - **Phase 1 (Skeleton):** fertig — WPF-GUI, Sidebar, Dark Theme, RichTextBox-Log, ISO-KW, 5 Schritte als Pages.
 - **Phase 2 (Skript-Integration):** fertig — Originalskripte laufen via `Start-RunspaceJob`:
@@ -61,8 +61,16 @@ Du antwortest **immer** in folgender Reihenfolge:
   - Schritt 4: Platzhalter-Button "Letzte Korrektur pruefen" (`Btn4Check`) + Funktion `Invoke-Step4CheckCorrection` ersatzlos entfernt (war ein reiner Log-No-op).
   - **Bebilderte Hinweise (Galerie):** pro Step ein `Expander` "Bebilderte Hinweise" mit `WrapPanel` (`Sp1Hints..Sp5Hints`), datengetrieben aus `Config.Hints.Step1..Step5` (`{ Image, Caption }`). `Initialize-HintGalleries` baut Thumbnail-Kacheln; fehlt die Bilddatei, erscheint eine Platzhalter-Kachel ("Bild folgt"). Klick oeffnet die Grossansicht via `global:Show-HintImage` (modal). Closure-Werte (Pfad/Caption/Owner) **vor** `GetNewClosure()` in lokale Variablen gehoben (siehe Closure-Scope-Note). Bilder liegen unter `Assets/hints/` und sind **gitignored** (Screenshots interner Systeme nicht committen).
 - **UI-Texte ausgelagert (2026-05-28):** Statische GUI-Texte liegen zentral und editierbar in `Config/strings.de.json` (UTF-8, echte Umlaute erlaubt). Neue `Functions/Strings.ps1` mit `Import-AppStrings` (analog `Import-AppConfig`), Mapping-Tabelle `$Script:StringMap` (Element-`x:Name` -> Property `Text`/`Content`/`Header` -> Schluessel) und `Apply-Strings`; Aufruf in `Add_Loaded` **vor** `Initialize-WeekPicker`/`Update-Context`. Bisher unbenannte In-Scope-Textelemente im XAML haben ein `x:Name` erhalten; bestehende Namen unveraendert. Fehlt ein Schluessel/Element, bleibt der XAML-Wert stehen + Warnung im Log. Dynamische Laufzeit-Texte (KW/Datum/Bezeichnung/Ordner/Status/Counter) bleiben **out of scope** in `Update-Context`/`OnComplete`; Task-Labels und Hinweis-Captions kommen weiter aus `Config/default.json`. Bearbeiter-Doku: `doc/TEXTE_BEARBEITEN.md`.
+- **Schritt-Ueberarbeitung (2026-06-01):** Ergaenzung zum Stand 2026-05-28. Alle 5 Schritt-Karten bekamen aufgabenorientierte Buttons und je einen "Schritt als erledigt markieren"-Button (`Invoke-StepXMarkDone`, reines Log-Success).
+  - **Schritt 1:** zwei getrennte Karten "Outlook" (`Btn1OpenOutlook` -> `Invoke-Step1OpenOutlook`) und "Speichern" mit **zwei Checkboxen mit eigenen Ordner-Buttons** (`Chk1Task` -> `Btn1OpenTask` = `TaskFolder`, `Chk1Mails` -> `Btn1OpenPath` = `MsgFolder`). Neuer Button "Pfad in Zwischenablage" (`Btn1CopyPath` -> `Invoke-Step1CopyPath`, kopiert `MsgFolder`). `Btn1OpenPath` zeigt jetzt auf `MsgFolder` statt `TempRoot`.
+  - **Schritt 2:** neuer Excel-Oeffnen-Button (`Btn2OpenExcel`, `alleRechnungen.xlsx` im `TaskFolder`); `Btn2OpenPath` zeigt jetzt auf `ExtractedFolder`. **PDF-Zusammenfassung (neu):** Karte "PDFs zusammenfassen" -> `Invoke-Step2MergePdf` fasst die extrahierten Einzel-PDFs (`ExtractedFolder`, sortiert nach `CreationTime` = Mail-/Extraktionsreihenfolge) zu `alleRechnungen_Anhaenge.pdf` im `TaskFolder` zusammen. Nutzt **`itextsharp.dll` aus `Assets\lib`** (reines .NET, kein Install/Internet) via `PdfCopy`/seitenweisem Kopieren, **kompatibel zu iTextSharp 4.x UND 5.x**. Abhaengigkeiten (z. B. `BouncyCastle.Crypto.dll` bei 5.x) werden vor `itextsharp.dll` aus dem Ordner geladen; fehlende Abhaengigkeit wird exakt aus der `ReflectionTypeLoadException` gemeldet. Fehler beim Lesen einzelner PDFs werden gemeldet statt vom `Close()` verdeckt; bei 0 uebernommenen Seiten wird die leere Ausgabe wieder geloescht. Fehlt die DLL, bricht der Schritt sauber ab (nichts wird geloescht/ueberschrieben). DLL ist **gitignored**; Beschaffung + `Unblock-File` (gegen Fehler `0x80131515`) in `Assets\lib\README.md`. Buttons "Zusammengefasste PDF oeffnen" (`Btn2OpenMergedPdf`) und "Erledigt" (`Btn2Done`).
+  - **Schritt 3:** die **pro-KW-Checkliste wurde komplett entfernt** (`Chk3Done0..3`, `Txt3Checklist`, `Config.Checklist`, Helfer `Sync-/Save-Step3Checklist`, `Get-ChecklistBoxes`, `Update-ChecklistCounter`; auch der Aufruf in `Update-Context`). Stattdessen **Gesamtsumme-Button** (`Btn3Summe` -> `Invoke-Step3ReadSumme`): liest Zelle **J2** aus `alleRechnungen.xlsx` per Excel-COM im Runspace, formatiert als `N2` (de-DE, Euro) und zeigt sie in `Txt3Summe`. Neuer "Erledigt"-Button (`Btn3Done`).
+  - **Schritt 4:** Karte **"Abgleich der Gesamtsummen"** mit `Btn4OpenXlsx`/`Btn4OpenPdf` (`Invoke-Step4OpenAbgleichFile -Folder -Pattern`, Patterns `*alleRechnungen.xlsx` und `*ZahllisteHHSTGesamtBetr.pdf`). Die Buttons sind erst **nach erfolgreichem Lauf** aktiv; `Invoke-StartTaskScript`/`OnComplete` aktiviert sie und hinterlegt den Zielordner an `Button.Tag`. Erstellungs-Button von "Zahlliste-PDF oeffnen" zu **"Haushaltsstellengesamtbetraege oeffnen"** umbenannt; Karten-Ueberschrift `Txt4ErstellungTitle` ergaenzt. Neuer "Erledigt"-Button (`Btn4Done`).
+  - **Schritt 5 in zwei Aktionen aufgeteilt:** `Invoke-Step5DeleteTemp` (`Btn5DeleteTemp`) loescht nur die temporaeren Dateien (`.msg` + `ExtractedFolder`-Anhaenge), respektiert `Behavior.SimulateCleanup`. `Invoke-Step5Finish` sichert **nur noch** das Tageslog nach `\\VJC\GB1_Systembetreuung\Taskplaner\...` und protokolliert die Uebergabe (kein Loeschen mehr darin); bekommt `-Bezeichnung` aus `Main.ps1`. Hinweistext `Txt5FinishNote`. **Mail-Vorlage erweitert:** `Invoke-Step5MailTemplate -Summe -ZielpfadLink`; `MailanHaushalt.ps1` (`-Summe`, `-ZielpfadLink`) baut den HTML-Body mit Gesamtsumme und einem `file://`-Link auf den Zielordner. Summe kommt aus `Txt3Summe`, Zielpfad = `ZahllaufFolder\OrdnerName`. **Fix:** `Get-ZahllaufContext`-Aufruf aus dem Step5-Modul entfernt (aus `.psm1` nicht erreichbar - siehe Architektur-Note).
+  - **Abgeleitete Pfade konsistent zu den Einstellungen:** `Paths.TempRoot`/`Paths.ZahllaufRoot` aus `Config/default.json` entfernt. Neue Funktion `Resolve-DerivedPaths` (`Functions/ConfigLoader.ps1`) leitet `TempRoot = Split-Path -Parent MsgFolder` und `ExtractedFolder = TempRoot\extracted_attachments` ab; Aufruf **nach** `Import-AppConfig` und **nach** jedem Speichern der Einstellungen, sodass die Ableitungen einem geaenderten `MsgFolder` folgen. Einstellungen-Seite: Ordner-Label konkretisiert, Einleitungstext angepasst.
+  - **Strings:** `Config/strings.de.json` an die neuen Elemente angepasst (neue Schluessel u. a. `Step1.Outlook*/Save*`, `Step2.Summary*/Merge*`, `Step3.Summe*`, `Step4.Erstellung*/Abgleich*`, `Step5.FinishNote` plus zahlreiche neue Button-Keys; Anleitungs- und Checklist-Keys entfernt).
 - **Getestet OK (lokal vom Maintainer):** Schritt 1, Schritt 3, Einstellungen, Fehler-Log, Schritt 5 Mail-Vorlage.
-- **Offen:** Schritt 2/4/5 End-to-End final, Persistenz ueber App-Neustart final bestaetigen.
+- **Offen:** Schritt 2 (Extraktion + PDF-Merge) und Schritt 4/5 End-to-End final, Persistenz ueber App-Neustart final bestaetigen. `itextsharp.dll` muss einmalig unter `Assets\lib\` abgelegt werden (siehe `Assets\lib\README.md`).
 
 Detail-Log: siehe `Changes/AktuellerStand.md`.
 
@@ -84,34 +92,38 @@ Detail-Log: siehe `Changes/AktuellerStand.md`.
 - **Originalskripte in `Scripts/`** bekommen primaer einen Param-Block; punktuelle Anpassungen (interaktive Prompts -> nicht-interaktiv, `Confirm-Dialog`) sind erlaubt, Body sonst unveraendert.
 - **Skript-Pfade** kommen aus `Config/default.json` (`Paths.ScriptRechnungen`, `Paths.ScriptTask`, `Paths.ScriptMail`); Arbeits-Pfade (`MsgFolder`, `TaskFolder`, `ZahllaufFolder`) und `Behavior.SimulateCleanup` ebenfalls dort und ueber GUI editierbar.
 - **UI-Status** (`Txt2LastRun`, `Txt4Status`, `TxtSettingsStatus`) wird in `OnComplete` gruen (Brush `Success`) oder rot (Brush `Danger`) gefaerbt.
+- **Abgeleitete Pfade:** `TempRoot`/`ExtractedFolder` stehen **nicht** mehr in `default.json`, sondern werden von `Resolve-DerivedPaths` aus `MsgFolder` berechnet (`TempRoot` = Elternordner, `ExtractedFolder` = `TempRoot\extracted_attachments`). Aufruf nach `Import-AppConfig` und nach jedem Settings-Save, damit sie einem geaenderten `MsgFolder` folgen.
+- **PDF-Merge (Assets\lib, .NET-only):** `Invoke-Step2MergePdf` laedt `itextsharp.dll` zur Laufzeit per `Add-Type` aus `Assets\lib` (keine Installation/Internet/Admin). Vorher werden alle uebrigen DLLs des Ordners geladen (Abhaengigkeiten wie `BouncyCastle.Crypto.dll` bei 5.x). Seitenweises Kopieren via `PdfCopy` ist kompatibel zu iTextSharp **4.x und 5.x**. DLLs sind gitignored und muessen einmalig entsperrt werden (`Unblock-File`, sonst `0x80131515`) - Details in `Assets\lib\README.md`.
+- **Excel-COM im Runspace:** `Invoke-Step3ReadSumme` liest Zelle J2 via `New-Object -ComObject Excel.Application` und gibt die COM-Objekte sauber frei (`ReleaseComObject`, `GC.Collect`). Laeuft im STA-Runspace, Ergebnis ueber `$sync.Result`.
 
 ## Datei-Layout
 
 ```
-Main.ps1                          # Einstieg, XAML, Event-Handler, Settings, $global:-Mirror, Hint-Galerie, Step3-Checkliste, Apply-Strings-Aufruf
+Main.ps1                          # Einstieg, XAML, Event-Handler, Settings, $global:-Mirror, Hint-Galerie, Apply-Strings-Aufruf, Resolve-DerivedPaths
 Assets/hints/                     # Hinweisbilder (gitignored, .gitkeep). Pfade aus Config.Hints
-Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder + Skriptnamen, Behavior.SimulateCleanup, ScheduledTasks[], Hints{}, Checklist{}, UI-Defaults
+Assets/lib/                       # itextsharp.dll (+ ggf. BouncyCastle) fuer Step2-PDF-Merge - gitignored, nur README.md/.gitkeep im Repo
+Config/default.json               # Paths.{Msg,Task,Zahllauf}Folder + Skriptnamen, Behavior.SimulateCleanup, ScheduledTasks[], Hints{}, UI-Defaults (TempRoot/ExtractedFolder werden zur Laufzeit abgeleitet)
 Config/strings.de.json            # statische UI-Texte (UTF-8) -> doc/TEXTE_BEARBEITEN.md
 Changes/AktuellerStand.md         # Detailliertes Stand- und Bug-Log
 doc/CLAUDE.MD                     # diese Datei
 doc/TEXTE_BEARBEITEN.md           # Bearbeiter-Anleitung fuer die UI-Texte (Mapping-Tabelle)
 doc/prompt.md
 Functions/
-  ConfigLoader.ps1                # Import-AppConfig, Save-AppConfig
+  ConfigLoader.ps1                # Import-AppConfig, Save-AppConfig, Resolve-DerivedPaths (TempRoot/ExtractedFolder aus MsgFolder)
   DateHelpers.ps1                 # global:Get-IsoCalendarWeek + Get-ZahllaufContext (script-scope)
   Logging.ps1                     # global:Write-Log, global:Clear-Log
   RunspaceHelpers.ps1             # global:Start-RunspaceJob + Inner-Proxies (inkl. Confirm-Dialog)
   Strings.ps1                     # Import-AppStrings, Apply-Strings, $Script:StringMap (-> strings.de.json)
 Modules/
-  Step1_Mail.psm1                 # Invoke-Step1OpenPath, Invoke-Step1MarkDone
-  Step2_Rechnungen.psm1           # Invoke-ExtractRechnungen, Invoke-Step2Run, Invoke-Step2OpenPath
-  Step3_Pruflauf.psm1             # Invoke-Step3Copy, Invoke-Step3OpenProsos
-  Step4_Auszahlung.psm1           # Invoke-StartTaskScript, Invoke-Step4Run, Invoke-Step4OpenTask
+  Step1_Mail.psm1                 # Invoke-Step1OpenOutlook, Invoke-Step1OpenPath, Invoke-Step1CopyPath, Invoke-Step1MarkDone
+  Step2_Rechnungen.psm1           # Invoke-ExtractRechnungen, Invoke-Step2Run, Invoke-Step2OpenPath/OpenExcel, Invoke-Step2MergePdf/OpenMergedPdf, Invoke-Step2MarkDone
+  Step3_Pruflauf.psm1             # Invoke-Step3Copy, Invoke-Step3ReadSumme (J2 via Excel-COM), Invoke-Step3OpenProsos, Invoke-Step3MarkDone
+  Step4_Auszahlung.psm1           # Invoke-StartTaskScript, Invoke-Step4Run, Invoke-Step4OpenTask, Invoke-Step4OpenAbgleichFile, Invoke-Step4MarkDone
   Step4_ScheduledTasks.psm1       # Invoke-StartScheduledTask, Invoke-ScheduledTaskById (Aufgabenplanung on demand)
-  Step5_Abschluss.psm1            # Invoke-Step5MailTemplate, Invoke-Step5Finish
+  Step5_Abschluss.psm1            # Invoke-Step5MailTemplate (-Summe/-ZielpfadLink), Invoke-Step5DeleteTemp, Invoke-Step5Finish
 Scripts/                          # Originale - Param-Block + punktuelle Anpassungen
   RechnungenausMailinExcel.ps1    # KEIN BOM -> nur ASCII in Strings!
   viafintech_Task_Skript.ps1      # UTF-8 mit BOM
-  MailanHaushalt.ps1              # UTF-8 mit BOM; Outlook-Entwurf, -Bezeichnung-Param
+  MailanHaushalt.ps1              # UTF-8 mit BOM; Outlook-Entwurf, -Bezeichnung/-Summe/-ZielpfadLink-Param
 Views/MainWindow.xaml
 ```

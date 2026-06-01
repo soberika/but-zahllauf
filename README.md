@@ -51,6 +51,9 @@ Das Skript startet sich bei Bedarf automatisch im STA-Modus neu.
 │   ├── RechnungenausMailinExcel.ps1
 │   ├── viafintech_Task_Skript.ps1
 │   └── MailanHaushalt.ps1         # Outlook-Entwurf fuer den Abschluss
+├── Assets/
+│   ├── hints/                     # Hinweisbilder (gitignored)
+│   └── lib/                       # itextsharp.dll fuer PDF-Merge (gitignored, siehe README dort)
 ├── doc/                           # CLAUDE.MD (Regeln + Architektur), prompt.md
 ├── Changes/                       # AktuellerStand.md (Detail-Log)
 └── Logs/
@@ -76,15 +79,31 @@ Das Skript startet sich bei Bedarf automatisch im STA-Modus neu.
   - Bezeichnung `Viafintech vom XX.KW YY`
   - Task-Ordnername `YY_MM_DD Fuer XX.KW`
 
+Jeder Schritt hat zusaetzlich einen **"Schritt als erledigt markieren"**-Button
+(reiner Log-Eintrag zur Nachvollziehbarkeit).
+
 ### Schritte
 
+- **Schritt 1 — Mail:** Outlook oeffnen sowie zwei Karten/Checkboxen mit eigenen
+  Ordner-Buttons (Task- und Mail-Ordner); der Mail-Ordnerpfad laesst sich
+  zusaetzlich in die Zwischenablage kopieren.
 - **Schritt 2 — Rechnungen:** ruft `RechnungenausMailinExcel.ps1` im Runspace,
   extrahiert `.msg`-Anhaenge, erzeugt `alleRechnungen.xlsx` und verschiebt sie
-  nach `TaskFolder`.
+  nach `TaskFolder`. Excel und Extraktionsordner lassen sich direkt oeffnen.
+  - *PDFs zusammenfassen:* fasst die extrahierten Einzel-PDFs (in Mail-/
+    Extraktionsreihenfolge) zu `alleRechnungen_Anhaenge.pdf` im `TaskFolder`
+    zusammen. Nutzt `itextsharp.dll` aus `Assets\lib\` (reines .NET, keine
+    Installation/Internet) — die DLL ist gitignored und einmalig dort abzulegen
+    (siehe `Assets\lib\README.md`).
 - **Schritt 3 — Prueflauf:** Bezeichnung in Zwischenablage, Prosos starten.
+  - *Gesamtsumme ermitteln:* liest die Summe aus Zelle J2 der
+    `alleRechnungen.xlsx` (Excel-COM) und zeigt sie formatiert in Euro an.
 - **Schritt 4 — Auszahlung:** ruft `viafintech_Task_Skript.ps1`, baut den
   Task-Ordner und verschiebt ihn ins Zahllauf-Ziel. Existiert das Ziel bereits,
   fragt ein Ja/Nein-Dialog vor dem Ueberschreiben.
+  - *Abgleich der Gesamtsummen:* nach erfolgreichem Lauf lassen sich die
+    `alleRechnungen.xlsx` und die Haushaltsstellen-Gesamtbetraege-PDF aus dem
+    Zielordner direkt zum Abgleich oeffnen.
   - *Aufgabenplanung (on demand):* startet in der Windows-Aufgabenplanung
     registrierte Tasks (z. B. die OPEN-PROSOZ-Zahllistenerstellung) per Knopf
     und meldet den Ausfuehrungsstatus zurueck. Ein Ja/Nein-Dialog bestaetigt
@@ -92,13 +111,16 @@ Das Skript startet sich bei Bedarf automatisch im STA-Modus neu.
     geprueft. **Es liegen keine Passwoerter, Argumente oder Task-XML im Repo** —
     die Aufgabe ist bereits in der Aufgabenplanung registriert und wird nur
     ueber Pfad + Name referenziert.
-- **Schritt 5 — Abschluss:**
+- **Schritt 5 — Abschluss** (in zwei getrennte Aktionen aufgeteilt):
   - *Mail-Vorlage oeffnen* erzeugt einen Outlook-Entwurf
     (`MailanHaushalt.ps1`) mit Betreff
-    `<Bezeichnung> Prueflauf - steht zur weiteren Kontrolle bereit`.
-  - *Alles abschliessen* loescht `.msg`-Dateien + `extracted_Attachements` und
-    sichert das Tageslog in den Taskplaner-Ordner. Per **Simulation-Toggle** in
-    den Einstellungen wird das Loeschen zunaechst nur protokolliert.
+    `<Bezeichnung> Prueflauf - steht zur weiteren Kontrolle bereit`; der Body
+    enthaelt die ermittelte Gesamtsumme und einen Link auf den Zielordner.
+  - *Temporaere Dateien loeschen* entfernt die `.msg`-Dateien und die
+    extrahierten Anhaenge. Per **Simulation-Toggle** in den Einstellungen wird
+    das Loeschen zunaechst nur protokolliert.
+  - *Abschliessen* sichert das Tageslog in den Taskplaner-Ordner und
+    protokolliert die veranlasste Uebergabe.
 
 ## Konfiguration
 
@@ -112,7 +134,14 @@ Seite **Einstellungen** in der GUI editierbar (Ordner-Browser + Speichern):
   `TaskName` und optional `ResultFile` (nur Existenz-/Aenderungszeit-Pruefung).
   Nur Pfad/Name/Label — keine Geheimnisse, daher Git-unbedenklich.
 
-Aenderungen werden persistiert und beim naechsten Start wieder geladen.
+Aenderungen werden persistiert und beim naechsten Start wieder geladen. Die
+Arbeitspfade `TempRoot` und `ExtractedFolder` werden zur Laufzeit aus
+`MsgFolder` abgeleitet (Elternordner bzw. `…\extracted_attachments`) und folgen
+damit automatisch einem geaenderten `MsgFolder`.
+
+Fuer die PDF-Zusammenfassung in Schritt 2 muss einmalig `itextsharp.dll` unter
+`Assets\lib\` abgelegt (und nach dem Download per `Unblock-File` entsperrt)
+werden — Details in `Assets\lib\README.md`. Die DLL ist absichtlich gitignored.
 
 ## Hinweise fuer Beitragende
 
