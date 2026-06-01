@@ -90,6 +90,15 @@ function Invoke-Step2Run {
         $BrushDanger
     )
 
+    # Ausgabeordner fuer die extrahierten .pdf/.csv festlegen, sonst legt das
+    # Skript sie neben sich selbst ab (PSScriptRoot\extracted_attachments).
+    if ([string]::IsNullOrWhiteSpace($CsvOrdner)) {
+        $CsvOrdner = [string]$global:Config.Paths.ExtractedFolder
+        if ([string]::IsNullOrWhiteSpace($CsvOrdner)) {
+            $CsvOrdner = Join-Path $global:Config.Paths.TempRoot 'extracted_attachments'
+        }
+    }
+
     Invoke-ExtractRechnungen `
         -NurExcel:$NurExcel `
         -CsvOrdner  $CsvOrdner `

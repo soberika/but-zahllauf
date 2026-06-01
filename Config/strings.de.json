@@ -71,7 +71,9 @@
     "Chk.Step5.Done1": "Bestätigung von Buchhaltung erhalten",
     "Chk.Step5.Done2": "Backup gesichert",
     "Btn.Step5.MailTemplate": "Mail-Vorlage öffnen",
-    "Btn.Step5.Finish": "Alles abschließen",
+    "Btn.Step5.DeleteTemp": "Temporäre Dateien löschen",
+    "Step5.FinishNote": "Damit ist die Übergabe veranlasst und das Log gesichert. Anschließend die Rückmeldung vom Haushalt abwarten.",
+    "Btn.Step5.Finish": "Zahllauf abgeschlossen",
 
     "Settings.Title": "Einstellungen - Pfade",
     "Settings.Desc": "Zentrale Ordner fuer Msg-Eingang, Task-Bearbeitung und Zahllauf-Ziel.",

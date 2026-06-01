@@ -110,6 +110,8 @@ $Script:StringMap = @(
     @{ N = 'Chk5Done1';            P = 'Content'; K = 'Chk.Step5.Done1' }
     @{ N = 'Chk5Done2';            P = 'Content'; K = 'Chk.Step5.Done2' }
     @{ N = 'Btn5MailTemplate';     P = 'Content'; K = 'Btn.Step5.MailTemplate' }
+    @{ N = 'Btn5DeleteTemp';       P = 'Content'; K = 'Btn.Step5.DeleteTemp' }
+    @{ N = 'Txt5FinishNote';       P = 'Text';    K = 'Step5.FinishNote' }
     @{ N = 'Btn5Finish';           P = 'Content'; K = 'Btn.Step5.Finish' }
 
     # Einstellungen

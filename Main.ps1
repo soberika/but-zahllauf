@@ -140,6 +140,7 @@ $ui = @{
 
     # Step 5
     Btn5MailTemplate = Find-Element 'Btn5MailTemplate'
+    Btn5DeleteTemp   = Find-Element 'Btn5DeleteTemp'
     Btn5Finish       = Find-Element 'Btn5Finish'
     Sp5Hints         = Find-Element 'Sp5Hints'
 
@@ -477,6 +478,7 @@ $ui.Btn5MailTemplate.Add_Click({
         -Summe        $summe `
         -ZielpfadLink $zielpfad
 })
+$ui.Btn5DeleteTemp.Add_Click({ Invoke-Step5DeleteTemp })
 $ui.Btn5Finish.Add_Click({ Invoke-Step5Finish -Bezeichnung $Script:Context.Bezeichnung })
 
 # Settings
