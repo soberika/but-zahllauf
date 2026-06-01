@@ -24,6 +24,10 @@ function global:Write-Log {
         } catch { }
     }
 
+    if ($Level -eq 'Error') {
+        try { Set-AppStatus -Message $Message -Level Error } catch { }
+    }
+
     $box = $global:LogBox
     if (-not $box) { return }
 
@@ -56,4 +60,47 @@ function global:Write-Log {
 
 function global:Clear-Log {
     if ($global:LogBox) { $global:LogBox.Document.Blocks.Clear() }
+}
+
+# =============================================================================
+#  Status-Banner (prominente Fehler-/Hinweismeldung oberhalb des Inhalts)
+# =============================================================================
+function global:Set-AppStatus {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string]$Message,
+
+        [ValidateSet('Info','Success','Warning','Error')]
+        [string]$Level = 'Info'
+    )
+
+    $banner = $global:StatusBanner
+    $text   = $global:StatusBannerText
+    if (-not $banner -or -not $text) { return }
+
+    $hex = switch ($Level) {
+        'Info'    { '#2E314A' }
+        'Success' { '#10B981' }
+        'Warning' { '#B45309' }
+        'Error'   { '#B91C1C' }
+    }
+
+    $apply = {
+        $text.Text         = $Message
+        $banner.Background  = [System.Windows.Media.SolidColorBrush]::new(
+                                  [System.Windows.Media.ColorConverter]::ConvertFromString($hex))
+        $banner.Visibility  = [System.Windows.Visibility]::Visible
+    }.GetNewClosure()
+
+    if ($banner.Dispatcher.CheckAccess()) { & $apply }
+    else { [void]$banner.Dispatcher.Invoke([Action]$apply) }
+}
+
+function global:Hide-AppStatus {
+    $banner = $global:StatusBanner
+    if (-not $banner) { return }
+    $apply = { $banner.Visibility = [System.Windows.Visibility]::Collapsed }.GetNewClosure()
+    if ($banner.Dispatcher.CheckAccess()) { & $apply }
+    else { [void]$banner.Dispatcher.Invoke([Action]$apply) }
 }

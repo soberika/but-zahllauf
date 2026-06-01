@@ -150,6 +150,11 @@ $ui = @{
     BtnClearLog      = Find-Element 'BtnClearLog'
     BtnOpenLog       = Find-Element 'BtnOpenLog'
 
+    # Status-Banner
+    StatusBanner     = Find-Element 'StatusBanner'
+    TxtStatusBanner  = Find-Element 'TxtStatusBanner'
+    BtnStatusDismiss = Find-Element 'BtnStatusDismiss'
+
     # Settings
     BtnSettings          = Find-Element 'BtnSettings'
     PageSettings         = Find-Element 'PageSettings'
@@ -162,10 +167,13 @@ $ui = @{
     BtnSetSave           = Find-Element 'BtnSetSave'
     TxtSetStatus         = Find-Element 'TxtSetStatus'
     ChkSetSimulate       = Find-Element 'ChkSetSimulate'
+    BtnResetWeek         = Find-Element 'BtnResetWeek'
 }
 
 $Script:LogBox = $ui.LogBox
 $global:LogBox = $Script:LogBox
+$global:StatusBanner     = $ui.StatusBanner
+$global:StatusBannerText = $ui.TxtStatusBanner
 
 # =============================================================================
 #  Navigation
@@ -187,6 +195,7 @@ $Script:SideButtons = @{
     6 = $ui.BtnSettings
 }
 $Script:CurrentStep = 1
+$Script:SuppressWeekBanner = $true   # beim Start keinen KW-Wechsel-Hinweis zeigen
 
 function Show-Step {
     param([int]$Id)
@@ -244,6 +253,11 @@ function Update-Context {
     Write-Log "Kontext aktualisiert: KW=$($ctx.KW), Bezeichnung='$($ctx.Bezeichnung)'" -Level Info
 
     Load-StepDone   # Erledigt-Status der gewaehlten KW laden + Anzeige aktualisieren
+
+    if (-not $Script:SuppressWeekBanner) {
+        $done = @(1..5 | Where-Object { $Script:StepDone[$_] }).Count
+        Set-AppStatus -Message "Bearbeitete KW: $($ctx.Bezeichnung) - $done/5 erledigt." -Level Info
+    }
 }
 
 # Erzeugt pro Config.ScheduledTasks-Eintrag einen Button in Sp4Tasks
@@ -528,6 +542,7 @@ $ui.BtnStep5.Add_Click({ Show-Step 5 })
 $ui.CmbWeek.Add_SelectionChanged({ Update-Context })
 $ui.BtnClearLog.Add_Click({ Clear-Log; Write-Log "Log geleert." -Level Debug })
 $ui.BtnOpenLog.Add_Click({ [System.Diagnostics.Process]::Start('notepad.exe', $Script:LogFile) | Out-Null })
+$ui.BtnStatusDismiss.Add_Click({ Hide-AppStatus })
 
 # Step 1
 $ui.Btn1OpenOutlook.Add_Click({ Invoke-Step1OpenOutlook })
@@ -627,6 +642,19 @@ $ui.BtnSetSave.Add_Click({
     Write-Log "Pfade gespeichert: Msg='$($Script:Config.Paths.MsgFolder)' Task='$($Script:Config.Paths.TaskFolder)' Zahllauf='$($Script:Config.Paths.ZahllaufFolder)'" -Level Info
 })
 
+$ui.BtnResetWeek.Add_Click({
+    if (-not $Script:StepDone) { return }
+    foreach ($id in 1..5) { $Script:StepDone[$id] = $false }
+    $key = if ($Script:Context) { [string]$Script:Context.OrdnerName } else { '' }
+    if ($key -and $Script:StepState.ContainsKey($key)) {
+        $Script:StepState.Remove($key)
+        Save-StepState -State $Script:StepState
+    }
+    Update-StepProgress
+    Set-AppStatus -Message "Erledigt-Status fuer '$key' wurde zurueckgesetzt." -Level Info
+    Write-Log "Erledigt-Status zurueckgesetzt: '$key'" -Level Info
+})
+
 # =============================================================================
 #  Ungefangene Fehler -> Logdatei
 # =============================================================================
@@ -649,6 +677,7 @@ $Script:Window.Add_Loaded({
     Apply-Strings   # statische UI-Texte VOR Update-Context setzen
     $Script:StepState = Import-StepState   # Erledigt-Status (Config\state.json)
     Initialize-WeekPicker
+    $Script:SuppressWeekBanner = $false    # ab jetzt KW-Wechsel-Hinweise zeigen
     Initialize-ScheduledTaskButtons
     Initialize-HintGalleries
     $ui.TxtSetMsg.Text           = [string]$Script:Config.Paths.MsgFolder

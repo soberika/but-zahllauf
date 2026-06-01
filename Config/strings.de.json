@@ -93,6 +93,11 @@
     "Settings.BehaviorTitle": "Abschluss-Optionen",
     "Chk.Settings.Simulate": "Cleanup simulieren (kein echtes Löschen)",
     "Settings.SimulateDesc": "Wenn aktiv: .msg-Dateien und Anhänge werden nur im Log aufgelistet, nicht gelöscht.",
+    "Settings.ProgressTitle": "Fortschritt",
+    "Settings.ProgressDesc": "Setzt die Erledigt-Markierungen der aktuell gewählten KW zurück.",
+    "Btn.Settings.ResetWeek": "Erledigt-Status dieser KW zurücksetzen",
+
+    "Btn.Status.Dismiss": "Ausblenden",
 
     "Log.Section": "LOG",
     "Btn.Log.Open": "Log-Datei öffnen",

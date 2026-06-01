@@ -158,6 +158,10 @@ function global:Start-RunspaceJob {
             }
         }
 
+        if ($sync.Error) {
+            try { Set-AppStatus -Message ("Fehler beim Ausfuehren: " + $sync.Error.Exception.Message) -Level Error } catch { }
+        }
+
         try { $ps.Dispose() } catch { }
         try { $rs.Close() } catch { }
         try { $rs.Dispose() } catch { }

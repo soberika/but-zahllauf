@@ -135,6 +135,12 @@ $Script:StringMap = @(
     @{ N = 'TxtSetBehaviorTitle';  P = 'Text';    K = 'Settings.BehaviorTitle' }
     @{ N = 'ChkSetSimulate';       P = 'Content'; K = 'Chk.Settings.Simulate' }
     @{ N = 'TxtSetSimulateDesc';   P = 'Text';    K = 'Settings.SimulateDesc' }
+    @{ N = 'TxtSetProgressTitle';  P = 'Text';    K = 'Settings.ProgressTitle' }
+    @{ N = 'TxtSetProgressDesc';   P = 'Text';    K = 'Settings.ProgressDesc' }
+    @{ N = 'BtnResetWeek';         P = 'Content'; K = 'Btn.Settings.ResetWeek' }
+
+    # Status-Banner
+    @{ N = 'BtnStatusDismiss';     P = 'Content'; K = 'Btn.Status.Dismiss' }
 
     # Rechtes Panel
     # (LblRight* entfernt 2026-06-01 - rechtes "Globale Parameter"-Panel existiert nicht mehr)

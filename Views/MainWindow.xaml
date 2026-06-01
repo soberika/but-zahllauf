@@ -213,9 +213,10 @@
     <!-- ===================== HAUPT-LAYOUT ===================== -->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>      <!-- Top-Bar -->
-            <RowDefinition Height="*"/>       <!-- Body     -->
-            <RowDefinition Height="220"/>     <!-- Log      -->
+            <RowDefinition Height="70"/>      <!-- Top-Bar       -->
+            <RowDefinition Height="Auto"/>    <!-- Status-Banner -->
+            <RowDefinition Height="*"/>       <!-- Body          -->
+            <RowDefinition Height="220"/>     <!-- Log           -->
         </Grid.RowDefinitions>
 
         <!-- ============ TOP-BAR ============ -->
@@ -280,8 +281,25 @@
             </Grid>
         </Border>
 
+        <!-- ============ STATUS-BANNER (Fehler / Hinweise) ============ -->
+        <Border x:Name="StatusBanner" Grid.Row="1" Visibility="Collapsed"
+                Background="{StaticResource Danger}" Padding="20,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="TxtStatusBanner" Grid.Column="0" Text=""
+                           Foreground="White" FontWeight="SemiBold"
+                           VerticalAlignment="Center" TextWrapping="Wrap"/>
+                <Button x:Name="BtnStatusDismiss" Grid.Column="1" Content="Ausblenden"
+                        Style="{StaticResource BtnBase}" Padding="10,4" FontSize="11"
+                        VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
         <!-- ============ BODY (Sidebar + Content) ============ -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="240"/>
                 <ColumnDefinition Width="*"/>
@@ -642,6 +660,17 @@
                                            Margin="22,4,0,0"/>
                             </StackPanel>
                         </Border>
+
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock x:Name="TxtSetProgressTitle" Text="Fortschritt" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="TxtSetProgressDesc" TextWrapping="Wrap"
+                                           Style="{StaticResource Muted}" Margin="0,0,0,10"
+                                           Text="Setzt die Erledigt-Markierungen der aktuell gewählten KW zurück."/>
+                                <Button x:Name="BtnResetWeek" Style="{StaticResource BtnBase}" HorizontalAlignment="Left"
+                                        Content="Erledigt-Status dieser KW zurücksetzen"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>
@@ -651,7 +680,7 @@
         </Grid>
 
         <!-- ============ LOG-AREA ============ -->
-        <Border Grid.Row="2" Background="{StaticResource BgSecondary}"
+        <Border Grid.Row="3" Background="{StaticResource BgSecondary}"
                 BorderBrush="{StaticResource Border}" BorderThickness="0,1,0,0">
             <Grid Margin="20,12,20,12">
                 <Grid.RowDefinitions>
