@@ -99,6 +99,7 @@ $Script:StringMap = @(
     @{ N = 'Txt4Desc';             P = 'Text';    K = 'Step4.Desc' }
     @{ N = 'Txt4AufgabenTitle';    P = 'Text';    K = 'Step4.AufgabenTitle' }
     @{ N = 'Txt4AufgabenDesc';     P = 'Text';    K = 'Step4.AufgabenDesc' }
+    @{ N = 'Txt4ErstellungTitle';  P = 'Text';    K = 'Step4.ErstellungTitle' }
     @{ N = 'Txt4OrdnerTitle';      P = 'Text';    K = 'Step4.OrdnerTitle' }
     @{ N = 'Txt4StatusTitle';      P = 'Text';    K = 'Step4.StatusTitle' }
     @{ N = 'Btn4Run';              P = 'Content'; K = 'Btn.Step4.Run' }
