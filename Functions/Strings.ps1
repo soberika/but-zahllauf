@@ -39,6 +39,7 @@ $Script:StringMap = @(
     @{ N = 'LblTopKW';             P = 'Text';    K = 'Top.KW' }
     @{ N = 'LblTopToday';          P = 'Text';    K = 'Top.Today' }
     @{ N = 'LblTopSunday';         P = 'Text';    K = 'Top.LastSunday' }
+    @{ N = 'LblTopYear';           P = 'Text';    K = 'Top.Year' }
     @{ N = 'LblTopWeekSelect';     P = 'Text';    K = 'Top.WeekSelect' }
 
     # Sidebar
@@ -140,11 +141,7 @@ $Script:StringMap = @(
     @{ N = 'TxtSetSimulateDesc';   P = 'Text';    K = 'Settings.SimulateDesc' }
 
     # Rechtes Panel
-    @{ N = 'LblRightSection';      P = 'Text';    K = 'Right.Section' }
-    @{ N = 'LblRightKW';           P = 'Text';    K = 'Right.KW' }
-    @{ N = 'LblRightYear';         P = 'Text';    K = 'Right.Year' }
-    @{ N = 'LblRightBez';          P = 'Text';    K = 'Right.Bez' }
-    @{ N = 'LblRightOrd';          P = 'Text';    K = 'Right.Ord' }
+    # (LblRight* entfernt 2026-06-01 - rechtes "Globale Parameter"-Panel existiert nicht mehr)
 
     # Log
     @{ N = 'LblLogSection';        P = 'Text';    K = 'Log.Section' }

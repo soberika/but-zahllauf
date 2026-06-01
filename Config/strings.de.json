@@ -6,6 +6,7 @@
     "Top.KW": "Kalenderwoche",
     "Top.Today": "Heute",
     "Top.LastSunday": "Letzter Sonntag",
+    "Top.Year": "Jahr",
     "Top.WeekSelect": "Bearbeitete KW",
 
     "Sidebar.Section": "ABLAUF",
@@ -96,12 +97,6 @@
     "Settings.BehaviorTitle": "Abschluss-Optionen",
     "Chk.Settings.Simulate": "Cleanup simulieren (kein echtes Löschen)",
     "Settings.SimulateDesc": "Wenn aktiv: .msg-Dateien und Anhänge werden nur im Log aufgelistet, nicht gelöscht.",
-
-    "Right.Section": "GLOBALE PARAMETER",
-    "Right.KW": "KW",
-    "Right.Year": "Jahr",
-    "Right.Bez": "Bezeichnung-Vorschau",
-    "Right.Ord": "Ordnername-Vorschau",
 
     "Log.Section": "LOG",
     "Btn.Log.Open": "Log-Datei öffnen",
