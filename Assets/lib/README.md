@@ -15,6 +15,13 @@ Funktion **"PDFs zusammenfassen"** in Schritt 2 benoetigt
 2. Die `.nupkg` ist ein ZIP: oeffnen und aus `lib\` die **`itextsharp.dll`**
    entnehmen.
 3. Diese `itextsharp.dll` hierher kopieren: `Assets\lib\itextsharp.dll`.
+4. **WICHTIG: DLL entsperren** (Windows blockiert aus dem Internet geladene Dateien):
+   ```powershell
+   Unblock-File -Path ".\Assets\lib\itextsharp.dll"
+   ```
+   Alternativ: Datei im Explorer -> Rechtsklick -> Eigenschaften ->
+   unten "Zulassen" anhaeken -> OK.
+   Ohne diesen Schritt schlaegt das Laden mit Fehler 0x80131515 fehl.
 
 ## Hinweise
 - Fehlt die DLL, meldet Schritt 2 einen klaren Fehler und bricht sauber ab
