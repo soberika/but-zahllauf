@@ -556,11 +556,8 @@
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
                                 <TextBlock x:Name="Txt5LetzteTitle" Text="Letzte Schritte" Style="{StaticResource H2}"/>
-                                <CheckBox x:Name="Chk5Done0" Content="Zahlungsdatei in Zahllauf-Ordner kopiert"/>
-                                <CheckBox x:Name="Chk5Done1" Content="Bestätigung von Buchhaltung erhalten"/>
-                                <CheckBox x:Name="Chk5Done2" Content="Backup gesichert"/>
 
-                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                                     <Button x:Name="Btn5MailTemplate" Style="{StaticResource BtnBase}"
                                             Content="Mail-Vorlage öffnen" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn5DeleteTemp"   Style="{StaticResource BtnBase}"
