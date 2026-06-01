@@ -32,14 +32,18 @@ Das Skript startet sich bei Bedarf automatisch im STA-Modus neu.
 ├── Main.ps1                       # Einstiegspunkt — UI laden + Event-Handler + Settings
 ├── README.md
 ├── Config/
-│   └── default.json               # Pfade, Skriptnamen, Behavior, UI-Optionen, Step-Liste
+│   ├── default.json               # Pfade, Skriptnamen, Behavior, UI-Optionen, Step-Liste
+│   ├── strings.de.json            # statische UI-Texte (UTF-8) -> doc/TEXTE_BEARBEITEN.md
+│   └── state.json                 # Erledigt-Status pro KW (gitignored, zur Laufzeit)
 ├── Views/
 │   └── MainWindow.xaml            # WPF-Oberflaeche (Dark Theme)
 ├── Functions/
 │   ├── DateHelpers.ps1            # ISO-KW, letzter Sonntag, Bezeichnungen
-│   ├── Logging.ps1                # Write-Log + farbige Ausgabe in RichTextBox
+│   ├── Logging.ps1                # Write-Log + Status-Banner (Set-AppStatus)
 │   ├── ConfigLoader.ps1           # JSON-Konfig laden + speichern
-│   └── RunspaceHelpers.ps1        # Start-RunspaceJob + Inner-Proxies (Confirm-Dialog)
+│   ├── RunspaceHelpers.ps1        # Start-RunspaceJob + Inner-Proxies (Confirm-Dialog)
+│   ├── Strings.ps1                # statische UI-Texte (strings.de.json)
+│   └── StepState.ps1              # Erledigt-Status pro KW (state.json)
 ├── Modules/
 │   ├── Step1_Mail.psm1
 │   ├── Step2_Rechnungen.psm1
@@ -63,12 +67,14 @@ Das Skript startet sich bei Bedarf automatisch im STA-Modus neu.
 ## Features
 
 - Dark-Theme WPF-Oberflaeche, 1320x840
-- Top-Bar mit aktuellem Datum und letztem Sonntag sowie einer ComboBox
-  zur Auswahl der bearbeiteten Kalenderwoche (letzte 4 KWs, Default = vergangene Woche)
-- Linke Sidebar mit 5 Schritten (aktiver Schritt visuell hervorgehoben)
+- Top-Bar mit aktuellem Datum, letztem Sonntag und einer Fortschrittsanzeige
+  ("x / 5 erledigt") sowie einer ComboBox zur Auswahl der bearbeiteten
+  Kalenderwoche (letzte 4 KWs, Default = vergangene Woche)
+- Linke Sidebar mit 5 Schritten (aktiver Schritt hervorgehoben, erledigte
+  Schritte gruen markiert)
 - Hauptbereich wechselt per `Visibility` zwischen den Step-Pages
-- Rechtes Panel mit globalen Parametern (KW, Jahr, Bezeichnungs-Vorschau,
-  Ordnernamens-Vorschau)
+- Status-Banner oberhalb des Inhalts fuer prominente Fehler-/Hinweismeldungen
+  (nicht erreichbare Ordner, Runspace-Fehler, KW-Wechsel)
 - Log-Fenster unten (RichTextBox), farbig nach Level
   (Info / Success / Warning / Error / Debug) plus Tageslogdatei
 - Automatische Berechnung beim Start; alle Werte basieren auf der
@@ -79,8 +85,11 @@ Das Skript startet sich bei Bedarf automatisch im STA-Modus neu.
   - Bezeichnung `Viafintech vom XX.KW YY`
   - Task-Ordnername `YY_MM_DD Fuer XX.KW`
 
-Jeder Schritt hat zusaetzlich einen **"Schritt als erledigt markieren"**-Button
-(reiner Log-Eintrag zur Nachvollziehbarkeit).
+Jeder Schritt hat zusaetzlich einen **"Schritt als erledigt markieren"**-Button:
+er protokolliert den Schritt, faerbt ihn in der Sidebar gruen, erhoeht den
+Fortschrittszaehler und springt zum naechsten Schritt. Der Erledigt-Status wird
+pro KW in `Config/state.json` gespeichert (gitignored) und beim KW-Wechsel
+wieder geladen; ueber die Einstellungen laesst er sich pro KW zuruecksetzen.
 
 ### Schritte
 
@@ -90,6 +99,9 @@ Jeder Schritt hat zusaetzlich einen **"Schritt als erledigt markieren"**-Button
 - **Schritt 2 — Rechnungen:** ruft `RechnungenausMailinExcel.ps1` im Runspace,
   extrahiert `.msg`-Anhaenge, erzeugt `alleRechnungen.xlsx` und verschiebt sie
   nach `TaskFolder`. Excel und Extraktionsordner lassen sich direkt oeffnen.
+  - *Bereitschaftspruefung:* zeigt beim Oeffnen, wie viele `.msg`-Dateien
+    vorliegen; bei 0 Dateien oder nicht erreichbarem Ordner ist
+    "Rechnungen extrahieren" gesperrt.
   - *PDFs zusammenfassen:* fasst die extrahierten Einzel-PDFs (in Mail-/
     Extraktionsreihenfolge) zu `alleRechnungen_Anhaenge.pdf` im `TaskFolder`
     zusammen. Nutzt `itextsharp.dll` aus `Assets\lib\` (reines .NET, keine
@@ -152,6 +164,10 @@ werden — Details in `Assets\lib\README.md`. Die DLL ist absichtlich gitignored
 
 ## Offen / geplant
 
-- Fortschrittsanzeigen pro Schritt
-- Persistenz des Schritt-Status zwischen Sitzungen
-- Optionale Validierung der Task-Ordner-Inhalte
+- Tooltips/Erklaerungen fuer Fachbegriffe (Konzept steht, zurueckgestellt)
+- Bereitschaftspruefung auf weitere Schritte ausweiten (aktuell nur Schritt 2)
+- Validierung der Task-Ordner-Inhalte vertiefen
+
+Bereits umgesetzt: Fortschrittsanzeige pro Schritt (Sidebar + Top-Bar),
+Persistenz des Schritt-Status pro KW (`Config/state.json`), Pfad-Check beim
+Start und Status-Banner fuer Fehler/Hinweise.
