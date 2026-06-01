@@ -460,8 +460,11 @@
 
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock x:Name="Txt3SummeTitle" Text="Gesamtsumme" Style="{StaticResource H2}"/>
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,8,0,0">
+                                <TextBlock x:Name="Txt3SummeTitle" Text="Gesamtsumme prüfen" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt3SummeDesc"
+                                           Text="Aus der erstellten Gesamtliste der Rechnungen die Summe vergleichen mit den Haushaltsstellengesamtbeträgen. Ansonsten Buchungen abwählen."
+                                           Style="{StaticResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,10,0,0">
                                     <Button x:Name="Btn3Summe" Style="{StaticResource BtnBase}"
                                             Content="Gesamtsumme ermitteln" Margin="0,0,14,0"/>
                                     <TextBlock x:Name="Txt3Summe" Style="{StaticResource Muted}"

@@ -56,6 +56,7 @@
     "Btn.Step3.Copy": "Bezeichnung in Zwischenablage",
     "Btn.Step3.Prosos": "OPEN/Prosoz öffnen",
     "Step3.SummeTitle": "Gesamtsumme prüfen",
+    "Step3.SummeDesc": "Aus der erstellten Gesamtliste der Rechnungen die Summe vergleichen mit den Haushaltsstellengesamtbeträgen. Ansonsten Buchungen abwählen.",
     "Btn.Step3.Summe": "Gesamtsumme ermitteln",
     "Btn.Step3.Done": "Schritt als erledigt markieren",
 

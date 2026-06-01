@@ -93,6 +93,7 @@ $Script:StringMap = @(
     @{ N = 'Btn3Copy';             P = 'Content'; K = 'Btn.Step3.Copy' }
     @{ N = 'Btn3Prosos';           P = 'Content'; K = 'Btn.Step3.Prosos' }
     @{ N = 'Txt3SummeTitle';       P = 'Text';    K = 'Step3.SummeTitle' }
+    @{ N = 'Txt3SummeDesc';        P = 'Text';    K = 'Step3.SummeDesc' }
     @{ N = 'Btn3Summe';            P = 'Content'; K = 'Btn.Step3.Summe' }
     @{ N = 'Btn3Done';             P = 'Content'; K = 'Btn.Step3.Done' }
 
