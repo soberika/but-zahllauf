@@ -113,6 +113,9 @@ $ui = @{
     Btn2Run          = Find-Element 'Btn2Run'
     Btn2OpenExcel    = Find-Element 'Btn2OpenExcel'
     Btn2OpenPath     = Find-Element 'Btn2OpenPath'
+    Txt2MergeStatus  = Find-Element 'Txt2MergeStatus'
+    Btn2MergePdf     = Find-Element 'Btn2MergePdf'
+    Btn2OpenMergedPdf = Find-Element 'Btn2OpenMergedPdf'
     Btn2Done         = Find-Element 'Btn2Done'
     Sp2Hints         = Find-Element 'Sp2Hints'
 
@@ -440,6 +443,14 @@ $ui.Btn2Run.Add_Click({
 })
 $ui.Btn2OpenExcel.Add_Click({ Invoke-Step2OpenExcel -Path (Join-Path $Script:Config.Paths.TaskFolder 'alleRechnungen.xlsx') })
 $ui.Btn2OpenPath.Add_Click({ Invoke-Step2OpenPath -Path $Script:Config.Paths.ExtractedFolder })
+$ui.Btn2MergePdf.Add_Click({
+    $ui.Txt2MergeStatus.Text = "Laeuft..."
+    Invoke-Step2MergePdf `
+        -StatusTextBlock $ui.Txt2MergeStatus `
+        -BrushSuccess $Script:Window.Resources['Success'] `
+        -BrushDanger  $Script:Window.Resources['Danger']
+})
+$ui.Btn2OpenMergedPdf.Add_Click({ Invoke-Step2OpenMergedPdf -Path (Join-Path $Script:Config.Paths.TaskFolder 'alleRechnungen_Anhaenge.pdf') })
 $ui.Btn2Done.Add_Click({ Invoke-Step2MarkDone })
 
 # Step 3

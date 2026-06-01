@@ -6,3 +6,6 @@ Logs/*.log
 *.local.json
 Assets/hints/*
 !Assets/hints/.gitkeep
+Assets/lib/*
+!Assets/lib/.gitkeep
+!Assets/lib/README.md

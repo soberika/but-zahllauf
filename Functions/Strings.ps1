@@ -74,6 +74,10 @@ $Script:StringMap = @(
     @{ N = 'Btn2Run';              P = 'Content'; K = 'Btn.Step2.Run' }
     @{ N = 'Btn2OpenExcel';        P = 'Content'; K = 'Btn.Step2.OpenExcel' }
     @{ N = 'Btn2OpenPath';         P = 'Content'; K = 'Btn.Step2.OpenPath' }
+    @{ N = 'Txt2MergeTitle';       P = 'Text';    K = 'Step2.MergeTitle' }
+    @{ N = 'Txt2MergeDesc';        P = 'Text';    K = 'Step2.MergeDesc' }
+    @{ N = 'Btn2MergePdf';         P = 'Content'; K = 'Btn.Step2.MergePdf' }
+    @{ N = 'Btn2OpenMergedPdf';    P = 'Content'; K = 'Btn.Step2.OpenMergedPdf' }
     @{ N = 'Btn2Done';             P = 'Content'; K = 'Btn.Step2.Done' }
 
     # Schritt 3

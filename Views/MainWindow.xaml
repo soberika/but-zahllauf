@@ -394,8 +394,20 @@
                                     <Button x:Name="Btn2OpenPath"  Style="{StaticResource BtnBase}"
                                             Content="Ordner mit Extrahierten .pdf und .csv öffnen"/>
                                 </StackPanel>
+
+                                <TextBlock x:Name="Txt2MergeTitle" Text="Anhänge als PDF zusammenfassen" Style="{StaticResource H2}" Margin="0,18,0,4"/>
+                                <TextBlock x:Name="Txt2MergeDesc" Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,6"
+                                           Text="Fasst die extrahierten Einzel-PDFs in Mail-Reihenfolge zu einer Sammeldatei (alleRechnungen_Anhaenge.pdf) im Task-Ordner zusammen."/>
+                                <TextBlock x:Name="Txt2MergeStatus" Style="{StaticResource Muted}" Text="noch nicht ausgeführt"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                    <Button x:Name="Btn2MergePdf"      Style="{StaticResource BtnPrimary}"
+                                            Content="PDFs zusammenfassen" Margin="0,0,10,0"/>
+                                    <Button x:Name="Btn2OpenMergedPdf" Style="{StaticResource BtnBase}"
+                                            Content="Zusammengefasste PDF öffnen"/>
+                                </StackPanel>
+
                                 <Button x:Name="Btn2Done" Style="{StaticResource BtnSuccess}" HorizontalAlignment="Left"
-                                        Content="Schritt als erledigt markieren" Margin="0,14,0,0"/>
+                                        Content="Schritt als erledigt markieren" Margin="0,18,0,0"/>
                             </StackPanel>
                         </Border>
 

@@ -38,6 +38,10 @@
     "Btn.Step2.Run": "Rechnungen extrahieren",
     "Btn.Step2.OpenExcel": "Excel öffnen",
     "Btn.Step2.OpenPath": "Ordner mit Extrahierten .pdf und .csv öffnen",
+    "Step2.MergeTitle": "Anhänge als PDF zusammenfassen",
+    "Step2.MergeDesc": "Fasst die extrahierten Einzel-PDFs in Mail-Reihenfolge zu einer Sammeldatei (alleRechnungen_Anhaenge.pdf) im Task-Ordner zusammen.",
+    "Btn.Step2.MergePdf": "PDFs zusammenfassen",
+    "Btn.Step2.OpenMergedPdf": "Zusammengefasste PDF öffnen",
     "Btn.Step2.Done": "Schritt als erledigt markieren",
 
     "Step3.Title": "Schritt 3 - Prüflauf in Prosos",
