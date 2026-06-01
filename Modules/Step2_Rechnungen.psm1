@@ -222,7 +222,28 @@ function Invoke-Step2MergePdf {
         Write-Log "$(@($pdfs).Count) PDF-Datei(en) werden zusammengefasst." -Level Info
 
         if (-not ([System.Management.Automation.PSTypeName]'iTextSharp.text.Document').Type) {
-            Add-Type -Path $DllPath
+            # Abhaengigkeiten (z.B. BouncyCastle.Crypto.dll bei iTextSharp 5.x)
+            # zuerst laden, danach itextsharp.dll.
+            $libDir = [System.IO.Path]::GetDirectoryName($DllPath)
+            Get-ChildItem -LiteralPath $libDir -Filter '*.dll' -File |
+                Where-Object { $_.Name -ne 'itextsharp.dll' } |
+                ForEach-Object { try { Add-Type -Path $_.FullName -ErrorAction Stop } catch { } }
+            try {
+                Add-Type -Path $DllPath -ErrorAction Stop
+            } catch {
+                # Exakte fehlende Abhaengigkeit aus der ReflectionTypeLoadException melden.
+                $ex = $_.Exception; $loader = $null
+                while ($ex) {
+                    if ($ex -is [System.Reflection.ReflectionTypeLoadException]) { $loader = $ex; break }
+                    $ex = $ex.InnerException
+                }
+                if ($loader) {
+                    $det = ($loader.LoaderExceptions | ForEach-Object { $_.Message } | Select-Object -Unique) -join '; '
+                    Write-Log "PDF-Bibliothek unvollstaendig - fehlende Abhaengigkeit: $det" -Level Error
+                    Write-Log "Bei iTextSharp 5.x zusaetzlich BouncyCastle.Crypto.dll nach Assets\lib\ legen (oder iTextSharp 4.1.6 verwenden, eine DLL ohne Abhaengigkeit). Siehe Assets\lib\README.md." -Level Error
+                }
+                throw
+            }
         }
 
         $outDir = [System.IO.Path]::GetDirectoryName($OutPath)
@@ -230,6 +251,7 @@ function Invoke-Step2MergePdf {
             [System.IO.Directory]::CreateDirectory($outDir) | Out-Null
         }
 
+        # Seitenweises Kopieren - kompatibel zu iTextSharp 4.x UND 5.x.
         $stream = New-Object System.IO.FileStream($OutPath, [System.IO.FileMode]::Create)
         $doc    = New-Object iTextSharp.text.Document
         $copy   = New-Object iTextSharp.text.pdf.PdfCopy($doc, $stream)
@@ -238,7 +260,10 @@ function Invoke-Step2MergePdf {
             foreach ($pdf in $pdfs) {
                 Write-Log "  + $($pdf.Name)" -Level Debug
                 $reader = New-Object iTextSharp.text.pdf.PdfReader($pdf.FullName)
-                $copy.AddDocument($reader)
+                for ($i = 1; $i -le $reader.NumberOfPages; $i++) {
+                    $copy.AddPage($copy.GetImportedPage($reader, $i))
+                }
+                $copy.FreeReader($reader)
                 $reader.Close()
             }
         } finally {
