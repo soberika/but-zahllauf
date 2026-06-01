@@ -107,6 +107,7 @@ $ui = @{
     Chk2NurExcel     = Find-Element 'Chk2NurExcel'
     Txt2Preview      = Find-Element 'Txt2Preview'
     Txt2LastRun      = Find-Element 'Txt2LastRun'
+    Txt2Ready        = Find-Element 'Txt2Ready'
     Btn2Run          = Find-Element 'Btn2Run'
     Btn2OpenExcel    = Find-Element 'Btn2OpenExcel'
     Btn2OpenPath     = Find-Element 'Btn2OpenPath'
@@ -202,6 +203,7 @@ function Show-Step {
 
     $Script:CurrentStep = $Id
     Update-StepProgress
+    Update-Readiness $Id
     Write-Log "Navigation -> Schritt $Id" -Level Debug
 }
 
@@ -328,6 +330,35 @@ function Set-StepDone {
     }
     Update-StepProgress
     if ($Id -lt 5) { Show-Step ($Id + 1) }
+}
+
+# =============================================================================
+#  Bereitschaftsanzeige je Schritt (Voraussetzungen pruefen + verstaendlich melden)
+# =============================================================================
+function Update-Readiness {
+    param([int]$Id)
+    if ($Id -ne 2) { return }            # aktuell nur Schritt 2
+    if (-not $ui.Txt2Ready) { return }
+
+    $msg = [string]$Script:Config.Paths.MsgFolder
+    $n   = -1
+    if ($msg -and [System.IO.Directory]::Exists($msg)) {
+        $n = @([System.IO.Directory]::GetFiles($msg, '*.msg')).Count
+    }
+
+    if ($n -lt 0) {
+        $ui.Txt2Ready.Text       = "Bereitschaft: Ordner nicht erreichbar - bitte Pfad in den Einstellungen pruefen."
+        $ui.Txt2Ready.Foreground = $Script:Window.Resources['Warning']
+        $ui.Btn2Run.IsEnabled    = $false
+    } elseif ($n -eq 0) {
+        $ui.Txt2Ready.Text       = "Bereitschaft: keine .msg-Dateien gefunden - bitte zuerst Schritt 1 erledigen."
+        $ui.Txt2Ready.Foreground = $Script:Window.Resources['Warning']
+        $ui.Btn2Run.IsEnabled    = $false
+    } else {
+        $ui.Txt2Ready.Text       = "Bereitschaft: $n .msg-Datei(en) bereit zur Verarbeitung."
+        $ui.Txt2Ready.Foreground = $Script:Window.Resources['Success']
+        $ui.Btn2Run.IsEnabled    = $true
+    }
 }
 
 # =============================================================================
