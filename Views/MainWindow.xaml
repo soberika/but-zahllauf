@@ -192,15 +192,14 @@
         <!-- ============ TOP-BAR ============ -->
         <Border Grid.Row="0" Background="{StaticResource BgSecondary}"
                 BorderBrush="{StaticResource Border}" BorderThickness="0,0,0,1">
-            <Grid>
+            <Grid Margin="20,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="280"/>
-                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal"
-                            VerticalAlignment="Center" Margin="20,0,0,0">
+                            VerticalAlignment="Center">
                     <Border Width="38" Height="38" CornerRadius="8"
                             Background="{StaticResource Accent}">
                         <TextBlock Text="V" FontSize="22" FontWeight="Bold"
@@ -217,22 +216,28 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal"
-                            VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
+                            VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <Border Background="{StaticResource BgCard}" CornerRadius="8"
+                            BorderBrush="{StaticResource Border}" BorderThickness="1"
+                            Padding="14,8" Margin="8,0,0,0">
                         <StackPanel>
                             <TextBlock Text="Kalenderwoche" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtKW" Text="--"
                                        FontSize="18" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Border>
-                    <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
+                    <Border Background="{StaticResource BgCard}" CornerRadius="8"
+                            BorderBrush="{StaticResource Border}" BorderThickness="1"
+                            Padding="14,8" Margin="8,0,0,0">
                         <StackPanel>
                             <TextBlock Text="Heute" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtDate" Text="--"
                                        FontSize="18" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Border>
-                    <Border Style="{StaticResource Card}" Margin="6,8" Padding="14,8">
+                    <Border Background="{StaticResource BgCard}" CornerRadius="8"
+                            BorderBrush="{StaticResource Border}" BorderThickness="1"
+                            Padding="14,8" Margin="8,0,0,0">
                         <StackPanel>
                             <TextBlock Text="Letzter Sonntag" Style="{StaticResource Muted}"/>
                             <TextBlock x:Name="TxtSunday" Text="--"
@@ -240,11 +245,6 @@
                         </StackPanel>
                     </Border>
                 </StackPanel>
-
-                <Button x:Name="BtnRefresh" Grid.Column="2"
-                        Style="{StaticResource BtnPrimary}"
-                        Content="Werte neu berechnen"
-                        Margin="0,0,20,0" VerticalAlignment="Center"/>
             </Grid>
         </Border>
 

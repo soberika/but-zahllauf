@@ -72,7 +72,6 @@ $ui = @{
     TxtKW            = Find-Element 'TxtKW'
     TxtDate          = Find-Element 'TxtDate'
     TxtSunday        = Find-Element 'TxtSunday'
-    BtnRefresh       = Find-Element 'BtnRefresh'
 
     # Right panel
     TxtKWRight       = Find-Element 'TxtKWRight'
@@ -225,7 +224,6 @@ $ui.BtnStep4.Add_Click({ Show-Step 4 })
 $ui.BtnStep5.Add_Click({ Show-Step 5 })
 
 # Top-Bar
-$ui.BtnRefresh.Add_Click({ Update-Context })
 $ui.BtnClearLog.Add_Click({ Clear-Log; Write-Log "Log geleert." -Level Debug })
 $ui.BtnOpenLog.Add_Click({ [System.Diagnostics.Process]::Start('notepad.exe', $Script:LogFile) | Out-Null })
 
