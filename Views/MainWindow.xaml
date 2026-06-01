@@ -516,7 +516,7 @@
                                     <Button x:Name="Btn4OpenXlsx" Style="{StaticResource BtnBase}" IsEnabled="False"
                                             Content="alleRechnungen.xlsx öffnen" Margin="0,0,10,0"/>
                                     <Button x:Name="Btn4OpenPdf"  Style="{StaticResource BtnBase}" IsEnabled="False"
-                                            Content="Zahlliste-PDF öffnen"/>
+                                            Content="Haushaltsstellengesamtbeträge öffnen"/>
                                 </StackPanel>
                                 <Button x:Name="Btn4Done" Style="{StaticResource BtnSuccess}" HorizontalAlignment="Left"
                                         Content="Schritt als erledigt markieren" Margin="0,14,0,0"/>
