@@ -256,21 +256,35 @@ function Invoke-Step2MergePdf {
         $doc    = New-Object iTextSharp.text.Document
         $copy   = New-Object iTextSharp.text.pdf.PdfCopy($doc, $stream)
         $doc.Open()
+        $added = 0
         try {
             foreach ($pdf in $pdfs) {
-                Write-Log "  + $($pdf.Name)" -Level Debug
-                $reader = New-Object iTextSharp.text.pdf.PdfReader($pdf.FullName)
-                for ($i = 1; $i -le $reader.NumberOfPages; $i++) {
-                    $copy.AddPage($copy.GetImportedPage($reader, $i))
+                try {
+                    $reader = New-Object iTextSharp.text.pdf.PdfReader($pdf.FullName)
+                    $pages  = $reader.NumberOfPages
+                    Write-Log "  + $($pdf.Name) ($pages Seite(n))" -Level Debug
+                    for ($i = 1; $i -le $pages; $i++) {
+                        $copy.AddPage($copy.GetImportedPage($reader, $i))
+                        $added++
+                    }
+                    $copy.FreeReader($reader)
+                    $reader.Close()
+                } catch {
+                    # Echten Fehler melden statt ihn vom Close() verdecken zu lassen.
+                    Write-Log "  ! '$($pdf.Name)' uebersprungen: $($_.Exception.Message)" -Level Warning
                 }
-                $copy.FreeReader($reader)
-                $reader.Close()
             }
         } finally {
-            $doc.Close()
+            try { $doc.Close() } catch { }   # 'no pages' nicht durchreichen
             $stream.Close()
         }
-        Write-Log "Zusammengefasste PDF erstellt: $OutPath" -Level Info
+
+        if ($added -eq 0) {
+            if ([System.IO.File]::Exists($OutPath)) { [System.IO.File]::Delete($OutPath) }
+            Write-Log "Keine Seiten uebernommen - PDFs evtl. beschaedigt, verschluesselt oder kein echtes PDF." -Level Warning
+        } else {
+            Write-Log "Zusammengefasste PDF erstellt ($added Seite(n)): $OutPath" -Level Info
+        }
     } | Out-Null
 }
 
