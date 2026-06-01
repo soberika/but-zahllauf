@@ -362,6 +362,32 @@ function Update-Readiness {
 }
 
 # =============================================================================
+#  Pfad-Check beim Start (Netzlaufwerke erreichbar?)
+# =============================================================================
+function Test-ConfigReady {
+    $p = $Script:Config.Paths
+    $checks = @(
+        @('Rechnungsmails (.msg)', [string]$p.MsgFolder),
+        @('Task-Ordner',           [string]$p.TaskFolder),
+        @('Zahllauf-Ordner',       [string]$p.ZahllaufFolder)
+    )
+    $missing = @()
+    foreach ($c in $checks) {
+        if ([string]::IsNullOrWhiteSpace($c[1]) -or -not [System.IO.Directory]::Exists($c[1])) {
+            $missing += $c[0]
+        }
+    }
+    if ($missing.Count -eq 0) { return }
+
+    Write-Log ("Pfad-Pruefung: nicht erreichbar - " + ($missing -join ', ')) -Level Warning
+    [void][System.Windows.MessageBox]::Show(
+        ("Diese Ordner sind aktuell nicht erreichbar:`r`n`r`n - " + ($missing -join "`r`n - ") +
+         "`r`n`r`nBitte Netzlaufwerk pruefen oder die Pfade in den Einstellungen anpassen."),
+        "Pfade pruefen")
+    Show-Step 6
+}
+
+# =============================================================================
 #  Bebilderte Hinweise (Galerie)
 # =============================================================================
 # Zeigt ein Hinweisbild gross in einem modalen Fenster (oder Platzhalter-Hinweis).
@@ -630,6 +656,7 @@ $Script:Window.Add_Loaded({
     $ui.TxtSetZahllauf.Text      = [string]$Script:Config.Paths.ZahllaufFolder
     $ui.ChkSetSimulate.IsChecked = [bool]$Script:Config.Behavior.SimulateCleanup
     Show-Step 1
+    Test-ConfigReady   # bei nicht erreichbaren Ordnern warnen + in Einstellungen springen
 })
 
 # =============================================================================
