@@ -587,6 +587,8 @@ $ui.Btn3Summe.Add_Click({
 # Step 4
 $ui.Btn4Run.Add_Click({
     Invoke-Step4Run `
+        -ExpectedFolder $Script:Context.OrdnerName `
+        -FilePrefix     $Script:Context.FilePrefix `
         -StatusTextBlock $ui.Txt4Status `
         -BrushSuccess $Script:Window.Resources['Success'] `
         -BrushDanger  $Script:Window.Resources['Danger'] `

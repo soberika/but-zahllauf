@@ -60,16 +60,39 @@ function Get-Bezeichnung {
 function Get-OrdnerName {
     <#
     .SYNOPSIS
-        Baut den Task-Ordnernamen, z.B. "26_05_21 Fuer 20.KW".
+        Baut den Task-Ordnernamen, z.B. "26_06_02 Fuer 21.KW".
+    .DESCRIPTION
+        Das Datumspraefix ist der Lauftag ($Today), die Kalenderwoche stammt
+        aus der zu bearbeitenden Woche ($RefDate, Stichtag = Sonntag). So
+        entspricht der Ordnername exakt dem, was das Task-Skript erzeugt.
     #>
     param(
-        [datetime]$Date = (Get-Date),
-        [string]$Format = '{0} Fuer {1}.KW'
+        [datetime]$RefDate = (Get-Date),
+        [datetime]$Today   = (Get-Date),
+        [string]$Format    = '{0} Fuer {1:D2}.KW'
     )
 
-    $kw      = Get-IsoCalendarWeek -Date $Date
-    $datePart = $Date.ToString('yy_MM_dd')
+    $kw       = Get-IsoCalendarWeek -Date $RefDate
+    $datePart = $Today.ToString('yy_MM_dd')
     return ($Format -f $datePart, $kw)
+}
+
+function Get-FilePrefix {
+    <#
+    .SYNOPSIS
+        Baut das Datei-Praefix fuer den Zahllauf, z.B. "26_06_02_21_KW_".
+    .DESCRIPTION
+        Lauftag ($Today) plus Kalenderwoche der zu bearbeitenden Woche
+        ($RefDate). Wird beim Umbenennen der Task-Dateien verwendet.
+    #>
+    param(
+        [datetime]$RefDate = (Get-Date),
+        [datetime]$Today   = (Get-Date)
+    )
+
+    $kw       = Get-IsoCalendarWeek -Date $RefDate
+    $datePart = $Today.ToString('yy_MM_dd')
+    return ('{0}_{1:D2}_KW_' -f $datePart, $kw)
 }
 
 function Get-ZahllaufContext {
@@ -104,7 +127,8 @@ function Get-ZahllaufContext {
         LastSunday    = $RefDate
         LastSundayStr = $RefDate.ToString('dd.MM.yyyy')
         Bezeichnung   = Get-Bezeichnung -Date $RefDate
-        OrdnerName    = Get-OrdnerName -Date $RefDate
+        OrdnerName    = Get-OrdnerName -RefDate $RefDate -Today $Today
+        FilePrefix    = Get-FilePrefix -RefDate $RefDate -Today $Today
     }
 }
 

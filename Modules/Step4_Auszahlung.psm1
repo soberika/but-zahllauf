@@ -8,6 +8,8 @@ function Invoke-StartTaskScript {
     param(
         [string]$TaskFolder     = '',
         [string]$ZahllaufFolder = '',
+        [string]$ExpectedFolder = '',
+        [string]$FilePrefix     = '',
         $StatusTextBlock,
         $BrushSuccess,
         $BrushDanger,
@@ -27,10 +29,15 @@ function Invoke-StartTaskScript {
         return
     }
 
-    $today          = Get-Date
-    $kw             = Get-IsoCalendarWeek -Date $today
-    $kwMinus1       = [Math]::Max(1, $kw - 1)
-    $expectedFolder = "{0} Fuer {1:D2}.KW" -f $today.ToString('yy_MM_dd'), $kwMinus1
+    # Ordnername und Datei-Praefix kommen aus der KW-Auswahl im Dashboard.
+    # Fallback (leer): wie bisher aus dem Systemdatum (aktuelle KW minus 1).
+    $expectedFolder = $ExpectedFolder
+    if ([string]::IsNullOrWhiteSpace($expectedFolder)) {
+        $today          = Get-Date
+        $kw             = Get-IsoCalendarWeek -Date $today
+        $kwMinus1       = [Math]::Max(1, $kw - 1)
+        $expectedFolder = "{0} Fuer {1:D2}.KW" -f $today.ToString('yy_MM_dd'), $kwMinus1
+    }
 
     Write-Log "Erwarteter Task-Ordner: $expectedFolder" -Level Info
     Write-Log "Starte Task-Skript: $scriptPath" -Level Info
@@ -41,6 +48,7 @@ function Invoke-StartTaskScript {
     $params = @{
         ScriptPath     = $scriptPath
         ExpectedFolder = $expectedFolder
+        FilePrefix     = $FilePrefix
         TaskFolder     = $TaskFolder
         ZahllaufFolder = $ZahllaufFolder
     }
@@ -81,6 +89,8 @@ function Invoke-StartTaskScript {
         $invokeArgs = @{}
         if (-not [string]::IsNullOrWhiteSpace($TaskFolder))     { $invokeArgs.SourcePath = $TaskFolder }
         if (-not [string]::IsNullOrWhiteSpace($ZahllaufFolder)) { $invokeArgs.TargetBase = $ZahllaufFolder }
+        if (-not [string]::IsNullOrWhiteSpace($ExpectedFolder)) { $invokeArgs.FolderName = $ExpectedFolder }
+        if (-not [string]::IsNullOrWhiteSpace($FilePrefix))     { $invokeArgs.FilePrefix = $FilePrefix }
 
         & $ScriptPath @invokeArgs
         Write-Log "Task-Skript durchgelaufen." -Level Info
@@ -90,6 +100,8 @@ function Invoke-StartTaskScript {
 function Invoke-Step4Run {
     [CmdletBinding()]
     param(
+        [string]$ExpectedFolder = '',
+        [string]$FilePrefix     = '',
         $StatusTextBlock,
         $BrushSuccess,
         $BrushDanger,
@@ -99,6 +111,8 @@ function Invoke-Step4Run {
     Invoke-StartTaskScript `
         -TaskFolder      $global:Config.Paths.TaskFolder `
         -ZahllaufFolder  $global:Config.Paths.ZahllaufFolder `
+        -ExpectedFolder  $ExpectedFolder `
+        -FilePrefix      $FilePrefix `
         -StatusTextBlock $StatusTextBlock `
         -BrushSuccess $BrushSuccess `
         -BrushDanger $BrushDanger `

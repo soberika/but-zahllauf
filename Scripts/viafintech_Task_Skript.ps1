@@ -5,10 +5,15 @@
 
 param(
     [string]$SourcePath = "\\VJC\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\_Temp\Task",
-    [string]$TargetBase = "\\VJC\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\Zahllauf"
+    [string]$TargetBase = "\\VJC\GB1_Haushalt\OPEN_Listen_ab_2010\viafintech\Zahllauf",
+    # Ordnername und Datei-Praefix kommen aus der KW-Auswahl im Dashboard.
+    # Bleiben sie leer (z.B. direkter Aufruf), wird wie bisher aus dem
+    # Systemdatum (aktuelle KW minus 1) berechnet.
+    [string]$FolderName = "",
+    [string]$FilePrefix = ""
 )
 
-# Systemdatum
+# Systemdatum (Fallback, falls keine Vorgabe aus dem Dashboard kommt)
 $date   = Get-Date
 $yy     = $date.ToString("yy")
 $mm     = $date.ToString("MM")
@@ -33,7 +38,15 @@ $kwMinus1Formatted = $kwMinus1.ToString("D2")
 $sourcePath = $SourcePath
 $targetBase = $TargetBase
 
-$folderName    = "${yy}_${mm}_${dd} Fuer ${kwMinus1Formatted}.KW"
+# Vorgaben aus dem Dashboard bevorzugen, sonst aus dem Systemdatum ableiten.
+if ([string]::IsNullOrWhiteSpace($FolderName)) {
+    $FolderName = "${yy}_${mm}_${dd} Fuer ${kwMinus1Formatted}.KW"
+}
+if ([string]::IsNullOrWhiteSpace($FilePrefix)) {
+    $FilePrefix = "${yy}_${mm}_${dd}_${kwMinus1Formatted}_KW_"
+}
+
+$folderName    = $FolderName
 $newFolderPath = Join-Path $sourcePath $folderName
 
 # ============================================================
@@ -70,7 +83,7 @@ if (Test-Path $zahllistePdf) {
 $files = Get-ChildItem -Path $sourcePath -File
 
 foreach ($file in $files) {
-    $newFileName = "${yy}_${mm}_${dd}_${kwMinus1Formatted}_KW_$($file.Name)"
+    $newFileName = "${FilePrefix}$($file.Name)"
     Rename-Item -Path $file.FullName -NewName $newFileName -ErrorAction Stop
     Write-Host "Umbenannt: $($file.Name) -> $newFileName" -ForegroundColor Cyan
 }

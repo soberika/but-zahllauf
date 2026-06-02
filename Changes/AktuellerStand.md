@@ -1,8 +1,27 @@
 # Aktueller Stand — viafintech Zahllauf Dashboard
 
-Stand: 2026-06-01
-Branch: `claude/eager-dijkstra-G7Vxx`
-Letzter Commit: `4d74e47 Status-Banner + KW-Wechsel-Hinweis und Reset pro KW`
+Stand: 2026-06-02
+Branch: `claude/eloquent-thompson-fDiCT`
+Letzter Commit: `66fefdc Doku aktualisiert: Stand-Log, README, CLAUDE.MD auf aktuellen Stand`
+
+## Bugfix: KW-Auswahl wurde in Schritt 4 ignoriert (2026-06-02)
+
+**Symptom:** In der Klappliste wurde z.B. `KW=21` gewaehlt, der erzeugte
+Task-Ordner und alle umbenannten Dateien trugen aber trotzdem `22.KW`.
+
+**Ursache:** Die Kalenderwoche wurde an zwei Stellen erneut aus dem Systemdatum
+(`Get-Date`, aktuelle KW minus 1) berechnet und ignorierte die Auswahl:
+`Scripts/viafintech_Task_Skript.ps1` (Ordnername + Datei-Praefix) sowie
+`Modules/Step4_Auszahlung.psm1` (`$expectedFolder`).
+
+**Fix:** Der ausgewaehlte `$Script:Context` ist jetzt die einzige Quelle der
+Wahrheit. Neu in `Get-ZahllaufContext`: Feld `FilePrefix` (`Get-FilePrefix`),
+und `Get-OrdnerName` nutzt das Lauftag-Datum (`-Today`) plus die KW der
+gewaehlten Woche (`-RefDate`). `Main.ps1` reicht `OrdnerName`/`FilePrefix` an
+`Invoke-Step4Run` durch; das Task-Skript akzeptiert nun `-FolderName`/`-FilePrefix`
+(Fallback auf die alte Systemdatum-Berechnung, falls leer). Damit stimmt auch
+die Ordner-Vorschau (`Txt4Ordner`) wieder mit dem real erzeugten Ordner und dem
+Step-5-Zielpfad ueberein.
 
 ## Phasen-Status
 
