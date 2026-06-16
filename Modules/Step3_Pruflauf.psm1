@@ -101,10 +101,10 @@ function Invoke-Step3MarkDone {
 }
 
 function Invoke-Step3OpenProsos {
-    $exe = 'C:\Program Files (x86)\PROSOZ Herten\OPEN PROSOZ\Anwendungen\OpenStarter.exe'
+    $exe = 'C:\Program Files (x86)\PROSOZ Herten\OPEN PROSOZ\Anwendungen\OpenGlobalClient.exe'
 
     if ([System.IO.File]::Exists($exe)) {
-        [System.Diagnostics.Process]::Start($exe, '/app OpenClient.exe') | Out-Null
+        [System.Diagnostics.Process]::Start($exe) | Out-Null
         Write-Log "OPEN/Prosoz wird gestartet" -Level Info
     } else {
         Write-Log "Prosos-Exe nicht gefunden: $exe" -Level Warning

@@ -107,6 +107,7 @@ $Script:StringMap = @(
     @{ N = 'Txt4StatusTitle';      P = 'Text';    K = 'Step4.StatusTitle' }
     @{ N = 'Btn4Run';              P = 'Content'; K = 'Btn.Step4.Run' }
     @{ N = 'Btn4OpenTask';         P = 'Content'; K = 'Btn.Step4.OpenTask' }
+    @{ N = 'Btn4OpenTarget';       P = 'Content'; K = 'Btn.Step4.OpenTarget' }
     @{ N = 'Txt4AbgleichTitle';    P = 'Text';    K = 'Step4.AbgleichTitle' }
     @{ N = 'Txt4AbgleichDesc';     P = 'Text';    K = 'Step4.AbgleichDesc' }
     @{ N = 'Btn4OpenXlsx';         P = 'Content'; K = 'Btn.Step4.OpenXlsx' }

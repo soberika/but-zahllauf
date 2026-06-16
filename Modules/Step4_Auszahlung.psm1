@@ -14,7 +14,8 @@ function Invoke-StartTaskScript {
         $BrushSuccess,
         $BrushDanger,
         $BtnOpenXlsx,
-        $BtnOpenPdf
+        $BtnOpenPdf,
+        $BtnOpenTarget
     )
 
     $scriptName = $global:Config.Paths.ScriptTask
@@ -72,8 +73,9 @@ function Invoke-StartTaskScript {
                 if ($BrushSuccess) { $StatusTextBlock.Foreground = $BrushSuccess }
             }
             # Abgleich-Buttons aktivieren und Zielordner an ihnen hinterlegen.
-            if ($BtnOpenXlsx) { $BtnOpenXlsx.Tag = $finalPath; $BtnOpenXlsx.IsEnabled = $true }
-            if ($BtnOpenPdf)  { $BtnOpenPdf.Tag  = $finalPath; $BtnOpenPdf.IsEnabled  = $true }
+            if ($BtnOpenXlsx)   { $BtnOpenXlsx.Tag   = $finalPath; $BtnOpenXlsx.IsEnabled   = $true }
+            if ($BtnOpenPdf)    { $BtnOpenPdf.Tag    = $finalPath; $BtnOpenPdf.IsEnabled    = $true }
+            if ($BtnOpenTarget) { $BtnOpenTarget.Tag = $finalPath; $BtnOpenTarget.IsEnabled = $true }
         } else {
             Write-Log "Schritt 4 beendet, aber Zielordner fehlt: $finalPath" -Level Warning
             if ($StatusTextBlock) {
@@ -106,7 +108,8 @@ function Invoke-Step4Run {
         $BrushSuccess,
         $BrushDanger,
         $BtnOpenXlsx,
-        $BtnOpenPdf
+        $BtnOpenPdf,
+        $BtnOpenTarget
     )
     Invoke-StartTaskScript `
         -TaskFolder      $global:Config.Paths.TaskFolder `
@@ -117,7 +120,8 @@ function Invoke-Step4Run {
         -BrushSuccess $BrushSuccess `
         -BrushDanger $BrushDanger `
         -BtnOpenXlsx $BtnOpenXlsx `
-        -BtnOpenPdf $BtnOpenPdf
+        -BtnOpenPdf $BtnOpenPdf `
+        -BtnOpenTarget $BtnOpenTarget
 }
 
 function Invoke-Step4OpenAbgleichFile {

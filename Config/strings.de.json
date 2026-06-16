@@ -69,6 +69,7 @@
     "Step4.StatusTitle": "Task-Ordner Status",
     "Btn.Step4.Run": "Verarbeitung der Zahllisten",
     "Btn.Step4.OpenTask": "Task-Ordner öffnen",
+    "Btn.Step4.OpenTarget": "Ziel-Ordner Öffnen",
     "Step4.AbgleichTitle": "Abgleich der Gesamtsummen",
     "Step4.AbgleichDesc": "Nach dem Verschieben die beiden Zieldateien zur letzten Kontrolle öffnen.",
     "Btn.Step4.OpenXlsx": "alleRechnungen.xlsx öffnen",
