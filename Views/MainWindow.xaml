@@ -316,7 +316,7 @@
                                FontSize="11" FontWeight="Bold"
                                Margin="22,22,0,10"/>
                     <Button x:Name="BtnStep1" Style="{StaticResource SideBtnActive}"
-                            Content="1.  Mail"/>
+                            Content="1.  Vorbereitung"/>
                     <Button x:Name="BtnStep2" Style="{StaticResource SideBtn}"
                             Content="2.  Rechnungen"/>
                     <Button x:Name="BtnStep3" Style="{StaticResource SideBtn}"
@@ -341,7 +341,7 @@
                     <!-- Statische Texte (Titel, Anleitung, Buttons) kommen aus
                          Config\strings.de.json (Apply-Strings). doc\TEXTE_BEARBEITEN.md -->
                     <StackPanel x:Name="PageStep1" Visibility="Visible">
-                        <TextBlock x:Name="Txt1Title" Text="1. Rechnungen aus wöchtl. Mail abspeichern" Style="{StaticResource H1}"/>
+                        <TextBlock x:Name="Txt1Title" Text="1. Vorbereitung" Style="{StaticResource H1}"/>
                         <TextBlock x:Name="Txt1Desc" Text="Wochenmail von viafintech prüfen und .msg-Dateien im _Temp-Ordner ablegen."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
@@ -376,11 +376,23 @@
                                     <Button x:Name="Btn1CopyPath"  Style="{StaticResource BtnBase}"
                                             Content="Ordner Pfad in Zwischenablage"/>
                                 </StackPanel>
-
-                                <Button x:Name="Btn1Done" Style="{StaticResource BtnSuccess}" HorizontalAlignment="Left"
-                                        Content="Schritt als erledigt markieren" Margin="0,18,0,0"/>
                             </StackPanel>
                         </Border>
+
+                        <!-- Karte C: Bezeichnung Wizard-Job parametrieren -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock x:Name="Txt1WizardTitle" Text="Bezeichnung Wizard-Job parametrieren" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="Txt1WizardDesc" TextWrapping="Wrap" Margin="0,0,0,12"
+                                           Text="Für die Erzeugung der Zahllisten muss über die Globale Fallbearbeitung -&gt; Start -&gt; Wizardjobs bearbeiten der Name angepasst werden in:"/>
+                                <TextBox x:Name="Txt1WizardName" IsReadOnly="True" Text="--"/>
+                                <Button x:Name="Btn1CopyWizard" Style="{StaticResource BtnPrimary}" HorizontalAlignment="Left"
+                                        Content="Bezeichnung in Zwischenablage" Margin="0,12,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Button x:Name="Btn1Done" Style="{StaticResource BtnSuccess}" HorizontalAlignment="Left"
+                                Content="Schritt als erledigt markieren" Margin="0,4,0,0"/>
 
                         <Expander x:Name="Exp1Hints" Style="{StaticResource HintExpander}" Header="Bebilderte Hinweise">
                             <WrapPanel x:Name="Sp1Hints" Margin="0,10,0,0"/>

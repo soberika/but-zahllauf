@@ -100,6 +100,8 @@ $ui = @{
     Btn1OpenTask     = Find-Element 'Btn1OpenTask'
     Btn1OpenPath     = Find-Element 'Btn1OpenPath'
     Btn1CopyPath     = Find-Element 'Btn1CopyPath'
+    Txt1WizardName   = Find-Element 'Txt1WizardName'
+    Btn1CopyWizard   = Find-Element 'Btn1CopyWizard'
     Btn1Done         = Find-Element 'Btn1Done'
     Sp1Hints         = Find-Element 'Sp1Hints'
 
@@ -240,6 +242,9 @@ function Update-Context {
     # Top-Bar
     $ui.TxtDate.Text   = "$($ctx.Date) ($($ctx.Weekday))"
     $ui.TxtSunday.Text = $ctx.LastSundayStr
+
+    # Step 1
+    $ui.Txt1WizardName.Text = $ctx.Bezeichnung
 
     # Step 2
     $ui.Txt2Preview.Text  = $ctx.Bezeichnung
@@ -550,6 +555,7 @@ $ui.Btn1OpenOutlook.Add_Click({ Invoke-Step1OpenOutlook })
 $ui.Btn1OpenTask.Add_Click({ Invoke-Step1OpenPath -Path $Script:Config.Paths.TaskFolder })
 $ui.Btn1OpenPath.Add_Click({ Invoke-Step1OpenPath -Path $Script:Config.Paths.MsgFolder })
 $ui.Btn1CopyPath.Add_Click({ Invoke-Step1CopyPath -Path $Script:Config.Paths.MsgFolder })
+$ui.Btn1CopyWizard.Add_Click({ Invoke-Step3Copy -Text $ui.Txt1WizardName.Text })
 $ui.Btn1Done.Add_Click({ Invoke-Step1MarkDone; Set-StepDone 1 })
 
 # Step 2

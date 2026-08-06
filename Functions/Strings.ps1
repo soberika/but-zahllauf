@@ -63,6 +63,9 @@ $Script:StringMap = @(
     @{ N = 'Chk1Mails';            P = 'Content'; K = 'Chk.Step1.Mails' }
     @{ N = 'Btn1OpenPath';         P = 'Content'; K = 'Btn.Step1.OpenPath' }
     @{ N = 'Btn1CopyPath';         P = 'Content'; K = 'Btn.Step1.CopyPath' }
+    @{ N = 'Txt1WizardTitle';      P = 'Text';    K = 'Step1.WizardTitle' }
+    @{ N = 'Txt1WizardDesc';       P = 'Text';    K = 'Step1.WizardDesc' }
+    @{ N = 'Btn1CopyWizard';       P = 'Content'; K = 'Btn.Step1.CopyWizard' }
     @{ N = 'Btn1Done';             P = 'Content'; K = 'Btn.Step1.Done' }
 
     # Schritt 2
