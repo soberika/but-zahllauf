@@ -38,5 +38,8 @@ Alternativ: Datei im Explorer -> Rechtsklick -> Eigenschaften -> unten
 ## Hinweise
 - Fehlt die DLL, meldet Schritt 2 einen klaren Fehler und bricht sauber ab
   (es wird nichts geloescht oder ueberschrieben).
-- Die DLL ist absichtlich **gitignored** (Binaerdatei). Auf dem Zielsystem
-  einmalig ablegen.
+- **`itextsharp.dll` (iTextSharp 4.1.6, LGPL) ist jetzt fest im Repo** und wird
+  ueber eine `.gitignore`-Ausnahme (`!Assets/lib/itextsharp.dll`) mitversioniert.
+  Sie ist damit in jedem Clone/jeder Session vorhanden - kein manuelles Ablegen
+  mehr noetig. Andere DLLs (z. B. `BouncyCastle.Crypto.dll` fuer iTextSharp 5.x)
+  bleiben gitignored und muessen bei Bedarf lokal ergaenzt werden.

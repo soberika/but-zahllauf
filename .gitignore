@@ -10,3 +10,4 @@ Assets/hints/*
 Assets/lib/*
 !Assets/lib/.gitkeep
 !Assets/lib/README.md
+!Assets/lib/itextsharp.dll
