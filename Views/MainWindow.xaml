@@ -265,7 +265,7 @@
                                FontSize="11" FontWeight="Bold"
                                Margin="22,22,0,10"/>
                     <Button x:Name="BtnStep1" Style="{StaticResource SideBtnActive}"
-                            Content="1.  Mail"/>
+                            Content="1.  Vorbereitung"/>
                     <Button x:Name="BtnStep2" Style="{StaticResource SideBtn}"
                             Content="2.  Rechnungen"/>
                     <Button x:Name="BtnStep3" Style="{StaticResource SideBtn}"
@@ -286,32 +286,54 @@
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
                           Padding="30,24,30,24">
                 <Grid>
-                    <!-- ============ SCHRITT 1 - MAIL ============ -->
+                    <!-- ============ SCHRITT 1 - VORBEREITUNG ============ -->
                     <StackPanel x:Name="PageStep1" Visibility="Visible">
-                        <TextBlock Text="Schritt 1 - Mail" Style="{StaticResource H1}"/>
-                        <TextBlock Text="Wochenmail von viafintech pruefen und .msg-Dateien in den _Temp-Ordner ablegen."
+                        <TextBlock Text="Schritt 1 - Vorbereitung" Style="{StaticResource H1}"/>
+                        <TextBlock Text="Wochenmail von viafintech pruefen, .msg-Dateien ablegen und den Wizard-Job parametrieren."
                                    Style="{StaticResource Muted}" Margin="0,0,0,18"/>
 
+                        <!-- Feld 1: Mail abspeichern -->
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Anleitung" Style="{StaticResource H2}"/>
+                                <TextBlock Text="Mail abspeichern" Style="{StaticResource H2}"/>
                                 <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
                                     1. Outlook oeffnen und die Wochenmail mit den Rechnungen suchen.
                                 </TextBlock>
-                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,0">
                                     2. Alle relevanten .msg-Dateien in den _Temp-Ordner ziehen.
                                 </TextBlock>
-                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,16">
-                                    3. Unten "Pfad oeffnen" klicken, um den Ordner zu pruefen.
-                                </TextBlock>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="Btn1OpenPath"  Style="{StaticResource BtnBase}"
-                                            Content="Pfad oeffnen" Margin="0,0,10,0"/>
-                                    <Button x:Name="Btn1Done"      Style="{StaticResource BtnSuccess}"
-                                            Content="Schritt als erledigt markieren"/>
-                                </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <!-- Feld 2: Pfad pruefen -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Pfad pruefen" Style="{StaticResource H2}"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,16">
+                                    "Pfad oeffnen" klicken, um den _Temp-Ordner zu pruefen.
+                                </TextBlock>
+                                <Button x:Name="Btn1OpenPath"  Style="{StaticResource BtnBase}"
+                                        Content="Pfad oeffnen" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Feld 3: Bezeichnung Wizard-Job parametrieren -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Bezeichnung Wizard-Job parametrieren" Style="{StaticResource H2}"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,0,0,12">
+                                    Fuer die Erzeugung der Zahllisten muss ueber die Globale Fallbearbeitung -&gt; Start -&gt; Wizardjobs bearbeiten der Name angepasst werden in:
+                                </TextBlock>
+                                <TextBox x:Name="Txt1WizardName" IsReadOnly="True" Text="--"/>
+                                <Button x:Name="Btn1CopyWizard" Style="{StaticResource BtnPrimary}"
+                                        Content="Bezeichnung in Zwischenablage"
+                                        HorizontalAlignment="Left" Margin="0,12,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Button x:Name="Btn1Done" Style="{StaticResource BtnSuccess}"
+                                Content="Schritt als erledigt markieren"
+                                HorizontalAlignment="Left" Margin="0,4,0,0"/>
                     </StackPanel>
 
                     <!-- ============ SCHRITT 2 - RECHNUNGEN ============ -->

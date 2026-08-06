@@ -97,6 +97,8 @@ $ui = @{
     # Step 1
     Btn1OpenPath     = Find-Element 'Btn1OpenPath'
     Btn1Done         = Find-Element 'Btn1Done'
+    Txt1WizardName   = Find-Element 'Txt1WizardName'
+    Btn1CopyWizard   = Find-Element 'Btn1CopyWizard'
 
     # Step 2
     Chk2NurExcel     = Find-Element 'Chk2NurExcel'
@@ -201,6 +203,9 @@ function Update-Context {
     $ui.TxtBezRight.Text  = $ctx.Bezeichnung
     $ui.TxtOrdRight.Text  = $ctx.OrdnerName
 
+    # Step 1
+    $ui.Txt1WizardName.Text = $ctx.Bezeichnung
+
     # Step 2
     $ui.Txt2Preview.Text  = $ctx.Bezeichnung
 
@@ -231,6 +236,7 @@ $ui.BtnOpenLog.Add_Click({ [System.Diagnostics.Process]::Start('notepad.exe', $S
 
 # Step 1
 $ui.Btn1OpenPath.Add_Click({ Invoke-Step1OpenPath -Path $Script:Config.Paths.TempRoot })
+$ui.Btn1CopyWizard.Add_Click({ Invoke-Step3Copy -Text $ui.Txt1WizardName.Text })
 $ui.Btn1Done.Add_Click({ Invoke-Step1MarkDone })
 
 # Step 2
